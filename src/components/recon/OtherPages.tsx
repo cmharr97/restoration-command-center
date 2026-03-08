@@ -271,54 +271,8 @@ export const ReferralsPage = () => (
   </div>
 );
 
-// ── REPORTS PAGE ──
-export const ReportsPage = ({ role }: { role: string }) => {
-  const rm = ROLES[role];
-  const { jobs } = useJobs();
-  return (
-    <div style={{ padding: "0 0 40px" }}>
-      <div style={{ padding: "24px 28px 0", marginBottom: 18 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Reports</h1>
-        <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Business intelligence & compliance reporting</p>
-      </div>
-      <div style={{ padding: "0 28px" }}>
-        {jobs.length === 0 ? (
-          <Card style={{ textAlign: "center", padding: 48 }}>
-            <Ic n="chart" s={40} c={T.dim}/>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No data to report on</div>
-            <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Reports will generate automatically as you create and manage jobs.</div>
-          </Card>
-        ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px,1fr))", gap: 14 }}>
-            {[
-              { title: "Job Revenue Report", desc: "Revenue by job type and date range", icon: "dollar", color: T.orange, ownerOnly: false },
-              { title: "Drying Log Summary", desc: "S500-compliant drying reports for water jobs", icon: "moisture", color: T.blueBright, ownerOnly: false },
-              { title: "Carrier Analysis", desc: "Jobs by insurance carrier", icon: "shield", color: T.purpleBright, ownerOnly: false },
-              { title: "Job Cycle Time", desc: "Average days per stage", icon: "clock", color: T.blueBright, ownerOnly: false },
-              ...(rm.canSeeProfitMargins ? [
-                { title: "Profit Margins", desc: "Cost vs. revenue per job", icon: "chart", color: T.greenBright, ownerOnly: true },
-                { title: "Accounts Receivable", desc: "Outstanding invoices by carrier", icon: "inv", color: T.redBright, ownerOnly: true },
-              ] : []),
-            ].map((r, i) => (
-              <Card key={i} style={{ cursor: "pointer" }}>
-                <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                  <div style={{ background: `${r.color}1a`, padding: 9, borderRadius: 8, flexShrink: 0 }}>
-                    <Ic n={r.icon} s={16} c={r.color}/>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 600, color: T.white, fontSize: 13, marginBottom: 3 }}>{r.title}</div>
-                    <div style={{ fontSize: 11, color: T.muted, lineHeight: 1.5 }}>{r.desc}</div>
-                    <div style={{ fontSize: 11, color: r.color, marginTop: 6, cursor: "pointer" }}>Run Report →</div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+// ── REPORTS PAGE (delegates to full page) ──
+export { ReportsPage } from "@/components/recon/ReportsPage";
 
 // ── INTEGRATIONS PAGE ──
 export const IntegrationsPage = () => (
