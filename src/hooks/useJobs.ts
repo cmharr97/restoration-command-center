@@ -54,23 +54,33 @@ export interface NewJobData {
 export const useJobs = () => {
   const [jobs, setJobs] = useState<DbJob[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, companyId } = useAuth();
   const { toast } = useToast();
 
   const fetchJobs = useCallback(async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     setLoading(true);
-    const { data, error } = await supabase
+    let query = supabase
       .from("jobs")
       .select("*")
       .order("created_at", { ascending: false });
+
+    // Company-level isolation: only show jobs for current company
+    if (companyId) {
+      query = query.eq("company_id", companyId);
+    } else {
+      // No company yet — only show jobs created by this user
+      query = query.eq("created_by", user.id);
+    }
+
+    const { data, error } = await query;
     if (error) {
       console.error("Error fetching jobs:", error);
     } else {
       setJobs((data || []) as DbJob[]);
     }
     setLoading(false);
-  }, [user]);
+  }, [user, companyId]);
 
   useEffect(() => {
     fetchJobs();
@@ -97,6 +107,7 @@ export const useJobs = () => {
       notes: jobData.notes || "",
       mortgage_company: jobData.mortgage_company || "",
       created_by: user.id,
+      company_id: companyId || null,
     } as any).select().single();
 
     if (error) {
@@ -134,15 +145,20 @@ export const useJobs = () => {
 export const useTeamMembers = () => {
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
-      const { data, error } = await supabase.from("profiles").select("*").order("created_at");
+      let query = supabase.from("profiles").select("*").order("created_at");
+      if (companyId) {
+        query = query.eq("company_id", companyId);
+      }
+      const { data, error } = await query;
       if (!error) setMembers(data || []);
       setLoading(false);
     };
     fetch();
-  }, []);
+  }, [companyId]);
 
   return { members, loading };
 };
@@ -168,17 +184,22 @@ export const useDryingLogs = (jobId?: string) => {
 export const useClaims = (jobId?: string) => {
   const [claims, setClaims] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("claims").select("*").order("created_at", { ascending: false });
-      if (jobId) query = query.eq("job_id", jobId);
+      if (jobId) {
+        query = query.eq("job_id", jobId);
+      } else if (companyId) {
+        query = query.eq("company_id", companyId);
+      }
       const { data, error } = await query;
       if (!error) setClaims(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId]);
+  }, [jobId, companyId]);
 
   return { claims, loading };
 };
@@ -186,17 +207,22 @@ export const useClaims = (jobId?: string) => {
 export const useSupplements = (jobId?: string) => {
   const [supplements, setSupplements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("supplements").select("*").order("created_at", { ascending: false });
-      if (jobId) query = query.eq("job_id", jobId);
+      if (jobId) {
+        query = query.eq("job_id", jobId);
+      } else if (companyId) {
+        query = query.eq("company_id", companyId);
+      }
       const { data, error } = await query;
       if (!error) setSupplements(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId]);
+  }, [jobId, companyId]);
 
   return { supplements, loading };
 };
@@ -204,17 +230,22 @@ export const useSupplements = (jobId?: string) => {
 export const usePayments = (jobId?: string) => {
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("payments").select("*").order("created_at", { ascending: false });
-      if (jobId) query = query.eq("job_id", jobId);
+      if (jobId) {
+        query = query.eq("job_id", jobId);
+      } else if (companyId) {
+        query = query.eq("company_id", companyId);
+      }
       const { data, error } = await query;
       if (!error) setPayments(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId]);
+  }, [jobId, companyId]);
 
   return { payments, loading };
 };
@@ -222,15 +253,20 @@ export const usePayments = (jobId?: string) => {
 export const useSubcontractors = () => {
   const [subs, setSubs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
-      const { data, error } = await supabase.from("subcontractors").select("*").order("name");
+      let query = supabase.from("subcontractors").select("*").order("name");
+      if (companyId) {
+        query = query.eq("company_id", companyId);
+      }
+      const { data, error } = await query;
       if (!error) setSubs(data || []);
       setLoading(false);
     };
     fetch();
-  }, []);
+  }, [companyId]);
 
   return { subs, loading };
 };
@@ -238,17 +274,22 @@ export const useSubcontractors = () => {
 export const useActivityLogs = (jobId?: string) => {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("activity_logs").select("*").order("created_at", { ascending: false }).limit(50);
-      if (jobId) query = query.eq("job_id", jobId);
+      if (jobId) {
+        query = query.eq("job_id", jobId);
+      } else if (companyId) {
+        query = query.eq("company_id", companyId);
+      }
       const { data, error } = await query;
       if (!error) setLogs(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId]);
+  }, [jobId, companyId]);
 
   return { logs, loading };
 };
