@@ -50,6 +50,66 @@ export type Database = {
         }
         Relationships: []
       }
+      companies: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          id: string
+          license_number: string | null
+          logo_url: string | null
+          name: string
+          owner_id: string
+          phone: string | null
+          service_area: string | null
+          services: string[] | null
+          state: string | null
+          team_size: string | null
+          updated_at: string
+          website: string | null
+          zip: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          license_number?: string | null
+          logo_url?: string | null
+          name: string
+          owner_id: string
+          phone?: string | null
+          service_area?: string | null
+          services?: string[] | null
+          state?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website?: string | null
+          zip?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          license_number?: string | null
+          logo_url?: string | null
+          name?: string
+          owner_id?: string
+          phone?: string | null
+          service_area?: string | null
+          services?: string[] | null
+          state?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website?: string | null
+          zip?: string | null
+        }
+        Relationships: []
+      }
       drying_logs: {
         Row: {
           created_at: string
@@ -235,10 +295,12 @@ export type Database = {
         Row: {
           avatar: string | null
           certs: string[] | null
+          company_id: string | null
           created_at: string
           email: string
           id: string
           name: string
+          onboarding_complete: boolean | null
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           status: string | null
@@ -246,10 +308,12 @@ export type Database = {
         Insert: {
           avatar?: string | null
           certs?: string[] | null
+          company_id?: string | null
           created_at?: string
           email: string
           id: string
           name: string
+          onboarding_complete?: boolean | null
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           status?: string | null
@@ -257,15 +321,25 @@ export type Database = {
         Update: {
           avatar?: string | null
           certs?: string[] | null
+          company_id?: string | null
           created_at?: string
           email?: string
           id?: string
           name?: string
+          onboarding_complete?: boolean | null
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
