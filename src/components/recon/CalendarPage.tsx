@@ -259,7 +259,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
               {view === "day" ? `${getDayName(baseDate)}, ${getMonthDay(baseDate)}` : `${getMonthDay(weekDates[0])} – ${getMonthDay(weekDates[6])}`}
             </span>
             <Btn v="ghost" sz="sm" onClick={() => view === "day" ? navigateDay(1) : navigateWeek(1)}>▶</Btn>
-            <Btn v="secondary" sz="sm" onClick={() => setBaseDate(new Date(2026, 2, 8))}>Today</Btn>
+            <Btn v="secondary" sz="sm" onClick={() => setBaseDate(new Date())}>Today</Btn>
           </div>
           <div style={{ display: "flex", gap: 4 }}>
             <div onClick={() => setFilterCrew(null)} style={{ padding: "4px 10px", borderRadius: 14, fontSize: 10, cursor: "pointer", background: !filterCrew ? T.orangeDim : "transparent", color: !filterCrew ? T.orange : T.muted, border: `1px solid ${!filterCrew ? T.orange + "44" : "transparent"}` }}>All Crew</div>
