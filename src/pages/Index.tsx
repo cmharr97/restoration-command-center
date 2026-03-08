@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { T, NAV, TEAM_MEMBERS, type Job } from "@/lib/recon-data";
+import { T, NAV, TEAM_MEMBERS } from "@/lib/recon-data";
 import { ReconSidebar, TopBar } from "@/components/recon/ReconLayout";
 import { DashboardPage } from "@/components/recon/DashboardPage";
 import { JobsPage } from "@/components/recon/JobsPage";
@@ -14,12 +14,13 @@ import { AIAssistant } from "@/components/recon/AIAssistant";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import type { DbJob } from "@/hooks/useJobs";
 
 const Index = () => {
   const { profile, signOut } = useAuth();
   const [role, setRole] = useState(profile?.role || "owner");
   const [active, setActive] = useState("dashboard");
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [selectedJob, setSelectedJob] = useState<DbJob | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,39 +36,20 @@ const Index = () => {
     if (!allPages.includes(active)) { setActive(allPages[0] || "dashboard"); }
   }, [role]);
 
-  // Close mobile menu on navigation
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [active]);
 
-  // Simulated push notifications
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-
-    const notificationMessages = [
-      { title: "💧 Drying Alert — J-1051", desc: "Laundry subfloor still above dry standard. Day 5 reading: 20%", delay: 15000 },
-      { title: "📱 SMS Confirmed", desc: "Marcus Webb confirmed dispatch for Cat 3 mobilization", delay: 30000 },
-      { title: "💬 New Message — Destiny Kim", desc: "Adjuster walkthrough at 2pm confirmed ✅", delay: 45000 },
-      { title: "⚠️ Task Overdue", desc: "J-1049 mold estimate review — no activity in 3 days", delay: 60000 },
-      { title: "📄 Supplement Approved", desc: "State Farm approved $2,400 supplement for J-1051 hardwood replacement", delay: 90000 },
-      { title: "⚡ Automation Triggered", desc: "No activity on J-1049 for 3 days — manager alerted", delay: 120000 },
-    ];
-
-    const timers = notificationMessages.map(msg =>
-      setTimeout(() => {
-        toast({ title: msg.title, description: msg.desc });
-        if ("Notification" in window && Notification.permission === "granted") {
-          try { new Notification(msg.title, { body: msg.desc, icon: "/favicon.ico" }); } catch {}
-        }
-      }, msg.delay)
-    );
-
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
   const currentUser = TEAM_MEMBERS.find(m => m.role === role) || TEAM_MEMBERS[0];
+  // Use profile data if available
+  const displayUser = profile ? {
+    ...currentUser,
+    name: profile.name || currentUser.name,
+    email: profile.email || currentUser.email,
+    role: profile.role || currentUser.role,
+    avatar: profile.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || currentUser.avatar,
+  } : currentUser;
+
   const pageTitles: Record<string, string> = {
     dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs",
     estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users",
@@ -80,7 +62,7 @@ const Index = () => {
   const pages: Record<string, React.ReactNode> = {
     dashboard: <DashboardPage role={role} setActive={setActive} setSelectedJob={setSelectedJob}/>,
     jobs: <JobsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
-    job_detail: selectedJob ? <JobDetailPage job={selectedJob} role={role} setActive={setActive}/> : <div style={{ padding: 40, color: T.muted }}>Select a job first</div>,
+    job_detail: selectedJob ? <JobDetailPage job={selectedJob as any} role={role} setActive={setActive}/> : <div style={{ padding: 40, color: T.muted }}>Select a job first</div>,
     customers: <CustomersPage/>,
     mitigation: <MitigationPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
     estimates: <EstimatesPage role={role}/>,
@@ -93,13 +75,12 @@ const Index = () => {
     reports: <ReportsPage role={role}/>,
     integrations: <IntegrationsPage/>,
     settings: <SettingsPage role={role}/>,
-    my_jobs: <MyJobsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
+    my_jobs: <MyJobsPage role={role} setSelectedJob={setSelectedJob as any} setActive={setActive}/>,
     messaging: <MessagingPage role={role}/>,
     automations: <AutomationPage role={role}/>,
     customer_portal: <CustomerPortalPage/>,
   };
 
-  // Add mobile-open class to sidebar via useEffect
   useEffect(() => {
     const sidebar = document.querySelector('.recon-sidebar');
     if (sidebar) {
@@ -112,7 +93,7 @@ const Index = () => {
     <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, color: T.text, minHeight: "100vh", display: "flex", overflow: "hidden" }}>
       {active !== "customer_portal" && (
         <ReconSidebar
-          role={role} active={active} setActive={setActive} user={currentUser}
+          role={role} active={active} setActive={setActive} user={displayUser}
           mobileOpen={mobileMenuOpen}
           onMobileClose={() => setMobileMenuOpen(false)}
         />
@@ -132,7 +113,6 @@ const Index = () => {
       </div>
       {showNewJob && <NewJobModal onClose={() => setShowNewJob(false)}/>}
 
-      {/* AI Assistant FAB */}
       {!showAI && (
         <button onClick={() => setShowAI(true)} style={{
           position: "fixed", right: 20, bottom: 20, width: 56, height: 56,
