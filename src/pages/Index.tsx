@@ -22,6 +22,7 @@ const Index = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
   const [showAI, setShowAI] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,6 +34,11 @@ const Index = () => {
     const allPages = roleNav.flatMap(g => g.items.map(i => i.id));
     if (!allPages.includes(active)) { setActive(allPages[0] || "dashboard"); }
   }, [role]);
+
+  // Close mobile menu on navigation
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [active]);
 
   // Simulated push notifications
   useEffect(() => {
@@ -93,11 +99,35 @@ const Index = () => {
     customer_portal: <CustomerPortalPage/>,
   };
 
+  // Add mobile-open class to sidebar via useEffect
+  useEffect(() => {
+    const sidebar = document.querySelector('.recon-sidebar');
+    if (sidebar) {
+      if (mobileMenuOpen) sidebar.classList.add('mobile-open');
+      else sidebar.classList.remove('mobile-open');
+    }
+  }, [mobileMenuOpen]);
+
   return (
     <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, color: T.text, minHeight: "100vh", display: "flex", overflow: "hidden" }}>
-      {active !== "customer_portal" && <ReconSidebar role={role} active={active} setActive={setActive} user={currentUser}/>}
-      <div style={{ flex: 1, overflowY: active === "messaging" ? "hidden" : "auto", height: "100vh" }}>
-        {active !== "customer_portal" && <TopBar pageTitle={pageTitles[active] || active} role={role} onNewJob={() => setShowNewJob(true)} onRoleChange={r => setRole(r)} onSignOut={signOut}/>}
+      {active !== "customer_portal" && (
+        <ReconSidebar
+          role={role} active={active} setActive={setActive} user={currentUser}
+          mobileOpen={mobileMenuOpen}
+          onMobileClose={() => setMobileMenuOpen(false)}
+        />
+      )}
+      <div style={{ flex: 1, overflowY: active === "messaging" ? "hidden" : "auto", height: "100vh", minWidth: 0 }}>
+        {active !== "customer_portal" && (
+          <TopBar
+            pageTitle={pageTitles[active] || active}
+            role={role}
+            onNewJob={() => setShowNewJob(true)}
+            onRoleChange={r => setRole(r)}
+            onSignOut={signOut}
+            onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+          />
+        )}
         {pages[active] || <div style={{ padding: 40, color: T.muted }}>Page not available</div>}
       </div>
       {showNewJob && <NewJobModal onClose={() => setShowNewJob(false)}/>}
@@ -105,7 +135,7 @@ const Index = () => {
       {/* AI Assistant FAB */}
       {!showAI && (
         <button onClick={() => setShowAI(true)} style={{
-          position: "fixed", right: 24, bottom: 24, width: 56, height: 56,
+          position: "fixed", right: 20, bottom: 20, width: 56, height: 56,
           borderRadius: "50%", background: `linear-gradient(135deg, ${T.orange}, #c84009)`,
           border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
           boxShadow: `0 8px 30px ${T.orangeGlow}`, zIndex: 999, fontSize: 24, transition: "transform 0.2s",

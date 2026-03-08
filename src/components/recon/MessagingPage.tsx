@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { T, TEAM_MEMBERS, JOBS, ROLES, type TeamMember } from "@/lib/recon-data";
 import { ReconCard as Card, Btn, Ic, Inp } from "@/components/recon/ReconUI";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/recon/ReconUI";
 
 // ── TYPES ──
@@ -130,13 +131,75 @@ export const MessagingPage = ({ role }: { role: string }) => {
   const channel = CHANNELS.find(c => c.id === activeChannel);
   const messages = localMessages[activeChannel] || [];
 
+  // Load persisted messages from DB and subscribe to realtime
+  useEffect(() => {
+    const loadMessages = async () => {
+      const { data } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("channel_id", activeChannel)
+        .order("created_at", { ascending: true });
+      if (data && data.length > 0) {
+        const dbMsgs: Message[] = data.map((m: any) => ({
+          id: m.id,
+          sender: m.sender_name,
+          senderId: m.sender_id,
+          avatar: m.sender_name?.split(" ").map((w: string) => w[0]).join("") || "?",
+          text: m.text,
+          time: new Date(m.created_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+          date: new Date(m.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          mentions: m.mentions || undefined,
+        }));
+        setLocalMessages(prev => ({
+          ...prev,
+          [activeChannel]: [...(MESSAGES[activeChannel] || []), ...dbMsgs],
+        }));
+      }
+    };
+    loadMessages();
+  }, [activeChannel]);
+
+  // Realtime subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel(`messages-${activeChannel}`)
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+        filter: `channel_id=eq.${activeChannel}`,
+      }, (payload: any) => {
+        const m = payload.new;
+        const newMsg: Message = {
+          id: m.id,
+          sender: m.sender_name,
+          senderId: m.sender_id,
+          avatar: m.sender_name?.split(" ").map((w: string) => w[0]).join("") || "?",
+          text: m.text,
+          time: new Date(m.created_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+          date: new Date(m.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          mentions: m.mentions || undefined,
+        };
+        setLocalMessages(prev => {
+          const existing = prev[activeChannel] || [];
+          if (existing.some(e => e.id === newMsg.id)) return prev;
+          return { ...prev, [activeChannel]: [...existing, newMsg] };
+        });
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [activeChannel]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length, activeChannel]);
+  }, [localMessages[activeChannel]?.length, activeChannel]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!messageText.trim()) return;
     const mentions = messageText.match(/@([\w\s]+?)(?=\s|$|[.,!?])/g)?.map(m => m.slice(1).trim()) || [];
+    
+    // Add to local state immediately for instant feedback
     const newMsg: Message = {
       id: `msg-${Date.now()}`,
       sender: currentUser.name,
@@ -151,8 +214,22 @@ export const MessagingPage = ({ role }: { role: string }) => {
       ...prev,
       [activeChannel]: [...(prev[activeChannel] || []), newMsg],
     }));
+    
+    const msgText = messageText;
     setMessageText("");
     setShowMentionDropdown(false);
+
+    // Also persist to database
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from("messages").insert({
+        channel_id: activeChannel,
+        sender_id: user.id,
+        sender_name: currentUser.name,
+        text: msgText,
+        mentions: mentions.length > 0 ? mentions : [],
+      } as any);
+    }
   };
 
   const handleInputChange = (val: string) => {
