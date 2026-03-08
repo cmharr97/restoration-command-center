@@ -2,6 +2,7 @@ import { useState } from "react";
 import { T, ROLES, NAV, TEAM_MEMBERS, type TeamMember } from "@/lib/recon-data";
 import { Ic, Logo, Btn } from "@/components/recon/ReconUI";
 import { useTheme } from "@/hooks/useTheme";
+import { Sun, Moon } from "lucide-react";
 
 interface SidebarProps {
   role: string;
