@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action_type: string
+          company_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          job_id: string | null
+          metadata: Json | null
+          title: string
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type?: string
+          company_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          job_id?: string | null
+          metadata?: Json | null
+          title: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: string
+          company_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          job_id?: string | null
+          metadata?: Json | null
+          title?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_logs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automation_rules: {
         Row: {
           action_type: string
@@ -49,6 +103,81 @@ export type Database = {
           trigger_type?: string
         }
         Relationships: []
+      }
+      claims: {
+        Row: {
+          carrier_response_status: string | null
+          company_id: string | null
+          created_at: string
+          created_by: string | null
+          denied_items: Json | null
+          estimate_submitted_date: string | null
+          id: string
+          job_id: string
+          notes: string | null
+          outstanding_balance: number | null
+          payments_received: number | null
+          pending_approvals: Json | null
+          recoverable_depreciation: number | null
+          reinspection_date: string | null
+          reinspection_requested: boolean | null
+          supplement_status: string | null
+          updated_at: string
+        }
+        Insert: {
+          carrier_response_status?: string | null
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          denied_items?: Json | null
+          estimate_submitted_date?: string | null
+          id?: string
+          job_id: string
+          notes?: string | null
+          outstanding_balance?: number | null
+          payments_received?: number | null
+          pending_approvals?: Json | null
+          recoverable_depreciation?: number | null
+          reinspection_date?: string | null
+          reinspection_requested?: boolean | null
+          supplement_status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          carrier_response_status?: string | null
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          denied_items?: Json | null
+          estimate_submitted_date?: string | null
+          id?: string
+          job_id?: string
+          notes?: string | null
+          outstanding_balance?: number | null
+          payments_received?: number | null
+          pending_approvals?: Json | null
+          recoverable_depreciation?: number | null
+          reinspection_date?: string | null
+          reinspection_requested?: boolean | null
+          supplement_status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "claims_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "claims_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       companies: {
         Row: {
@@ -166,6 +295,60 @@ export type Database = {
           },
         ]
       }
+      job_photos: {
+        Row: {
+          caption: string | null
+          company_id: string | null
+          created_at: string
+          id: string
+          job_id: string
+          photo_type: string | null
+          taken_at: string | null
+          uploaded_by: string | null
+          uploaded_by_name: string | null
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          photo_type?: string | null
+          taken_at?: string | null
+          uploaded_by?: string | null
+          uploaded_by_name?: string | null
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          photo_type?: string | null
+          taken_at?: string | null
+          uploaded_by?: string | null
+          uploaded_by_name?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_photos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_photos_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs: {
         Row: {
           address: string
@@ -173,6 +356,7 @@ export type Database = {
           adjuster_phone: string | null
           carrier: string | null
           claim_no: string | null
+          company_id: string | null
           contract_value: number | null
           created_at: string
           created_by: string | null
@@ -184,6 +368,7 @@ export type Database = {
           loss_type: string
           mitigation_value: number | null
           moisture_alerts: number | null
+          mortgage_company: string | null
           notes: string | null
           phone: string | null
           pm_id: string | null
@@ -191,6 +376,7 @@ export type Database = {
           priority: string | null
           recon: boolean | null
           recon_value: number | null
+          scope_notes: string | null
           stage: string
           updated_at: string
         }
@@ -200,6 +386,7 @@ export type Database = {
           adjuster_phone?: string | null
           carrier?: string | null
           claim_no?: string | null
+          company_id?: string | null
           contract_value?: number | null
           created_at?: string
           created_by?: string | null
@@ -211,6 +398,7 @@ export type Database = {
           loss_type?: string
           mitigation_value?: number | null
           moisture_alerts?: number | null
+          mortgage_company?: string | null
           notes?: string | null
           phone?: string | null
           pm_id?: string | null
@@ -218,6 +406,7 @@ export type Database = {
           priority?: string | null
           recon?: boolean | null
           recon_value?: number | null
+          scope_notes?: string | null
           stage?: string
           updated_at?: string
         }
@@ -227,6 +416,7 @@ export type Database = {
           adjuster_phone?: string | null
           carrier?: string | null
           claim_no?: string | null
+          company_id?: string | null
           contract_value?: number | null
           created_at?: string
           created_by?: string | null
@@ -238,6 +428,7 @@ export type Database = {
           loss_type?: string
           mitigation_value?: number | null
           moisture_alerts?: number | null
+          mortgage_company?: string | null
           notes?: string | null
           phone?: string | null
           pm_id?: string | null
@@ -245,10 +436,18 @@ export type Database = {
           priority?: string | null
           recon?: boolean | null
           recon_value?: number | null
+          scope_notes?: string | null
           stage?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "jobs_pm_id_fkey"
             columns: ["pm_id"]
@@ -290,6 +489,78 @@ export type Database = {
           text?: string
         }
         Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          check_number: string | null
+          company_id: string | null
+          created_at: string
+          created_by: string | null
+          customer_responsibility: number | null
+          date_received: string | null
+          deductible_amount: number | null
+          deductible_collected: boolean | null
+          id: string
+          job_id: string
+          mortgage_hold: boolean | null
+          mortgage_hold_amount: number | null
+          notes: string | null
+          payment_type: string
+          source: string | null
+        }
+        Insert: {
+          amount?: number
+          check_number?: string | null
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_responsibility?: number | null
+          date_received?: string | null
+          deductible_amount?: number | null
+          deductible_collected?: boolean | null
+          id?: string
+          job_id: string
+          mortgage_hold?: boolean | null
+          mortgage_hold_amount?: number | null
+          notes?: string | null
+          payment_type?: string
+          source?: string | null
+        }
+        Update: {
+          amount?: number
+          check_number?: string | null
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_responsibility?: number | null
+          date_received?: string | null
+          deductible_amount?: number | null
+          deductible_collected?: boolean | null
+          id?: string
+          job_id?: string
+          mortgage_hold?: boolean | null
+          mortgage_hold_amount?: number | null
+          notes?: string | null
+          payment_type?: string
+          source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -337,6 +608,206 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subcontractor_assignments: {
+        Row: {
+          amount: number | null
+          completed_date: string | null
+          created_at: string
+          id: string
+          job_id: string
+          notes: string | null
+          scheduled_date: string | null
+          status: string | null
+          subcontractor_id: string
+          trade: string
+        }
+        Insert: {
+          amount?: number | null
+          completed_date?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          notes?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          subcontractor_id: string
+          trade: string
+        }
+        Update: {
+          amount?: number | null
+          completed_date?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          notes?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          subcontractor_id?: string
+          trade?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractor_assignments_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subcontractor_assignments_subcontractor_id_fkey"
+            columns: ["subcontractor_id"]
+            isOneToOne: false
+            referencedRelation: "subcontractors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subcontractors: {
+        Row: {
+          company_id: string | null
+          company_name: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          insurance_expiry: string | null
+          license_number: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          status: string | null
+          trade: string
+        }
+        Insert: {
+          company_id?: string | null
+          company_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          insurance_expiry?: string | null
+          license_number?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          trade?: string
+        }
+        Update: {
+          company_id?: string | null
+          company_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          insurance_expiry?: string | null
+          license_number?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          trade?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcontractors_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplements: {
+        Row: {
+          approved_amount: number | null
+          carrier_estimate_url: string | null
+          carrier_total: number | null
+          company_id: string | null
+          contractor_estimate_url: string | null
+          contractor_total: number | null
+          created_at: string
+          created_by: string | null
+          difference: number | null
+          id: string
+          job_id: string
+          justification: string | null
+          missing_items: Json | null
+          notes: string | null
+          pricing_differences: Json | null
+          quantity_differences: Json | null
+          response_date: string | null
+          scope_differences: Json | null
+          status: string | null
+          submitted_date: string | null
+          supplement_number: number | null
+          updated_at: string
+        }
+        Insert: {
+          approved_amount?: number | null
+          carrier_estimate_url?: string | null
+          carrier_total?: number | null
+          company_id?: string | null
+          contractor_estimate_url?: string | null
+          contractor_total?: number | null
+          created_at?: string
+          created_by?: string | null
+          difference?: number | null
+          id?: string
+          job_id: string
+          justification?: string | null
+          missing_items?: Json | null
+          notes?: string | null
+          pricing_differences?: Json | null
+          quantity_differences?: Json | null
+          response_date?: string | null
+          scope_differences?: Json | null
+          status?: string | null
+          submitted_date?: string | null
+          supplement_number?: number | null
+          updated_at?: string
+        }
+        Update: {
+          approved_amount?: number | null
+          carrier_estimate_url?: string | null
+          carrier_total?: number | null
+          company_id?: string | null
+          contractor_estimate_url?: string | null
+          contractor_total?: number | null
+          created_at?: string
+          created_by?: string | null
+          difference?: number | null
+          id?: string
+          job_id?: string
+          justification?: string | null
+          missing_items?: Json | null
+          notes?: string | null
+          pricing_differences?: Json | null
+          quantity_differences?: Json | null
+          response_date?: string | null
+          scope_differences?: Json | null
+          status?: string | null
+          submitted_date?: string | null
+          supplement_number?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplements_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
         ]
