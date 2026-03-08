@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
-import { T, JOBS, TEAM_MEMBERS, ROLES, JOB_STAGES, stageInfo, stageColor, type Job, type TeamMember } from "@/lib/recon-data";
+import { T, ROLES, JOB_STAGES, stageInfo, stageColor } from "@/lib/recon-data";
+import { useJobs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
 import { Badge, ReconCard as Card, Btn, Ic } from "@/components/recon/ReconUI";
 import { UserAvatar } from "@/components/recon/MessagingPage";
 import { toast } from "@/hooks/use-toast";

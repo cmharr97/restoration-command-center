@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { T, NAV, TEAM_MEMBERS } from "@/lib/recon-data";
+import { T, NAV } from "@/lib/recon-data";
 import { ReconSidebar, TopBar } from "@/components/recon/ReconLayout";
 import { DashboardPage } from "@/components/recon/DashboardPage";
 import { JobsPage } from "@/components/recon/JobsPage";

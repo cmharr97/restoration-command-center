@@ -1,21 +1,23 @@
 import { useState } from "react";
-import { T, JOBS, TEAM_MEMBERS, JOB_STAGES, stageInfo, LOSS_TYPES, DRYING_LOGS } from "@/lib/recon-data";
+import { T, JOB_STAGES, stageInfo, LOSS_TYPES } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Inp } from "@/components/recon/ReconUI";
 import { toast } from "@/hooks/use-toast";
+import { useJobs, useDryingLogs, useTeamMembers } from "@/hooks/useJobs";
 
 export const CustomerPortalPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState("sarah.martinez@email.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [activeTab, setActiveTab] = useState("status");
   const [msgText, setMsgText] = useState("");
 
-  // Simulated customer — linked to J-1051
-  const job = JOBS.find(j => j.id === "J-1051")!;
-  const pm = TEAM_MEMBERS.find(m => m.name === job.pm);
-  const stage = stageInfo(job.stage);
-  const stageIdx = JOB_STAGES.findIndex(s => s.id === job.stage);
-  const logs = DRYING_LOGS[job.id] || [];
+  const { jobs } = useJobs();
+  const job = jobs[0]; // Show first job for customer portal demo
+  const { logs } = useDryingLogs(job?.id);
+  const { members } = useTeamMembers();
+  const pm = job?.pm_name ? members.find(m => m.name === job.pm_name) : null;
+  const stage = job ? stageInfo(job.stage) : stageInfo("lead");
+  const stageIdx = job ? JOB_STAGES.findIndex(s => s.id === job.stage) : 0;
 
   if (!isLoggedIn) {
     return (
