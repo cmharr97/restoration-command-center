@@ -119,8 +119,8 @@ export const TopBar = ({ pageTitle, role, onNewJob, onRoleChange, onSignOut, onM
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {/* Theme toggle */}
-        <button onClick={toggleTheme} title={isDark ? "Switch to light mode" : "Switch to dark mode"} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 8px", cursor: "pointer", color: T.muted, display: "flex", alignItems: "center", fontSize: 15 }}>
-          {isDark ? "☀️" : "🌙"}
+        <button onClick={toggleTheme} title={isDark ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, display: "flex", alignItems: "center", padding: 6 }}>
+          {isDark ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <select value={role} onChange={e => onRoleChange(e.target.value)} className="hide-mobile" style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer", outline: "none" }}>
           {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
