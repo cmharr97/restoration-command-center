@@ -35,7 +35,7 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
       }}>
         <div style={{ padding: "18px 18px 14px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10, justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Logo size={34}/>
+            <Logo size={46}/>
             <div>
               <div style={{ fontWeight: 800, fontSize: 15, color: T.white, letterSpacing: "-0.02em" }}>ReCon</div>
               <div style={{ fontSize: 9, color: T.orange, fontWeight: 700, letterSpacing: "0.18em", marginTop: -2 }}>PRO</div>
