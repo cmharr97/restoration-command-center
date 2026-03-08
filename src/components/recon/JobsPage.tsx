@@ -8,6 +8,7 @@ const JobCard = ({ job, onClick }: { job: DbJob; onClick: () => void }) => {
   const sc = stageColor[job.stage] || "gray";
   const isWater = job.loss_type === "water";
   const isActive = ["mitigation", "reconstruction"].includes(job.stage);
+  const isInsurance = job.payment_type === "insurance";
   return (
     <div onClick={onClick} style={{ background: T.surface, border: `1px solid ${isActive ? T.orange + "40" : T.border}`, borderRadius: 10, padding: "14px 16px", cursor: "pointer", transition: "all 0.15s", marginBottom: 8 }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = T.borderMid; (e.currentTarget as HTMLDivElement).style.background = T.surfaceHigh; }}
@@ -17,6 +18,7 @@ const JobCard = ({ job, onClick }: { job: DbJob; onClick: () => void }) => {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 2 }}>
             <span style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: T.orange }}>{job.id}</span>
+            <Badge color={isInsurance ? "orange" : "green"} small>{isInsurance ? "INS" : "SELF PAY"}</Badge>
             {job.priority === "high" && <span style={{ fontSize: 9, fontWeight: 700, color: T.redBright, background: T.redDim, border: `1px solid ${T.redBright}33`, borderRadius: 4, padding: "1px 5px", textTransform: "uppercase", letterSpacing: "0.05em" }}>URGENT</span>}
           </div>
           <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>{job.customer}</div>
@@ -25,7 +27,7 @@ const JobCard = ({ job, onClick }: { job: DbJob; onClick: () => void }) => {
         <Badge color={sc} dot small>{stage.label}</Badge>
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {job.carrier && <span style={{ fontSize: 11, color: T.muted }}>📋 {job.carrier}</span>}
+        {isInsurance && job.carrier && <span style={{ fontSize: 11, color: T.muted }}>📋 {job.carrier}</span>}
         {isWater && job.day_of_drying && <span style={{ fontSize: 11, color: T.yellowBright }}>💧 Day {job.day_of_drying}</span>}
         {(job.moisture_alerts || 0) > 0 && <span style={{ fontSize: 11, color: T.redBright }}>⚠ {job.moisture_alerts} alerts</span>}
         {job.contract_value && <span style={{ fontSize: 11, color: T.greenBright, fontWeight: 600 }}>${job.contract_value.toLocaleString()}</span>}

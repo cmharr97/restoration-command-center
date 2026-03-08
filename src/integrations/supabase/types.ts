@@ -353,6 +353,7 @@ export type Database = {
         Row: {
           address: string
           adjuster: string | null
+          adjuster_email: string | null
           adjuster_phone: string | null
           carrier: string | null
           claim_no: string | null
@@ -370,6 +371,7 @@ export type Database = {
           moisture_alerts: number | null
           mortgage_company: string | null
           notes: string | null
+          payment_type: string
           phone: string | null
           pm_id: string | null
           pm_name: string | null
@@ -383,6 +385,7 @@ export type Database = {
         Insert: {
           address?: string
           adjuster?: string | null
+          adjuster_email?: string | null
           adjuster_phone?: string | null
           carrier?: string | null
           claim_no?: string | null
@@ -400,6 +403,7 @@ export type Database = {
           moisture_alerts?: number | null
           mortgage_company?: string | null
           notes?: string | null
+          payment_type?: string
           phone?: string | null
           pm_id?: string | null
           pm_name?: string | null
@@ -413,6 +417,7 @@ export type Database = {
         Update: {
           address?: string
           adjuster?: string | null
+          adjuster_email?: string | null
           adjuster_phone?: string | null
           carrier?: string | null
           claim_no?: string | null
@@ -430,6 +435,7 @@ export type Database = {
           moisture_alerts?: number | null
           mortgage_company?: string | null
           notes?: string | null
+          payment_type?: string
           phone?: string | null
           pm_id?: string | null
           pm_name?: string | null

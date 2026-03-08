@@ -62,7 +62,7 @@ const Index = () => {
     reports: "Reports & Analytics", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs",
     job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages",
     automations: "Automations", customer_portal: "Customer Portal",
-    claims: "Claims", supplements: "Supplements", payments: "Payments",
+    claims: "Insurance Jobs", supplements: "Supplements", payments: "Payments",
   };
 
   const pages: Record<string, React.ReactNode> = {

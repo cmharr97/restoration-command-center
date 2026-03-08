@@ -11,20 +11,20 @@ interface ClaimsPageProps {
 
 export const ClaimsPage = ({ role, setSelectedJob, setActive }: ClaimsPageProps) => {
   const { jobs, loading: jobsLoading } = useJobs();
-  const { claims, loading: claimsLoading } = useClaims();
   const [filter, setFilter] = useState("all");
 
-  const jobsWithClaims = jobs.filter(j => j.carrier && j.claim_no);
+  // Only show insurance jobs — this is an insurance jobs overview dashboard
+  const insuranceJobs = jobs.filter(j => j.payment_type === "insurance");
 
   const statusCategories = [
-    { id: "all", label: "All Claims", count: jobsWithClaims.length },
-    { id: "pending", label: "Awaiting Response", count: jobsWithClaims.filter(j => ["estimate_submitted", "supplement", "carrier_approval"].includes(j.stage)).length },
-    { id: "approved", label: "Approved", count: jobsWithClaims.filter(j => ["recon_scheduled", "reconstruction"].includes(j.stage)).length },
-    { id: "supplement", label: "Supplement Needed", count: jobsWithClaims.filter(j => j.stage === "supplement").length },
-    { id: "invoiced", label: "Invoiced", count: jobsWithClaims.filter(j => j.stage === "invoiced").length },
+    { id: "all", label: "All Insurance Jobs", count: insuranceJobs.length },
+    { id: "pending", label: "Awaiting Response", count: insuranceJobs.filter(j => ["estimate_submitted", "supplement", "carrier_approval"].includes(j.stage)).length },
+    { id: "approved", label: "Approved", count: insuranceJobs.filter(j => ["recon_scheduled", "reconstruction"].includes(j.stage)).length },
+    { id: "supplement", label: "Supplement Needed", count: insuranceJobs.filter(j => j.stage === "supplement").length },
+    { id: "invoiced", label: "Invoiced", count: insuranceJobs.filter(j => j.stage === "invoiced").length },
   ];
 
-  const filtered = filter === "all" ? jobsWithClaims : jobsWithClaims.filter(j => {
+  const filtered = filter === "all" ? insuranceJobs : insuranceJobs.filter(j => {
     if (filter === "pending") return ["estimate_submitted", "supplement", "carrier_approval"].includes(j.stage);
     if (filter === "approved") return ["recon_scheduled", "reconstruction"].includes(j.stage);
     if (filter === "supplement") return j.stage === "supplement";
@@ -32,33 +32,33 @@ export const ClaimsPage = ({ role, setSelectedJob, setActive }: ClaimsPageProps)
     return true;
   });
 
-  if (jobsLoading) return <div style={{ padding: 40, textAlign: "center", color: T.muted }}>Loading claims...</div>;
+  if (jobsLoading) return <div style={{ padding: 40, textAlign: "center", color: T.muted }}>Loading insurance jobs...</div>;
 
   return (
     <div style={{ padding: "0 0 40px" }}>
       <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Claims</h1>
-          <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Track insurance claim status across all jobs</p>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Insurance Jobs Overview</h1>
+          <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Track claim status across all insurance jobs — this is your internal tracking dashboard</p>
         </div>
       </div>
       <div style={{ padding: "0 28px" }}>
-        {jobsWithClaims.length === 0 ? (
+        {insuranceJobs.length === 0 ? (
           <Card style={{ textAlign: "center", padding: 48 }}>
             <div style={{ width: 56, height: 56, borderRadius: 14, background: T.blueDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
               <Ic n="shield" s={28} c={T.blueBright}/>
             </div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: T.white }}>Insurance Claim Tracking</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: T.white }}>Insurance Job Tracking</div>
             <div style={{ fontSize: 13, color: T.muted, marginTop: 8, maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
-              When you add carrier and claim information to a job, ReCon Pro automatically tracks claim status, carrier responses, supplement approvals, and payment timelines.
+              When you create a job with "Insurance" as the payment type, it will appear here. Track claim status, log carrier responses, monitor supplement progress, and record insurance payments — all from within each job.
             </div>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 20, flexWrap: "wrap" }}>
-              {["Carrier Response Tracking", "Supplement Monitoring", "Payment Timeline", "Adjuster Communication"].map(f => (
+              {["Log Carrier Responses", "Monitor Supplements", "Record Payments", "Track Adjuster Communication"].map(f => (
                 <span key={f} style={{ fontSize: 11, color: T.muted, background: T.surfaceHigh, padding: "4px 10px", borderRadius: 12, border: `1px solid ${T.border}` }}>{f}</span>
               ))}
             </div>
             <div style={{ marginTop: 20 }}>
-              <Btn v="primary" icon="plus" onClick={() => setActive?.("jobs")}>Create a Job with Insurance Info</Btn>
+              <Btn v="primary" icon="plus" onClick={() => setActive?.("jobs")}>View Jobs</Btn>
             </div>
           </Card>
         ) : (
@@ -66,7 +66,7 @@ export const ClaimsPage = ({ role, setSelectedJob, setActive }: ClaimsPageProps)
             {/* Stats */}
             <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
               {[
-                { label: "Total Claims", value: jobsWithClaims.length, color: T.orange },
+                { label: "Insurance Jobs", value: insuranceJobs.length, color: T.orange },
                 { label: "Awaiting Response", value: statusCategories[1].count, color: T.yellowBright },
                 { label: "Supplements Pending", value: statusCategories[3].count, color: T.purpleBright },
                 { label: "Approved", value: statusCategories[2].count, color: T.greenBright },
@@ -106,12 +106,12 @@ export const ClaimsPage = ({ role, setSelectedJob, setActive }: ClaimsPageProps)
                   <span style={{ fontFamily: "monospace", fontSize: 12, color: T.orange, fontWeight: 700 }}>{j.id}</span>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 500, color: T.white }}>{j.customer}</div>
-                    <div style={{ fontSize: 11, color: T.muted }}>{j.carrier}</div>
+                    <div style={{ fontSize: 11, color: T.muted }}>{j.carrier || "No carrier"}</div>
                   </div>
                   <span style={{ fontSize: 12, color: T.text, fontFamily: "monospace" }}>{j.claim_no || "—"}</span>
                   <Badge color={stageColor[j.stage] || "gray"} small dot>{stageInfo(j.stage).label}</Badge>
                   <span style={{ fontSize: 12, color: T.greenBright, fontWeight: 600 }}>{j.contract_value ? `$${j.contract_value.toLocaleString()}` : "—"}</span>
-                  <Btn v="secondary" sz="sm">View</Btn>
+                  <Btn v="secondary" sz="sm" onClick={() => { setSelectedJob?.(j); setActive?.("job_detail"); }}>View Job</Btn>
                 </div>
               ))}
             </div>

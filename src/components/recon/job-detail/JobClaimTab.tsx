@@ -11,34 +11,88 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
   const { claims, loading } = useClaims(job.id);
   const claim = claims[0]; // primary claim
 
-  if (loading) return <div style={{ textAlign: "center", padding: 40, color: T.muted }}>Loading claim data...</div>;
+  if (loading) return <div style={{ textAlign: "center", padding: 40, color: T.muted }}>Loading claim tracking data...</div>;
+
+  // Insurance info from the job itself
+  const insuranceInfo = [
+    { label: "Carrier", value: job.carrier || "Not recorded" },
+    { label: "Claim #", value: job.claim_no || "Not recorded" },
+    { label: "Adjuster", value: job.adjuster || "Not recorded" },
+    { label: "Adjuster Phone", value: job.adjuster_phone || "N/A" },
+    { label: "Adjuster Email", value: job.adjuster_email || "N/A" },
+    { label: "Mortgage Co.", value: job.mortgage_company || "N/A" },
+    { label: "Date of Loss", value: job.date_of_loss || "Not recorded" },
+  ];
 
   if (!claim) {
     return (
-      <div style={{ textAlign: "center", padding: 60 }}>
-        <div style={{ width: 56, height: 56, borderRadius: 16, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
-          <Ic n="shield" s={28} c={T.orange} />
-        </div>
-        <div style={{ fontWeight: 600, color: T.white, fontSize: 15, marginBottom: 6 }}>No Claim Record</div>
-        <div style={{ fontSize: 13, color: T.muted, marginBottom: 20 }}>Create a claim record to track insurance progress</div>
-        <Btn v="primary" sz="md" icon="plus">Create Claim Record</Btn>
+      <div>
+        {/* Always show insurance info from the job */}
+        <Card style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: T.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Ic n="shield" s={16} c={T.purpleBright} />
+            </div>
+            <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance & Carrier Information</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {insuranceInfo.map(({ label, value }) => (
+              <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: T.surfaceHigh, borderRadius: 6 }}>
+                <span style={{ fontSize: 12, color: T.muted }}>{label}</span>
+                <span style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{value}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card style={{ textAlign: "center", padding: 40 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
+            <Ic n="note" s={24} c={T.orange} />
+          </div>
+          <div style={{ fontWeight: 600, color: T.white, fontSize: 15, marginBottom: 6 }}>No Internal Claim Tracking Started</div>
+          <div style={{ fontSize: 13, color: T.muted, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px", lineHeight: 1.6 }}>
+            Start tracking this insurance claim internally — log carrier responses, record supplement status, track denied items, and monitor payment progress. This is your team's internal tracking system.
+          </div>
+          <Btn v="primary" sz="md" icon="plus">Start Claim Tracking</Btn>
+        </Card>
       </div>
     );
   }
 
   const timelineItems = [
-    claim.estimate_submitted_date && { date: claim.estimate_submitted_date, label: "Estimate Submitted", color: T.blueBright, icon: "est" },
-    claim.reinspection_date && { date: claim.reinspection_date, label: "Reinspection Scheduled", color: T.purpleBright, icon: "cal" },
-    claim.carrier_response_status === "approved" && { date: "—", label: "Carrier Approved", color: T.greenBright, icon: "check" },
-    claim.carrier_response_status === "denied" && { date: "—", label: "Carrier Denied", color: T.redBright, icon: "x" },
-  ].filter(Boolean) as { date: string; label: string; color: string; icon: string }[];
+    claim.estimate_submitted_date && { date: claim.estimate_submitted_date, label: "Estimate Submitted", color: T.blueBright },
+    claim.reinspection_date && { date: claim.reinspection_date, label: "Reinspection Scheduled", color: T.purpleBright },
+    claim.carrier_response_status === "approved" && { date: "—", label: "Carrier Approved (logged)", color: T.greenBright },
+    claim.carrier_response_status === "denied" && { date: "—", label: "Carrier Denied (logged)", color: T.redBright },
+  ].filter(Boolean) as { date: string; label: string; color: string }[];
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-      {/* Status Overview */}
+      {/* Insurance Info from Job */}
+      <Card style={{ gridColumn: "1 / -1" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: T.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Ic n="shield" s={16} c={T.purpleBright} />
+          </div>
+          <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance & Carrier Information</div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+          {insuranceInfo.map(({ label, value }) => (
+            <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: T.surfaceHigh, borderRadius: 6 }}>
+              <span style={{ fontSize: 12, color: T.muted }}>{label}</span>
+              <span style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{value}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Claim Status - Internal Tracking */}
       <Card style={{ gridColumn: "1 / -1" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Claim Status</div>
+          <div>
+            <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Internal Claim Tracking</div>
+            <div style={{ fontSize: 11, color: T.dim, marginTop: 2 }}>Manual tracking — update as you communicate with the carrier</div>
+          </div>
           <Btn v="secondary" sz="sm" icon="edit">Update Status</Btn>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
@@ -58,7 +112,7 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
 
       {/* Financial Breakdown */}
       <Card>
-        <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Financial Summary</div>
+        <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Insurance Payment Tracking</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
             ["Payments Received", `$${(claim.payments_received || 0).toLocaleString()}`, T.greenBright],
@@ -75,9 +129,9 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
 
       {/* Claim Timeline */}
       <Card>
-        <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Claim Timeline</div>
+        <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Tracking Timeline</div>
         {timelineItems.length === 0 ? (
-          <div style={{ fontSize: 12, color: T.dim, padding: "12px 0" }}>No timeline events yet</div>
+          <div style={{ fontSize: 12, color: T.dim, padding: "12px 0" }}>No timeline events logged yet</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {timelineItems.map((item, i) => (
@@ -101,23 +155,23 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
         <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Denied Items & Pending Approvals</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: T.redBright, marginBottom: 8 }}>Denied Items</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.redBright, marginBottom: 8 }}>Denied Items (logged)</div>
             {Array.isArray(claim.denied_items) && (claim.denied_items as any[]).length > 0 ? (
               (claim.denied_items as any[]).map((item: any, i: number) => (
                 <div key={i} style={{ fontSize: 12, color: T.text, padding: "6px 10px", background: T.redDim, borderRadius: 6, marginBottom: 4, border: `1px solid ${T.redBright}22` }}>{typeof item === "string" ? item : JSON.stringify(item)}</div>
               ))
             ) : (
-              <div style={{ fontSize: 12, color: T.dim }}>No denied items</div>
+              <div style={{ fontSize: 12, color: T.dim }}>No denied items logged</div>
             )}
           </div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: T.yellowBright, marginBottom: 8 }}>Pending Approvals</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.yellowBright, marginBottom: 8 }}>Pending Approvals (logged)</div>
             {Array.isArray(claim.pending_approvals) && (claim.pending_approvals as any[]).length > 0 ? (
               (claim.pending_approvals as any[]).map((item: any, i: number) => (
                 <div key={i} style={{ fontSize: 12, color: T.text, padding: "6px 10px", background: T.yellowDim, borderRadius: 6, marginBottom: 4, border: `1px solid ${T.yellowBright}22` }}>{typeof item === "string" ? item : JSON.stringify(item)}</div>
               ))
             ) : (
-              <div style={{ fontSize: 12, color: T.dim }}>No pending approvals</div>
+              <div style={{ fontSize: 12, color: T.dim }}>No pending approvals logged</div>
             )}
           </div>
         </div>
@@ -126,7 +180,7 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
       {/* Notes */}
       {claim.notes && (
         <Card style={{ gridColumn: "1 / -1" }}>
-          <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 8 }}>Claim Notes</div>
+          <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 8 }}>Internal Claim Notes</div>
           <div style={{ fontSize: 13, color: T.text, lineHeight: 1.6 }}>{claim.notes}</div>
         </Card>
       )}

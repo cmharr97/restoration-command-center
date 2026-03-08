@@ -17,6 +17,7 @@ export interface DbJob {
   claim_no: string | null;
   adjuster: string | null;
   adjuster_phone: string | null;
+  adjuster_email: string | null;
   date_of_loss: string | null;
   contract_value: number | null;
   mitigation_value: number | null;
@@ -32,6 +33,7 @@ export interface DbJob {
   company_id: string | null;
   mortgage_company: string | null;
   scope_notes: string | null;
+  payment_type: string;
 }
 
 export interface NewJobData {
@@ -40,10 +42,12 @@ export interface NewJobData {
   phone?: string;
   loss_type: string;
   loss_subtype?: string;
+  payment_type: string;
   carrier?: string;
   claim_no?: string;
   adjuster?: string;
   adjuster_phone?: string;
+  adjuster_email?: string;
   date_of_loss?: string;
   pm_name?: string;
   priority?: string;
@@ -81,6 +85,7 @@ export const useJobs = () => {
   const createJob = async (jobData: NewJobData) => {
     if (!user) return null;
     const jobId = `J-${Date.now().toString().slice(-4)}`;
+    const isInsurance = jobData.payment_type === "insurance";
     const { data, error } = await supabase.from("jobs").insert({
       id: jobId,
       customer: jobData.customer,
@@ -89,15 +94,17 @@ export const useJobs = () => {
       loss_type: jobData.loss_type || "water",
       loss_subtype: jobData.loss_subtype || "",
       stage: "lead",
-      carrier: jobData.carrier || "",
-      claim_no: jobData.claim_no || "",
-      adjuster: jobData.adjuster || "",
-      adjuster_phone: jobData.adjuster_phone || "",
+      payment_type: jobData.payment_type || "insurance",
+      carrier: isInsurance ? (jobData.carrier || "") : "",
+      claim_no: isInsurance ? (jobData.claim_no || "") : "",
+      adjuster: isInsurance ? (jobData.adjuster || "") : "",
+      adjuster_phone: isInsurance ? (jobData.adjuster_phone || "") : "",
+      adjuster_email: isInsurance ? (jobData.adjuster_email || "") : "",
       date_of_loss: jobData.date_of_loss || null,
       pm_name: jobData.pm_name || "",
       priority: jobData.priority || "normal",
       notes: jobData.notes || "",
-      mortgage_company: jobData.mortgage_company || "",
+      mortgage_company: isInsurance ? (jobData.mortgage_company || "") : "",
       created_by: user.id,
       company_id: companyId || null,
     } as any).select().single();
