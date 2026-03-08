@@ -260,6 +260,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "customers", label: "Customers", icon: "customer" },
       { id: "calendar", label: "Schedule", icon: "cal" },
     ]},
+    { group: "Communication", items: [
+      { id: "messaging", label: "Messages", icon: "msg" },
+    ]},
     { group: "Billing", items: [
       { id: "invoices", label: "Invoices", icon: "inv" },
     ]},
