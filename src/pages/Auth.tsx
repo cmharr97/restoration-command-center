@@ -13,8 +13,8 @@ const ROLES = [
   { value: "subcontractor", label: "Subcontractor", desc: "View assigned jobs only" },
 ];
 
-const Auth = () => {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "signup"; onBack?: () => void }) => {
+  const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -65,7 +65,12 @@ const Auth = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans',sans-serif" }}>
-      <div style={{ width: 460, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px" }}>
+      <div style={{ width: 460, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px", position: "relative" }}>
+        {onBack && (
+          <button onClick={onBack} style={{ position: "absolute", top: 16, left: 16, background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+            ← Back
+          </button>
+        )}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
             <Logo size={48} />
