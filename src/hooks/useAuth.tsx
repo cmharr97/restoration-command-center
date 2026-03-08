@@ -33,14 +33,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   const fetchProfile = async (userId: string) => {
+    setProfileLoading(true);
     const { data } = await supabase
       .from("profiles")
       .select("name, role, email, avatar, company_id, onboarding_complete, phone, certs")
       .eq("id", userId)
       .single();
     if (data) setProfile(data as Profile);
+    setProfileLoading(false);
     return data as Profile | null;
   };
 
@@ -52,19 +55,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
 
       if (session?.user) {
-        setTimeout(() => fetchProfile(session.user.id), 0);
+        fetchProfile(session.user.id).then(() => setLoading(false));
       } else {
         setProfile(null);
+        setLoading(false);
       }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
+      if (session?.user) {
+        fetchProfile(session.user.id).then(() => setLoading(false));
+      } else {
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
