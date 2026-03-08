@@ -272,6 +272,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "my_jobs", label: "My Jobs", icon: "myjobs", badge: 2 },
       { id: "mitigation", label: "Drying Logs", icon: "moisture" },
       { id: "equipment", label: "Equipment", icon: "tool" },
+      { id: "messaging", label: "Messages", icon: "msg", badge: 1 },
     ]},
   ],
   subcontractor: [
