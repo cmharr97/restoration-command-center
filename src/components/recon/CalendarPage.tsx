@@ -453,7 +453,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
                 <div style={{ fontSize: 11, color: T.dim, textTransform: "uppercase", marginBottom: 6 }}>Assigned Crew</div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {selectedEvent.assignees.map(id => {
-                    const m = TEAM_MEMBERS.find(t => t.id === id);
+                    const m = members.find((t: any) => t.id === id) as TeamMember | undefined;
                     return m ? (
                       <div key={id} style={{ display: "flex", gap: 6, alignItems: "center", background: T.surfaceHigh, padding: "6px 10px", borderRadius: 6 }}>
                         <UserAvatar member={m} size={24}/>
