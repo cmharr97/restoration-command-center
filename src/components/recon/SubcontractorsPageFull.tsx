@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 export const SubcontractorsPageFull = () => {
   const { subs, loading } = useSubcontractors();
   const { jobs } = useJobs();
-  const { user } = useAuth();
+  const { user, companyId } = useAuth();
   const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
   const [filterTrade, setFilterTrade] = useState("all");
