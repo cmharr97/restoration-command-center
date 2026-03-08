@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 export const SubcontractorsPageFull = () => {
   const { subs, loading } = useSubcontractors();
   const { jobs } = useJobs();
-  const { user } = useAuth();
+  const { user, companyId } = useAuth();
   const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
   const [filterTrade, setFilterTrade] = useState("all");
@@ -34,6 +34,7 @@ export const SubcontractorsPageFull = () => {
       license_number: form.license_number,
       notes: form.notes,
       created_by: user.id,
+      company_id: companyId || null,
     } as any);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -41,7 +42,6 @@ export const SubcontractorsPageFull = () => {
       toast({ title: "Subcontractor added", description: form.name });
       setShowAdd(false);
       setForm({ name: "", company_name: "", trade: "General Labor", phone: "", email: "", license_number: "", notes: "" });
-      window.location.reload();
     }
   };
 

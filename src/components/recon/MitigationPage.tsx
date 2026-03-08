@@ -12,7 +12,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
   const { jobs, loading: jobsLoading } = useJobs();
   const { logs, loading: logsLoading } = useDryingLogs();
 
-  const waterJobs = jobs.filter(j => j.loss_type === "water" && ["mitigation", "mit_complete", "auth_signed"].includes(j.stage));
+  const waterJobs = jobs.filter(j => ["mitigation", "drying"].includes(j.stage) || (j.loss_type === "water" && j.day_of_drying && j.day_of_drying > 0));
 
   if (jobsLoading || logsLoading) {
     return <div style={{ padding: 40, textAlign: "center", color: T.muted }}>Loading drying logs...</div>;
