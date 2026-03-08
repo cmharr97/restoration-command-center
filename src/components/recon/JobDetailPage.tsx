@@ -198,7 +198,8 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
           </div>
         )}
 
-        {tab === "communication" && <JobCommunicationTab job={job} role={role}/>}
+
+        {tab === "photos" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
               <div style={{ fontWeight: 600, color: T.white }}>Photo Documentation</div>
