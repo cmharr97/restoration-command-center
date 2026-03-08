@@ -120,7 +120,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, smsDispatched: true } : e));
     const ev = events.find(e => e.id === eventId);
     if (ev) {
-      const assigneeNames = ev.assignees.map(id => TEAM_MEMBERS.find(m => m.id === id)?.name || "Unknown").join(", ");
+      const assigneeNames = ev.assignees.map(id => members.find((m: any) => m.id === id)?.name || "Unknown").join(", ");
       toast({
         title: "📱 SMS Dispatched",
         description: `Notification sent to ${assigneeNames} for "${ev.title}" on ${ev.date}`,
