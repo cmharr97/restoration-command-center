@@ -14,16 +14,298 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      automation_rules: {
+        Row: {
+          action_type: string
+          config: Json | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          enabled: boolean | null
+          id: string
+          name: string
+          trigger_type: string
+        }
+        Insert: {
+          action_type: string
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          id?: string
+          name: string
+          trigger_type: string
+        }
+        Update: {
+          action_type?: string
+          config?: Json | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          id?: string
+          name?: string
+          trigger_type?: string
+        }
+        Relationships: []
+      }
+      drying_logs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          date: string
+          day: number
+          equipment: Json | null
+          gpp: number | null
+          id: string
+          job_id: string
+          notes: string | null
+          readings: Json | null
+          rh: number | null
+          tech_name: string
+          temp: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          date: string
+          day: number
+          equipment?: Json | null
+          gpp?: number | null
+          id?: string
+          job_id: string
+          notes?: string | null
+          readings?: Json | null
+          rh?: number | null
+          tech_name: string
+          temp?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          day?: number
+          equipment?: Json | null
+          gpp?: number | null
+          id?: string
+          job_id?: string
+          notes?: string | null
+          readings?: Json | null
+          rh?: number | null
+          tech_name?: string
+          temp?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drying_logs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          address: string
+          adjuster: string | null
+          adjuster_phone: string | null
+          carrier: string | null
+          claim_no: string | null
+          contract_value: number | null
+          created_at: string
+          created_by: string | null
+          customer: string
+          date_of_loss: string | null
+          day_of_drying: number | null
+          id: string
+          loss_subtype: string | null
+          loss_type: string
+          mitigation_value: number | null
+          moisture_alerts: number | null
+          notes: string | null
+          phone: string | null
+          pm_id: string | null
+          pm_name: string | null
+          priority: string | null
+          recon: boolean | null
+          recon_value: number | null
+          stage: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string
+          adjuster?: string | null
+          adjuster_phone?: string | null
+          carrier?: string | null
+          claim_no?: string | null
+          contract_value?: number | null
+          created_at?: string
+          created_by?: string | null
+          customer: string
+          date_of_loss?: string | null
+          day_of_drying?: number | null
+          id: string
+          loss_subtype?: string | null
+          loss_type?: string
+          mitigation_value?: number | null
+          moisture_alerts?: number | null
+          notes?: string | null
+          phone?: string | null
+          pm_id?: string | null
+          pm_name?: string | null
+          priority?: string | null
+          recon?: boolean | null
+          recon_value?: number | null
+          stage?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          adjuster?: string | null
+          adjuster_phone?: string | null
+          carrier?: string | null
+          claim_no?: string | null
+          contract_value?: number | null
+          created_at?: string
+          created_by?: string | null
+          customer?: string
+          date_of_loss?: string | null
+          day_of_drying?: number | null
+          id?: string
+          loss_subtype?: string | null
+          loss_type?: string
+          mitigation_value?: number | null
+          moisture_alerts?: number | null
+          notes?: string | null
+          phone?: string | null
+          pm_id?: string | null
+          pm_name?: string | null
+          priority?: string | null
+          recon?: boolean | null
+          recon_value?: number | null
+          stage?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_pm_id_fkey"
+            columns: ["pm_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          attachments: Json | null
+          channel_id: string
+          created_at: string
+          id: string
+          mentions: string[] | null
+          sender_id: string
+          sender_name: string
+          text: string
+        }
+        Insert: {
+          attachments?: Json | null
+          channel_id: string
+          created_at?: string
+          id?: string
+          mentions?: string[] | null
+          sender_id: string
+          sender_name: string
+          text: string
+        }
+        Update: {
+          attachments?: Json | null
+          channel_id?: string
+          created_at?: string
+          id?: string
+          mentions?: string[] | null
+          sender_id?: string
+          sender_name?: string
+          text?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar: string | null
+          certs: string[] | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          status: string | null
+        }
+        Insert: {
+          avatar?: string | null
+          certs?: string[] | null
+          created_at?: string
+          email: string
+          id: string
+          name: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string | null
+        }
+        Update: {
+          avatar?: string | null
+          certs?: string[] | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "owner"
+        | "project_manager"
+        | "estimator"
+        | "office_admin"
+        | "field_tech"
+        | "subcontractor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +432,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "owner",
+        "project_manager",
+        "estimator",
+        "office_admin",
+        "field_tech",
+        "subcontractor",
+      ],
+    },
   },
 } as const
