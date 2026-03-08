@@ -278,6 +278,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
   subcontractor: [
     { group: "My Work", items: [
       { id: "my_jobs", label: "My Jobs", icon: "myjobs" },
+      { id: "messaging", label: "Messages", icon: "msg" },
     ]},
   ],
 };
