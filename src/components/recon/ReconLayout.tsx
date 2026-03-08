@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { T, ROLES, NAV, TEAM_MEMBERS, type TeamMember } from "@/lib/recon-data";
+import { T, ROLES, NAV } from "@/lib/recon-data";
+
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  email: string;
+  avatar: string;
+  [key: string]: any;
+}
 import { Ic, Logo, Btn } from "@/components/recon/ReconUI";
 import { useTheme } from "@/hooks/useTheme";
 import { Sun, Moon } from "lucide-react";

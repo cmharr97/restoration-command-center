@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { T, ROLES, JOB_STAGES, LOSS_TYPES, DRYING_LOGS, TEAM_MEMBERS, stageInfo, stageColor, type Job } from "@/lib/recon-data";
+import { T, ROLES, JOB_STAGES, LOSS_TYPES, stageInfo, stageColor } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Divider } from "@/components/recon/ReconUI";
 import { UserAvatar } from "@/components/recon/MessagingPage";
+import { useDryingLogs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
 
 interface JobDetailProps {
-  job: Job;
+  job: DbJob;
   role: string;
   setActive: (id: string) => void;
 }
@@ -13,9 +14,10 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
   const [tab, setTab] = useState("overview");
   const rm = ROLES[role];
   const stage = stageInfo(job.stage);
-  const logs = DRYING_LOGS[job.id] || [];
+  const { logs } = useDryingLogs(job.id);
+  const { members } = useTeamMembers();
   const tabs = ["overview", "contacts", "drying_log", "communication", "documents", "photos", "timeline", "notes"];
-  const isWater = job.lossType === "water";
+  const isWater = job.loss_type === "water";
 
   return (
     <div style={{ padding: "0 0 40px" }}>

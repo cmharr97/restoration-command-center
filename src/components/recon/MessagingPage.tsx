@@ -1,5 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-import { T, TEAM_MEMBERS, JOBS, ROLES, type TeamMember } from "@/lib/recon-data";
+import { T, ROLES } from "@/lib/recon-data";
+import { useTeamMembers, useJobs } from "@/hooks/useJobs";
+
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  status?: string;
+  profilePic?: string;
+}
 import { ReconCard as Card, Btn, Ic, Inp } from "@/components/recon/ReconUI";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/recon/ReconUI";

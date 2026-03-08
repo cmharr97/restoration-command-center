@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from "react";
-import { T, JOBS, type Job } from "@/lib/recon-data";
+import { T } from "@/lib/recon-data";
 import { Btn, Ic, ReconCard as Card } from "@/components/recon/ReconUI";
+import { useJobs } from "@/hooks/useJobs";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
 
 const QUICK_ACTIONS = [
-  { label: "Summarize J-1051", action: "summarize", prompt: "Summarize all activity on job J-1051 Martinez water damage", jobId: "J-1051" },
-  { label: "Draft Carrier Email", action: "draft_email", prompt: "Draft an email to State Farm adjuster Tom Hendricks requesting supplement approval for hardwood replacement on J-1051", jobId: "J-1051" },
-  { label: "Missing Docs Check", action: "missing_docs", prompt: "What documentation is missing across all active jobs?", jobId: null },
+  { label: "Summarize active jobs", action: "summarize", prompt: "Summarize all active jobs and their current status", jobId: null },
+  { label: "Draft Carrier Email", action: "draft_email", prompt: "Draft a professional email to an insurance adjuster requesting supplement approval", jobId: null },
+  { label: "Missing Docs Check", action: "missing_docs", prompt: "What documentation is typically missing on active restoration jobs?", jobId: null },
   { label: "Margin Analysis", action: "summarize", prompt: "Analyze the projected profit margins across all current jobs and flag any concerns", jobId: null },
 ];
 
@@ -17,6 +18,7 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { jobs } = useJobs();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +27,7 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
   }, [messages]);
 
   const streamChat = async (userMessages: Msg[], action?: string, jobId?: string | null) => {
-    const jobData = jobId ? JOBS.find(j => j.id === jobId) : JOBS.filter(j => !["paid"].includes(j.stage));
+    const jobData = jobId ? jobs.find(j => j.id === jobId) : jobs.filter(j => !["paid"].includes(j.stage));
 
     const resp = await fetch(CHAT_URL, {
       method: "POST",

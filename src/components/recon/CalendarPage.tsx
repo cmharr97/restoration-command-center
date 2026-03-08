@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
-import { T, JOBS, TEAM_MEMBERS, ROLES, JOB_STAGES, stageInfo, stageColor, type Job, type TeamMember } from "@/lib/recon-data";
+import { T, ROLES, JOB_STAGES, stageInfo, stageColor } from "@/lib/recon-data";
+import { useJobs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
 import { Badge, ReconCard as Card, Btn, Ic } from "@/components/recon/ReconUI";
 import { UserAvatar } from "@/components/recon/MessagingPage";
 import { toast } from "@/hooks/use-toast";
@@ -53,20 +54,33 @@ const getWeekDates = (base: Date) => {
 };
 
 // ── MAIN COMPONENT ──
+// Define local TeamMember type  
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  email?: string;
+  avatar?: string;
+  status?: string;
+  profilePic?: string;
+}
+
 export const CalendarPage = ({ role }: { role: string }) => {
-  const [events, setEvents] = useState<ScheduleEvent[]>(INITIAL_EVENTS);
+  const [events, setEvents] = useState<ScheduleEvent[]>([]);
   const [view, setView] = useState<"week" | "day" | "crew">("week");
-  const [baseDate, setBaseDate] = useState(new Date(2026, 2, 8)); // Mar 8, 2026
+  const [baseDate, setBaseDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
   const [dragEvent, setDragEvent] = useState<string | null>(null);
   const [showNewEvent, setShowNewEvent] = useState(false);
   const [filterCrew, setFilterCrew] = useState<string | null>(null);
+  const { jobs } = useJobs();
+  const { members } = useTeamMembers();
 
   const weekDates = getWeekDates(baseDate);
-  const isToday = (d: Date) => dateStr(d) === "2026-03-08";
+  const isToday = (d: Date) => dateStr(d) === dateStr(new Date());
   const rm = ROLES[role];
 
-  const crewMembers = TEAM_MEMBERS.filter(m => ["field_tech", "project_manager", "estimator"].includes(m.role));
+  const crewMembers = members.filter((m: any) => ["field_tech", "project_manager", "estimator"].includes(m.role));
 
   const navigateWeek = (dir: number) => {
     const d = new Date(baseDate);
@@ -106,7 +120,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, smsDispatched: true } : e));
     const ev = events.find(e => e.id === eventId);
     if (ev) {
-      const assigneeNames = ev.assignees.map(id => TEAM_MEMBERS.find(m => m.id === id)?.name || "Unknown").join(", ");
+      const assigneeNames = ev.assignees.map(id => members.find((m: any) => m.id === id)?.name || "Unknown").join(", ");
       toast({
         title: "📱 SMS Dispatched",
         description: `Notification sent to ${assigneeNames} for "${ev.title}" on ${ev.date}`,
@@ -142,8 +156,8 @@ export const CalendarPage = ({ role }: { role: string }) => {
   // ── EVENT CARD ──
   const EventCard = ({ ev, compact = false }: { ev: ScheduleEvent; compact?: boolean }) => {
     const blocked = getBlockedBy(ev);
-    const job = JOBS.find(j => j.id === ev.jobId);
-    const assigneeMembers = ev.assignees.map(id => TEAM_MEMBERS.find(m => m.id === id)).filter(Boolean) as TeamMember[];
+    const job = jobs.find((j: any) => j.id === ev.jobId);
+    const assigneeMembers = ev.assignees.map(id => members.find((m: any) => m.id === id)).filter(Boolean) as TeamMember[];
 
     return (
       <div
@@ -245,7 +259,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
               {view === "day" ? `${getDayName(baseDate)}, ${getMonthDay(baseDate)}` : `${getMonthDay(weekDates[0])} – ${getMonthDay(weekDates[6])}`}
             </span>
             <Btn v="ghost" sz="sm" onClick={() => view === "day" ? navigateDay(1) : navigateWeek(1)}>▶</Btn>
-            <Btn v="secondary" sz="sm" onClick={() => setBaseDate(new Date(2026, 2, 8))}>Today</Btn>
+            <Btn v="secondary" sz="sm" onClick={() => setBaseDate(new Date())}>Today</Btn>
           </div>
           <div style={{ display: "flex", gap: 4 }}>
             <div onClick={() => setFilterCrew(null)} style={{ padding: "4px 10px", borderRadius: 14, fontSize: 10, cursor: "pointer", background: !filterCrew ? T.orangeDim : "transparent", color: !filterCrew ? T.orange : T.muted, border: `1px solid ${!filterCrew ? T.orange + "44" : "transparent"}` }}>All Crew</div>
@@ -439,7 +453,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
                 <div style={{ fontSize: 11, color: T.dim, textTransform: "uppercase", marginBottom: 6 }}>Assigned Crew</div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {selectedEvent.assignees.map(id => {
-                    const m = TEAM_MEMBERS.find(t => t.id === id);
+                    const m = members.find((t: any) => t.id === id) as TeamMember | undefined;
                     return m ? (
                       <div key={id} style={{ display: "flex", gap: 6, alignItems: "center", background: T.surfaceHigh, padding: "6px 10px", borderRadius: 6 }}>
                         <UserAvatar member={m} size={24}/>
@@ -498,7 +512,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 500, color: T.muted, display: "block", marginBottom: 4 }}>Job *</label>
                   <select style={{ width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none" }}>
-                    {JOBS.filter(j => j.stage !== "paid").map(j => <option key={j.id} value={j.id}>{j.id} – {j.customer}</option>)}
+                    {jobs.filter((j: any) => j.stage !== "paid").map((j: any) => <option key={j.id} value={j.id}>{j.id} – {j.customer}</option>)}
                   </select>
                 </div>
                 <div>
