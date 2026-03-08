@@ -444,25 +444,8 @@ export const SettingsPage = ({ role }: { role: string }) => {
   );
 };
 
-// ── SUBCONTRACTORS PAGE ──
-export const SubcontractorsPage = () => (
-  <div style={{ padding: "0 0 40px" }}>
-    <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
-      <div>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Subcontractors</h1>
-        <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Manage trade partners and compliance</p>
-      </div>
-      <Btn v="primary" sz="sm" icon="plus">Add Subcontractor</Btn>
-    </div>
-    <div style={{ padding: "0 28px" }}>
-      <Card style={{ textAlign: "center", padding: 48 }}>
-        <Ic n="truck" s={40} c={T.dim}/>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No subcontractors yet</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Add your drywall, flooring, paint, and plumbing subcontractors to track compliance and assign to jobs.</div>
-      </Card>
-    </div>
-  </div>
-);
+// ── SUBCONTRACTORS PAGE (delegates to full page) ──
+export { SubcontractorsPageFull as SubcontractorsPage } from "@/components/recon/SubcontractorsPageFull";
 
 // ── NEW JOB MODAL ──
 export const NewJobModal = ({ onClose }: { onClose: () => void }) => {
