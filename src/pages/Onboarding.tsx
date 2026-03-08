@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { T } from "@/lib/recon-data";
-import { Logo, Btn, Inp, Sel } from "@/components/recon/ReconUI";
+import { Logo, Btn, Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
-const STEPS = ["Company Info", "Services", "Your Info"];
+const STEPS = ["Get Started", "Company Info", "Services", "Your Info"];
 
 const SERVICE_OPTIONS = [
   "Water Damage Restoration",
@@ -16,25 +16,18 @@ const SERVICE_OPTIONS = [
   "Contents Restoration",
   "Reconstruction",
   "Commercial Restoration",
-  "Carpet & Upholstery Cleaning",
 ];
 
 const Onboarding = () => {
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const { toast } = useToast();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [workspaceMode, setWorkspaceMode] = useState<"blank" | "demo" | null>(null);
 
   const [company, setCompany] = useState({
-    name: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    phone: "",
-    email: "",
-    website: "",
-    license_number: "",
+    name: "", address: "", city: "", state: "", zip: "",
+    phone: "", email: "", website: "", license_number: "",
   });
 
   const [services, setServices] = useState<string[]>([]);
@@ -42,9 +35,7 @@ const Onboarding = () => {
   const [teamSize, setTeamSize] = useState("");
 
   const [ownerInfo, setOwnerInfo] = useState({
-    name: "",
-    phone: "",
-    certs: "",
+    name: "", phone: "", certs: "",
   });
 
   const toggleService = (s: string) => {
@@ -52,9 +43,10 @@ const Onboarding = () => {
   };
 
   const canProceed = () => {
-    if (step === 0) return company.name.trim() && company.phone.trim();
-    if (step === 1) return services.length > 0;
-    if (step === 2) return ownerInfo.name.trim();
+    if (step === 0) return workspaceMode !== null;
+    if (step === 1) return company.name.trim() && company.phone.trim();
+    if (step === 2) return services.length > 0;
+    if (step === 3) return ownerInfo.name.trim();
     return true;
   };
 
@@ -62,7 +54,6 @@ const Onboarding = () => {
     if (!user) return;
     setSaving(true);
     try {
-      // Create company
       const { data: companyData, error: companyError } = await supabase
         .from("companies")
         .insert({
@@ -85,7 +76,6 @@ const Onboarding = () => {
 
       if (companyError) throw companyError;
 
-      // Update profile with company info and mark onboarding complete
       const certsArray = ownerInfo.certs
         .split(",")
         .map(c => c.trim())
@@ -104,8 +94,13 @@ const Onboarding = () => {
 
       if (profileError) throw profileError;
 
-      toast({ title: "Welcome to ReCon Pro!", description: `${company.name} is all set up.` });
-      // Force reload to pick up new profile state
+      // Seed demo data if requested
+      if (workspaceMode === "demo") {
+        await seedDemoData(companyData.id, user.id);
+      }
+
+      toast({ title: "Welcome to ReCon Pro!", description: `${company.name} is ready.` });
+      await refreshProfile();
       window.location.reload();
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -115,21 +110,14 @@ const Onboarding = () => {
   };
 
   const inputStyle: React.CSSProperties = {
-    width: "100%",
-    background: T.surfaceHigh,
-    border: `1px solid ${T.border}`,
-    borderRadius: 8,
-    padding: "11px 14px",
-    color: T.text,
-    fontSize: 14,
-    fontFamily: "'DM Sans',sans-serif",
-    outline: "none",
-    boxSizing: "border-box",
+    width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`,
+    borderRadius: 8, padding: "11px 14px", color: T.text, fontSize: 14,
+    fontFamily: "'DM Sans',sans-serif", outline: "none", boxSizing: "border-box",
   };
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans',sans-serif" }}>
-      <div style={{ width: 560, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px", maxHeight: "90vh", overflowY: "auto" }}>
+      <div style={{ width: 580, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px", maxHeight: "90vh", overflowY: "auto" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
@@ -143,18 +131,43 @@ const Onboarding = () => {
         <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
           {STEPS.map((s, i) => (
             <div key={i} style={{ flex: 1, textAlign: "center" }}>
-              <div style={{
-                height: 4, borderRadius: 2, marginBottom: 6,
-                background: i <= step ? T.orange : T.surfaceHigh,
-                transition: "background 0.3s",
-              }} />
+              <div style={{ height: 4, borderRadius: 2, marginBottom: 6, background: i <= step ? T.orange : T.surfaceHigh, transition: "background 0.3s" }} />
               <span style={{ fontSize: 10, color: i <= step ? T.orange : T.dim, fontWeight: i === step ? 700 : 400 }}>{s}</span>
             </div>
           ))}
         </div>
 
-        {/* Step 0: Company Info */}
+        {/* Step 0: Choose workspace mode */}
         {step === 0 && (
+          <div>
+            <p style={{ fontSize: 14, color: T.text, marginBottom: 20, marginTop: 0, textAlign: "center" }}>How would you like to start?</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div onClick={() => setWorkspaceMode("blank")} style={{
+                padding: "28px 20px", borderRadius: 12, cursor: "pointer", textAlign: "center",
+                border: `2px solid ${workspaceMode === "blank" ? T.orange : T.border}`,
+                background: workspaceMode === "blank" ? T.orangeDim : T.surfaceHigh,
+                transition: "all 0.2s",
+              }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>🏗️</div>
+                <div style={{ fontWeight: 700, color: T.white, fontSize: 15, marginBottom: 6 }}>Blank Workspace</div>
+                <div style={{ fontSize: 12, color: T.muted, lineHeight: 1.5 }}>Start fresh with an empty company. Add your own jobs, team, and data from scratch.</div>
+              </div>
+              <div onClick={() => setWorkspaceMode("demo")} style={{
+                padding: "28px 20px", borderRadius: 12, cursor: "pointer", textAlign: "center",
+                border: `2px solid ${workspaceMode === "demo" ? T.orange : T.border}`,
+                background: workspaceMode === "demo" ? T.orangeDim : T.surfaceHigh,
+                transition: "all 0.2s",
+              }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>🎯</div>
+                <div style={{ fontWeight: 700, color: T.white, fontSize: 15, marginBottom: 6 }}>Explore with Demo Data</div>
+                <div style={{ fontSize: 12, color: T.muted, lineHeight: 1.5 }}>See ReCon Pro in action with sample jobs, claims, and drying logs. You can delete demo data anytime.</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 1: Company Info */}
+        {step === 1 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
               <label style={{ fontSize: 12, fontWeight: 500, color: T.muted, display: "block", marginBottom: 5 }}>Company Name *</label>
@@ -190,7 +203,7 @@ const Onboarding = () => {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 500, color: T.muted, display: "block", marginBottom: 5 }}>State Contractor License #</label>
+                <label style={{ fontSize: 12, fontWeight: 500, color: T.muted, display: "block", marginBottom: 5 }}>License #</label>
                 <input value={company.license_number} onChange={e => setCompany(p => ({ ...p, license_number: e.target.value }))} placeholder="License number" style={inputStyle} />
               </div>
               <div>
@@ -201,27 +214,26 @@ const Onboarding = () => {
           </div>
         )}
 
-        {/* Step 1: Services */}
-        {step === 1 && (
+        {/* Step 2: Services */}
+        {step === 2 && (
           <div>
             <p style={{ fontSize: 13, color: T.muted, marginBottom: 16, marginTop: 0 }}>Select the services your company offers:</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
               {SERVICE_OPTIONS.map(s => (
                 <div key={s} onClick={() => toggleService(s)} style={{
-                  padding: "12px 16px", borderRadius: 8, cursor: "pointer",
+                  padding: "12px 14px", borderRadius: 8, cursor: "pointer",
                   border: `1px solid ${services.includes(s) ? T.orange : T.border}`,
                   background: services.includes(s) ? T.orangeDim : T.surfaceHigh,
-                  display: "flex", alignItems: "center", gap: 10,
-                  transition: "all 0.15s",
+                  display: "flex", alignItems: "center", gap: 10, transition: "all 0.15s",
                 }}>
                   <div style={{
-                    width: 20, height: 20, borderRadius: 4,
+                    width: 18, height: 18, borderRadius: 4,
                     border: `2px solid ${services.includes(s) ? T.orange : T.dim}`,
                     background: services.includes(s) ? T.orange : "transparent",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "#fff", fontSize: 12, fontWeight: 700,
+                    color: "#fff", fontSize: 11, fontWeight: 700, flexShrink: 0,
                   }}>{services.includes(s) ? "✓" : ""}</div>
-                  <span style={{ fontSize: 13, color: services.includes(s) ? T.white : T.text }}>{s}</span>
+                  <span style={{ fontSize: 12, color: services.includes(s) ? T.white : T.text }}>{s}</span>
                 </div>
               ))}
             </div>
@@ -245,8 +257,8 @@ const Onboarding = () => {
           </div>
         )}
 
-        {/* Step 2: Owner Info */}
-        {step === 2 && (
+        {/* Step 3: Owner Info */}
+        {step === 3 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <p style={{ fontSize: 13, color: T.muted, margin: "0 0 4px" }}>Tell us about yourself — the company owner:</p>
             <div>
@@ -295,5 +307,35 @@ const Onboarding = () => {
     </div>
   );
 };
+
+// Demo data seeder — creates isolated sample data for this company only
+async function seedDemoData(companyId: string, userId: string) {
+  const demoJobs = [
+    { id: `DEMO-001`, customer: "Martinez Family", address: "4521 Oak Creek Dr, Austin TX 78745", phone: "(512) 555-0201", loss_type: "water", loss_subtype: "Cat 2 – Grey", stage: "drying", carrier: "State Farm", claim_no: "SF-2026-88412", adjuster: "Lisa Chen", adjuster_phone: "(800) 555-0180", date_of_loss: "2026-03-01", pm_name: "Demo PM", priority: "high", notes: "Kitchen supply line burst under sink. Affected kitchen, hallway, and adjacent living room. Hardwood flooring throughout.", day_of_drying: 3, contract_value: 28500, mitigation_value: 8200, company_id: companyId, created_by: userId },
+    { id: `DEMO-002`, customer: "Thompson Residence", address: "782 Elm Street, Round Rock TX 78664", phone: "(512) 555-0302", loss_type: "water", loss_subtype: "Cat 1 – Clean", stage: "estimate_submitted", carrier: "Travelers", claim_no: "TR-2026-44219", adjuster: "Mark Johnson", adjuster_phone: "(800) 555-0220", date_of_loss: "2026-02-28", pm_name: "Demo PM", priority: "normal", notes: "Upstairs bathroom overflow. Affected master bedroom ceiling and walls below.", contract_value: 15800, mitigation_value: 4500, company_id: companyId, created_by: userId },
+    { id: `DEMO-003`, customer: "Cedar Park Office Complex", address: "1200 Commercial Blvd, Cedar Park TX 78613", phone: "(512) 555-0403", loss_type: "fire", loss_subtype: "Kitchen Fire", stage: "reconstruction", carrier: "Zurich", claim_no: "ZU-2026-77031", adjuster: "Sarah Williams", adjuster_phone: "(800) 555-0340", date_of_loss: "2026-02-15", pm_name: "Demo PM", priority: "normal", notes: "Commercial kitchen fire. Significant smoke damage throughout 2nd floor. Full reconstruction scope.", contract_value: 142000, mitigation_value: 12000, recon: true, recon_value: 130000, company_id: companyId, created_by: userId },
+    { id: `DEMO-004`, customer: "Williams Home", address: "3344 Sunset Ridge, Pflugerville TX 78660", phone: "(512) 555-0504", loss_type: "mold", loss_subtype: "Type 2 (med)", stage: "mitigation", carrier: "USAA", claim_no: "US-2026-55820", adjuster: "David Brown", date_of_loss: "2026-03-03", pm_name: "Demo PM", priority: "normal", notes: "Mold discovered behind master bathroom shower wall. Spread to adjacent closet. Full containment required.", contract_value: 18000, mitigation_value: 18000, company_id: companyId, created_by: userId },
+    { id: `DEMO-005`, customer: "Garcia Property", address: "9901 Lake Austin Blvd, Austin TX 78703", phone: "(512) 555-0605", loss_type: "storm", loss_subtype: "Hail", stage: "supplement", carrier: "Allstate", claim_no: "AL-2026-33147", adjuster: "Jennifer Lee", date_of_loss: "2026-02-20", pm_name: "Demo PM", priority: "normal", notes: "Hail damage to roof, siding, and gutters. Interior water intrusion in 3 rooms.", contract_value: 65000, company_id: companyId, created_by: userId },
+  ];
+
+  for (const job of demoJobs) {
+    await supabase.from("jobs").insert(job as any);
+  }
+
+  // Add demo drying logs for water job
+  await supabase.from("drying_logs").insert([
+    { job_id: "DEMO-001", day: 1, date: "2026-03-02", tech_name: "Demo Tech", temp: 76, rh: 52, gpp: 68, equipment: { dehus: 2, airMovers: 6, scrubbers: 1 }, readings: [{ room: "Kitchen", material: "Subfloor (OSB)", reading: 32, dry: 16, status: "wet" }, { room: "Hallway", material: "Drywall", reading: 24, dry: 16, status: "wet" }, { room: "Living Room", material: "Hardwood", reading: 18, dry: 12, status: "wet" }], notes: "Initial setup. 2ft flood cuts in kitchen. Containment set.", created_by: userId },
+    { job_id: "DEMO-001", day: 2, date: "2026-03-03", tech_name: "Demo Tech", temp: 78, rh: 48, gpp: 58, equipment: { dehus: 2, airMovers: 6, scrubbers: 1 }, readings: [{ room: "Kitchen", material: "Subfloor (OSB)", reading: 26, dry: 16, status: "wet" }, { room: "Hallway", material: "Drywall", reading: 19, dry: 16, status: "wet" }, { room: "Living Room", material: "Hardwood", reading: 15, dry: 12, status: "wet" }], notes: "Good progress. GPP dropping. Kitchen subfloor still elevated.", created_by: userId },
+    { job_id: "DEMO-001", day: 3, date: "2026-03-04", tech_name: "Demo Tech", temp: 79, rh: 44, gpp: 48, equipment: { dehus: 2, airMovers: 6, scrubbers: 1 }, readings: [{ room: "Kitchen", material: "Subfloor (OSB)", reading: 20, dry: 16, status: "wet" }, { room: "Hallway", material: "Drywall", reading: 15, dry: 16, status: "dry" }, { room: "Living Room", material: "Hardwood", reading: 11, dry: 12, status: "dry" }], notes: "Hallway and living room at dry standard. Kitchen subfloor still needs 1-2 more days.", created_by: userId },
+  ] as any[]);
+
+  // Add demo activity logs
+  await supabase.from("activity_logs").insert([
+    { title: "Job DEMO-001 created", description: "Water damage – Martinez Family", action_type: "status_change", job_id: "DEMO-001", user_name: "Demo Owner", company_id: companyId, user_id: userId },
+    { title: "Drying Day 3 logged", description: "GPP: 48, 2 of 3 rooms at dry standard", action_type: "note", job_id: "DEMO-001", user_name: "Demo Tech", company_id: companyId, user_id: userId },
+    { title: "Estimate submitted", description: "Xactimate estimate sent to Travelers for DEMO-002", action_type: "status_change", job_id: "DEMO-002", user_name: "Demo Owner", company_id: companyId, user_id: userId },
+    { title: "Supplement filed", description: "Missing line items identified for Garcia Property", action_type: "note", job_id: "DEMO-005", user_name: "Demo Owner", company_id: companyId, user_id: userId },
+  ] as any[]);
+}
 
 export default Onboarding;

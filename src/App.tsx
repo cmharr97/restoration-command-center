@@ -7,12 +7,13 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, profile } = useAuth();
 
   if (loading) {
     return (
@@ -23,6 +24,11 @@ const AppRoutes = () => {
   }
 
   if (!user) return <Auth />;
+
+  // Route new owners to onboarding if they haven't completed it
+  if (profile && profile.role === "owner" && !profile.onboarding_complete && !profile.company_id) {
+    return <Onboarding />;
+  }
 
   return (
     <Routes>
