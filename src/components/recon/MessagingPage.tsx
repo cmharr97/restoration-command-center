@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { T, TEAM_MEMBERS, JOBS, ROLES, type TeamMember } from "@/lib/recon-data";
 import { ReconCard as Card, Btn, Ic, Inp } from "@/components/recon/ReconUI";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/recon/ReconUI";
 
 // ── TYPES ──
