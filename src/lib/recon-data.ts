@@ -191,7 +191,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     { group: "My Work", items: [
       { id: "dashboard", label: "Dashboard", icon: "dash" },
       { id: "jobs", label: "Jobs", icon: "jobs" },
-      { id: "claims", label: "Claims", icon: "shield" },
+      { id: "claims", label: "Insurance Jobs", icon: "shield" },
       { id: "supplements", label: "Supplements", icon: "est" },
       { id: "estimates", label: "Estimates", icon: "est" },
       { id: "calendar", label: "Calendar", icon: "cal" },
