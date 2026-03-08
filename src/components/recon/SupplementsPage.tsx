@@ -6,7 +6,6 @@ import { useJobs, useSupplements } from "@/hooks/useJobs";
 export const SupplementsPage = ({ role }: { role: string }) => {
   const { jobs } = useJobs();
   const { supplements, loading } = useSupplements();
-  const [filter, setFilter] = useState("all");
 
   const statusColors: Record<string, string> = {
     draft: "gray", submitted: "yellow", under_review: "blue",
@@ -20,85 +19,85 @@ export const SupplementsPage = ({ role }: { role: string }) => {
       <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Supplements</h1>
-          <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Manage supplement submissions and carrier comparisons</p>
+          <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Compare contractor vs. carrier estimates and track approvals</p>
         </div>
-        <Btn v="primary" sz="sm" icon="plus">New Supplement</Btn>
+        {supplements.length > 0 && <Btn v="primary" sz="sm" icon="plus">New Supplement</Btn>}
       </div>
       <div style={{ padding: "0 28px" }}>
-        {/* Stats row */}
-        <div style={{ display: "flex", gap: 14, marginBottom: 18, flexWrap: "wrap" }}>
-          {[
-            { label: "Total Supplements", value: supplements.length, color: T.orange },
-            { label: "Pending Review", value: supplements.filter((s: any) => s.status === "submitted" || s.status === "under_review").length, color: T.yellowBright },
-            { label: "Approved", value: supplements.filter((s: any) => s.status === "approved").length, color: T.greenBright },
-            { label: "Total Approved $", value: `$${supplements.reduce((a: number, s: any) => a + (s.approved_amount || 0), 0).toLocaleString()}`, color: T.greenBright },
-          ].map((s, i) => (
-            <Card key={i} style={{ flex: 1, minWidth: 140 }}>
-              <div style={{ fontSize: 11, color: T.muted, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>{s.label}</div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: s.color }}>{s.value}</div>
-            </Card>
-          ))}
-        </div>
-
         {supplements.length === 0 ? (
           <Card style={{ textAlign: "center", padding: 48 }}>
-            <Ic n="est" s={40} c={T.dim}/>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No supplements yet</div>
-            <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>
-              Create a supplement from a job's claim section to compare contractor and carrier estimates.
+            <div style={{ width: 56, height: 56, borderRadius: 14, background: T.purpleDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+              <Ic n="est" s={28} c={T.purpleBright}/>
             </div>
-            <div style={{ marginTop: 16 }}>
-              <Card style={{ maxWidth: 500, margin: "0 auto", textAlign: "left", padding: 16 }}>
-                <div style={{ fontWeight: 600, color: T.white, fontSize: 13, marginBottom: 8 }}>How supplement comparison works:</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {[
-                    "Upload your contractor estimate (Xactimate or manual)",
-                    "Upload the carrier's approved estimate",
-                    "System identifies missing line items & quantity differences",
-                    "Generate supplement justification letter with AI assistance",
-                    "Track submission, response, and approval status",
-                  ].map((step, i) => (
-                    <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                      <div style={{ width: 18, height: 18, borderRadius: "50%", background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: T.orange, flexShrink: 0 }}>{i + 1}</div>
-                      <span style={{ fontSize: 12, color: T.text }}>{step}</span>
-                    </div>
-                  ))}
-                </div>
-              </Card>
+            <div style={{ fontSize: 18, fontWeight: 700, color: T.white }}>Supplement Comparison</div>
+            <div style={{ fontSize: 13, color: T.muted, marginTop: 8, maxWidth: 460, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
+              When insurance carriers approve less than your scope of work, create a supplement to identify missing items, quantity differences, and pricing gaps — then track the approval process.
+            </div>
+            <div style={{ marginTop: 20, maxWidth: 400, margin: "20px auto 0" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  { step: "1", text: "Upload your contractor estimate (Xactimate or manual)" },
+                  { step: "2", text: "Upload the carrier's approved estimate" },
+                  { step: "3", text: "System identifies missing items & pricing differences" },
+                  { step: "4", text: "Generate supplement justification and submit" },
+                  { step: "5", text: "Track carrier response and approval status" },
+                ].map(s => (
+                  <div key={s.step} style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    <div style={{ width: 22, height: 22, borderRadius: "50%", background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: T.orange, flexShrink: 0 }}>{s.step}</div>
+                    <span style={{ fontSize: 12, color: T.text }}>{s.text}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </Card>
         ) : (
-          supplements.map((supp: any) => {
-            const job = jobs.find(j => j.id === supp.job_id);
-            return (
-              <Card key={supp.id} style={{ marginBottom: 12 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 4 }}>
-                      <span style={{ fontFamily: "monospace", fontSize: 12, color: T.orange, fontWeight: 700 }}>{supp.job_id}</span>
-                      <span style={{ fontWeight: 600, color: T.white }}>{job?.customer || "Unknown"}</span>
-                      <Badge color={statusColors[supp.status] || "gray"} small>{supp.status}</Badge>
+          <>
+            <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+              {[
+                { label: "Total Supplements", value: supplements.length, color: T.orange },
+                { label: "Pending Review", value: supplements.filter((s: any) => ["submitted", "under_review"].includes(s.status)).length, color: T.yellowBright },
+                { label: "Approved", value: supplements.filter((s: any) => s.status === "approved").length, color: T.greenBright },
+                { label: "Approved Amount", value: `$${supplements.reduce((a: number, s: any) => a + (s.approved_amount || 0), 0).toLocaleString()}`, color: T.greenBright },
+              ].map((s, i) => (
+                <Card key={i} style={{ flex: 1, minWidth: 130, padding: "14px 16px" }}>
+                  <div style={{ fontSize: 10, color: T.muted, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>{s.label}</div>
+                  <div style={{ fontSize: 24, fontWeight: 800, color: s.color }}>{s.value}</div>
+                </Card>
+              ))}
+            </div>
+
+            {supplements.map((supp: any) => {
+              const job = jobs.find(j => j.id === supp.job_id);
+              return (
+                <Card key={supp.id} style={{ marginBottom: 10 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 4 }}>
+                        <span style={{ fontFamily: "monospace", fontSize: 12, color: T.orange, fontWeight: 700 }}>{supp.job_id}</span>
+                        <span style={{ fontWeight: 600, color: T.white }}>{job?.customer || "Unknown"}</span>
+                        <Badge color={statusColors[supp.status] || "gray"} small>{supp.status}</Badge>
+                      </div>
+                      <div style={{ fontSize: 12, color: T.muted }}>Supplement #{supp.supplement_number} · {job?.carrier || "No carrier"}</div>
                     </div>
-                    <div style={{ fontSize: 12, color: T.muted }}>Supplement #{supp.supplement_number} · {job?.carrier || "No carrier"}</div>
+                    <div style={{ display: "flex", gap: 14, textAlign: "right" }}>
+                      <div>
+                        <div style={{ fontSize: 10, color: T.dim, textTransform: "uppercase" }}>Contractor</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>${(supp.contractor_total || 0).toLocaleString()}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, color: T.dim, textTransform: "uppercase" }}>Carrier</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>${(supp.carrier_total || 0).toLocaleString()}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, color: T.dim, textTransform: "uppercase" }}>Difference</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: (supp.difference || 0) > 0 ? T.redBright : T.greenBright }}>${Math.abs(supp.difference || 0).toLocaleString()}</div>
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", gap: 12, textAlign: "right" }}>
-                    <div>
-                      <div style={{ fontSize: 10, color: T.dim }}>Contractor</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>${(supp.contractor_total || 0).toLocaleString()}</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 10, color: T.dim }}>Carrier</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>${(supp.carrier_total || 0).toLocaleString()}</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 10, color: T.dim }}>Difference</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: T.redBright }}>${(supp.difference || 0).toLocaleString()}</div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            );
-          })
+                </Card>
+              );
+            })}
+          </>
         )}
       </div>
     </div>
