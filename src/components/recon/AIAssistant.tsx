@@ -8,10 +8,15 @@ type Msg = { role: "user" | "assistant"; content: string };
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
 
 const QUICK_ACTIONS = [
-  { label: "Summarize active jobs", action: "summarize", prompt: "Summarize all active jobs and their current status", jobId: null },
-  { label: "Draft Carrier Email", action: "draft_email", prompt: "Draft a professional email to an insurance adjuster requesting supplement approval", jobId: null },
-  { label: "Missing Docs Check", action: "missing_docs", prompt: "What documentation is typically missing on active restoration jobs?", jobId: null },
-  { label: "Margin Analysis", action: "summarize", prompt: "Analyze the projected profit margins across all current jobs and flag any concerns", jobId: null },
+  { label: "📋 Summarize active jobs", action: "summarize", prompt: "Summarize all active jobs and their current status" },
+  { label: "✉️ Draft Adjuster Email", action: "draft_email", prompt: "Draft a professional email to an insurance adjuster requesting supplement approval" },
+  { label: "📝 Write F9 Notes", action: "f9_notes", prompt: "Help me write F9 notes for an Xactimate estimate. I'll provide the room and scope details." },
+  { label: "💰 Supplement Justification", action: "supplement", prompt: "Help me build a supplement justification for denied or missing line items" },
+  { label: "📄 Scope Explanation", action: "scope_notes", prompt: "Help me write scope explanation notes for this restoration project" },
+  { label: "🔄 Change Order Notes", action: "change_order", prompt: "Draft a change order explanation for additional discovered damage" },
+  { label: "📊 Daily Update", action: "daily_update", prompt: "Help me write today's daily field update report" },
+  { label: "⚖️ Carrier Rebuttal", action: "rebuttal", prompt: "Help me write a rebuttal to a carrier denial" },
+  { label: "🔍 Missing Docs Check", action: "missing_docs", prompt: "What documentation is typically missing on active restoration jobs?" },
 ];
 
 export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
@@ -26,8 +31,8 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const streamChat = async (userMessages: Msg[], action?: string, jobId?: string | null) => {
-    const jobData = jobId ? jobs.find(j => j.id === jobId) : jobs.filter(j => !["paid"].includes(j.stage));
+  const streamChat = async (userMessages: Msg[], action?: string) => {
+    const jobData = jobs.filter(j => !["closed"].includes(j.stage));
 
     const resp = await fetch(CHAT_URL, {
       method: "POST",
@@ -84,14 +89,14 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const send = async (text: string, action?: string, jobId?: string | null) => {
+  const send = async (text: string, action?: string) => {
     const userMsg: Msg = { role: "user", content: text };
     const newMsgs = [...messages, userMsg];
     setMessages(newMsgs);
     setInput("");
     setIsLoading(true);
     try {
-      await streamChat(newMsgs, action, jobId);
+      await streamChat(newMsgs, action);
     } catch (e: any) {
       setMessages(prev => [...prev, { role: "assistant", content: `❌ ${e.message}` }]);
     } finally {
@@ -99,13 +104,9 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const handleQuickAction = (qa: typeof QUICK_ACTIONS[0]) => {
-    send(qa.prompt, qa.action, qa.jobId);
-  };
-
   return (
     <div style={{
-      position: "fixed", right: 20, bottom: 20, width: 440, height: 600,
+      position: "fixed", right: 20, bottom: 20, width: 460, height: 640,
       background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16,
       display: "flex", flexDirection: "column", zIndex: 1000,
       boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
@@ -115,8 +116,8 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${T.orange}, #c84009)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🤖</div>
           <div>
-            <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>ReCon AI</div>
-            <div style={{ fontSize: 10, color: T.greenBright }}>● Online</div>
+            <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>ReCon AI Writer</div>
+            <div style={{ fontSize: 10, color: T.greenBright }}>● Restoration Writing Assistant</div>
           </div>
         </div>
         <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4 }}>
@@ -127,16 +128,23 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
       {/* Messages */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 18px" }}>
         {messages.length === 0 && (
-          <div style={{ textAlign: "center", padding: "30px 0" }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>🤖</div>
-            <div style={{ fontWeight: 600, color: T.white, fontSize: 14, marginBottom: 4 }}>ReCon AI Assistant</div>
-            <div style={{ fontSize: 12, color: T.muted, marginBottom: 20, lineHeight: 1.6 }}>
-              I can summarize jobs, draft carrier emails,<br />identify missing docs, and answer questions.
+          <div style={{ padding: "16px 0" }}>
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>🤖</div>
+              <div style={{ fontWeight: 700, color: T.white, fontSize: 15, marginBottom: 4 }}>ReCon AI Writer</div>
+              <div style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>
+                Restoration-specific writing assistant for F9 notes,<br />supplements, adjuster emails, and scope documentation.
+              </div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
               {QUICK_ACTIONS.map((qa, i) => (
-                <button key={i} onClick={() => handleQuickAction(qa)}
-                  style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: "9px 14px", color: T.text, fontSize: 12, cursor: "pointer", textAlign: "left", fontFamily: "'DM Sans',sans-serif", transition: "all 0.12s" }}
+                <button key={i} onClick={() => send(qa.prompt, qa.action)}
+                  style={{
+                    background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8,
+                    padding: "10px 12px", color: T.text, fontSize: 11, cursor: "pointer",
+                    textAlign: "left", fontFamily: "'DM Sans',sans-serif", transition: "all 0.12s",
+                    lineHeight: 1.4,
+                  }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = T.orange; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = T.border; }}
                 >
@@ -177,7 +185,7 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter" && input.trim() && !isLoading) send(input); }}
-            placeholder="Ask about jobs, drying, estimates..."
+            placeholder="Write F9 notes, supplements, emails..."
             style={{ flex: 1, background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 14px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
             onFocus={e => (e.target as HTMLInputElement).style.borderColor = T.orange}
             onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
