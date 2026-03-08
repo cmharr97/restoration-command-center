@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { T, NAV, TEAM_MEMBERS, type Job } from "@/lib/recon-data";
 import { ReconSidebar, TopBar } from "@/components/recon/ReconLayout";
 import { DashboardPage } from "@/components/recon/DashboardPage";
@@ -6,20 +6,50 @@ import { JobsPage } from "@/components/recon/JobsPage";
 import { JobDetailPage } from "@/components/recon/JobDetailPage";
 import { MitigationPage } from "@/components/recon/MitigationPage";
 import { MessagingPage } from "@/components/recon/MessagingPage";
+import { CalendarPage } from "@/components/recon/CalendarPage";
 import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, ReportsPage, IntegrationsPage, SettingsPage, NewJobModal } from "@/components/recon/OtherPages";
 import { Ic } from "@/components/recon/ReconUI";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [role, setRole] = useState("owner");
   const [active, setActive] = useState("dashboard");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const roleNav = NAV[role] || NAV.owner;
     const allPages = roleNav.flatMap(g => g.items.map(i => i.id));
     if (!allPages.includes(active)) { setActive(allPages[0] || "dashboard"); }
   }, [role]);
+
+  // Simulated push notifications
+  useEffect(() => {
+    // Request desktop notification permission
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+
+    const notificationMessages = [
+      { title: "💧 Drying Alert — J-1051", desc: "Laundry subfloor still above dry standard. Day 5 reading: 20%", delay: 15000 },
+      { title: "📱 SMS Confirmed", desc: "Marcus Webb confirmed dispatch for Cat 3 mobilization", delay: 30000 },
+      { title: "💬 New Message — Destiny Kim", desc: "Adjuster walkthrough at 2pm confirmed ✅", delay: 45000 },
+      { title: "⚠️ Task Overdue", desc: "J-1049 mold estimate review — no activity in 3 days", delay: 60000 },
+      { title: "📄 Supplement Approved", desc: "State Farm approved $2,400 supplement for J-1051 hardwood replacement", delay: 90000 },
+    ];
+
+    const timers = notificationMessages.map(msg =>
+      setTimeout(() => {
+        toast({ title: msg.title, description: msg.desc });
+        if ("Notification" in window && Notification.permission === "granted") {
+          try { new Notification(msg.title, { body: msg.desc, icon: "/favicon.ico" }); } catch {}
+        }
+      }, msg.delay)
+    );
+
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   const currentUser = TEAM_MEMBERS.find(m => m.role === role) || TEAM_MEMBERS[0];
   const pageTitles: Record<string, string> = { dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs", estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users", equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Referrals / CRM", reports: "Reports", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs", job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages" };
@@ -32,7 +62,7 @@ const Index = () => {
     mitigation: <MitigationPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
     estimates: <EstimatesPage role={role}/>,
     invoices: <InvoicesPage role={role}/>,
-    calendar: <div style={{ padding: 32, color: T.muted, textAlign: "center" }}><Ic n="cal" s={28} c={T.dim}/><div style={{ marginTop: 12 }}>Interactive calendar — drag & drop scheduling by crew, with SMS auto-dispatch</div></div>,
+    calendar: <CalendarPage role={role}/>,
     team: <TeamPage role={role}/>,
     equipment: <EquipmentPage/>,
     subcontractors: <div style={{ padding: 32, color: T.muted, textAlign: "center" }}><Ic n="truck" s={28} c={T.dim}/><div style={{ marginTop: 12 }}>Subcontractor management — controlled job access, W9 storage, COI tracking</div></div>,
