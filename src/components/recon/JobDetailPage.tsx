@@ -198,6 +198,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
           </div>
         )}
 
+        {tab === "communication" && <JobCommunicationTab job={job} role={role}/>}
 
         {tab === "photos" && (
           <div>
