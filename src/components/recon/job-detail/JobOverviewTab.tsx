@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { T, ROLES, JOB_STAGES, LOSS_TYPES, stageInfo, stageColor } from "@/lib/recon-data";
-import { Badge, ReconCard as Card, Btn, Ic } from "@/components/recon/ReconUI";
+import { T, ROLES, LOSS_TYPES } from "@/lib/recon-data";
+import { Badge, ReconCard as Card, Ic } from "@/components/recon/ReconUI";
 import type { DbJob } from "@/hooks/useJobs";
 
 export const JobOverviewTab = ({ job, role }: { job: DbJob; role: string }) => {
   const rm = ROLES[role];
   const lossLabel = LOSS_TYPES.find(l => l.id === job.loss_type)?.label || job.loss_type;
+  const isInsurance = job.payment_type === "insurance";
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -44,38 +44,42 @@ export const JobOverviewTab = ({ job, role }: { job: DbJob; role: string }) => {
             ["Loss Type", `${lossLabel}${job.loss_subtype ? ` – ${job.loss_subtype}` : ""}`],
             ["Date of Loss", job.date_of_loss || "TBD"],
             ["Priority", job.priority || "Normal"],
+            ["Job Type", isInsurance ? "Insurance" : "Self Pay"],
           ].map(([k, v]) => (
             <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ fontSize: 12, color: T.muted }}>{k}</span>
-              <span style={{ fontSize: 13, color: T.text, fontWeight: 500 }}>{v}</span>
+              <span style={{ fontSize: 13, color: k === "Job Type" ? (isInsurance ? T.orange : T.greenBright) : T.text, fontWeight: k === "Job Type" ? 700 : 500 }}>{v}</span>
             </div>
           ))}
         </div>
       </Card>
 
-      {/* Insurance Info */}
-      <Card>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: T.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Ic n="shield" s={16} c={T.purpleBright} />
-          </div>
-          <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance Information</div>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {[
-            ["Carrier", job.carrier || "TBD"],
-            ["Claim #", job.claim_no || "TBD"],
-            ["Adjuster", job.adjuster || "TBD"],
-            ["Adj. Phone", job.adjuster_phone || "TBD"],
-            ["Mortgage Co.", job.mortgage_company || "N/A"],
-          ].map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 12, color: T.muted }}>{k}</span>
-              <span style={{ fontSize: 13, color: T.text, fontWeight: 500 }}>{v}</span>
+      {/* Insurance Info - only for insurance jobs */}
+      {isInsurance && (
+        <Card>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: T.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Ic n="shield" s={16} c={T.purpleBright} />
             </div>
-          ))}
-        </div>
-      </Card>
+            <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance Information</div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              ["Carrier", job.carrier || "TBD"],
+              ["Claim #", job.claim_no || "TBD"],
+              ["Adjuster", job.adjuster || "TBD"],
+              ["Adj. Phone", job.adjuster_phone || "TBD"],
+              ["Adj. Email", job.adjuster_email || "N/A"],
+              ["Mortgage Co.", job.mortgage_company || "N/A"],
+            ].map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 12, color: T.muted }}>{k}</span>
+                <span style={{ fontSize: 13, color: T.text, fontWeight: 500 }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Assigned Team */}
       <Card>

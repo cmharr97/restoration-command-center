@@ -409,11 +409,14 @@ export const NewJobModal = ({ onClose }: { onClose: () => void }) => {
   const [formData, setFormData] = useState({
     customer: "", phone: "", address: "", cityStateZip: "",
     loss_type: "Water Damage", loss_subtype: "", date_of_loss: "",
-    carrier: "", claim_no: "", adjuster: "", adjuster_phone: "",
+    payment_type: "insurance" as "insurance" | "self_pay",
+    carrier: "", claim_no: "", adjuster: "", adjuster_phone: "", adjuster_email: "",
+    mortgage_company: "",
     pm_name: "", priority: "Normal", notes: "",
   });
 
   const set = (key: string, value: string) => setFormData(prev => ({ ...prev, [key]: value }));
+  const isInsurance = formData.payment_type === "insurance";
 
   const handleCreate = async () => {
     if (!formData.customer.trim()) return;
@@ -428,14 +431,17 @@ export const NewJobModal = ({ onClose }: { onClose: () => void }) => {
       phone: formData.phone,
       loss_type: lossTypeMap[formData.loss_type] || "water",
       loss_subtype: formData.loss_subtype,
-      carrier: formData.carrier === "Homeowner (Self-Pay)" ? "" : formData.carrier,
-      claim_no: formData.claim_no,
-      adjuster: formData.adjuster,
-      adjuster_phone: formData.adjuster_phone,
+      payment_type: formData.payment_type,
+      carrier: isInsurance ? formData.carrier : "",
+      claim_no: isInsurance ? formData.claim_no : "",
+      adjuster: isInsurance ? formData.adjuster : "",
+      adjuster_phone: isInsurance ? formData.adjuster_phone : "",
+      adjuster_email: isInsurance ? formData.adjuster_email : "",
       date_of_loss: formData.date_of_loss || undefined,
       pm_name: formData.pm_name,
       priority: formData.priority.includes("High") || formData.priority.includes("Emergency") ? "high" : "normal",
       notes: formData.notes,
+      mortgage_company: isInsurance ? formData.mortgage_company : "",
     });
     setSaving(false);
     onClose();
@@ -454,6 +460,26 @@ export const NewJobModal = ({ onClose }: { onClose: () => void }) => {
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted }}><Ic n="x" s={18}/></button>
         </div>
 
+        <Divider label="Job Type"/>
+        <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+          {(["insurance", "self_pay"] as const).map(pt => (
+            <div key={pt} onClick={() => set("payment_type", pt)} style={{
+              flex: 1, padding: "14px 16px", borderRadius: 10, cursor: "pointer", textAlign: "center",
+              background: formData.payment_type === pt ? (pt === "insurance" ? T.orangeDim : T.greenDim) : T.surfaceHigh,
+              border: `2px solid ${formData.payment_type === pt ? (pt === "insurance" ? T.orange : T.greenBright) : T.border}`,
+              transition: "all 0.15s",
+            }}>
+              <div style={{ fontSize: 18, marginBottom: 4 }}>{pt === "insurance" ? "🛡️" : "💵"}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: formData.payment_type === pt ? T.white : T.muted }}>
+                {pt === "insurance" ? "Insurance" : "Self Pay"}
+              </div>
+              <div style={{ fontSize: 11, color: T.dim, marginTop: 2 }}>
+                {pt === "insurance" ? "Carrier claim & adjuster workflow" : "Direct payment from homeowner"}
+              </div>
+            </div>
+          ))}
+        </div>
+
         <Divider label="Loss Information"/>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 13, marginBottom: 14 }}>
           <Sel label="Loss Type *" options={LOSS_TYPES.map(l => l.label)} value={formData.loss_type} onChange={e => set("loss_type", e.target.value)}/>
@@ -469,13 +495,19 @@ export const NewJobModal = ({ onClose }: { onClose: () => void }) => {
           <Inp label="City, State, ZIP" placeholder="Austin, TX 78701" value={formData.cityStateZip} onChange={e => set("cityStateZip", e.target.value)}/>
         </div>
 
-        <Divider label="Insurance Information"/>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 13, marginBottom: 14 }}>
-          <Sel label="Insurance Carrier" options={["Homeowner (Self-Pay)", "State Farm", "Allstate", "Travelers", "Farmers", "USAA", "Liberty Mutual", "Zurich", "Other"]} value={formData.carrier} onChange={e => set("carrier", e.target.value)}/>
-          <Inp label="Claim Number" placeholder="Carrier claim #" value={formData.claim_no} onChange={e => set("claim_no", e.target.value)}/>
-          <Inp label="Adjuster Name" placeholder="Insurance adjuster" value={formData.adjuster} onChange={e => set("adjuster", e.target.value)}/>
-          <Inp label="Adjuster Phone" placeholder="(555) 000-0000" value={formData.adjuster_phone} onChange={e => set("adjuster_phone", e.target.value)}/>
-        </div>
+        {isInsurance && (
+          <>
+            <Divider label="Insurance Information"/>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 13, marginBottom: 14 }}>
+              <Sel label="Insurance Carrier" options={["State Farm", "Allstate", "Travelers", "Farmers", "USAA", "Liberty Mutual", "Zurich", "Other"]} value={formData.carrier} onChange={e => set("carrier", e.target.value)}/>
+              <Inp label="Claim Number" placeholder="Carrier claim #" value={formData.claim_no} onChange={e => set("claim_no", e.target.value)}/>
+              <Inp label="Adjuster Name" placeholder="Insurance adjuster" value={formData.adjuster} onChange={e => set("adjuster", e.target.value)}/>
+              <Inp label="Adjuster Phone" placeholder="(555) 000-0000" value={formData.adjuster_phone} onChange={e => set("adjuster_phone", e.target.value)}/>
+              <Inp label="Adjuster Email" placeholder="adjuster@carrier.com" value={formData.adjuster_email} onChange={e => set("adjuster_email", e.target.value)}/>
+              <Inp label="Mortgage Company" placeholder="Optional" value={formData.mortgage_company} onChange={e => set("mortgage_company", e.target.value)}/>
+            </div>
+          </>
+        )}
 
         <Divider label="Assignment"/>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 13, marginBottom: 14 }}>

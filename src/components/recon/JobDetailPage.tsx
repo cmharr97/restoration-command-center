@@ -18,26 +18,27 @@ interface JobDetailProps {
   setActive: (id: string) => void;
 }
 
-const TAB_CONFIG = [
-  { id: "overview", label: "Overview", icon: "eye" },
-  { id: "claim", label: "Claim", icon: "shield" },
-  { id: "supplements", label: "Supplements", icon: "est" },
-  { id: "payments", label: "Payments", icon: "dollar" },
-  { id: "drying", label: "Drying Logs", icon: "moisture" },
-  { id: "photos", label: "Photos & Docs", icon: "photo" },
-  { id: "communication", label: "Communication", icon: "msg" },
-  { id: "subcontractors", label: "Subcontractors", icon: "truck" },
-  { id: "activity", label: "Activity", icon: "clock" },
-];
-
 export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
   const [tab, setTab] = useState("overview");
   const rm = ROLES[role];
   const stage = stageInfo(job.stage);
   const { members } = useTeamMembers();
   const isWater = job.loss_type === "water";
+  const isInsurance = job.payment_type === "insurance";
 
-  // Filter tabs by role
+  // Build tabs dynamically based on job type and role
+  const TAB_CONFIG = [
+    { id: "overview", label: "Overview", icon: "eye" },
+    ...(isInsurance ? [{ id: "claim", label: "Insurance Tracking", icon: "shield" }] : []),
+    ...(isInsurance ? [{ id: "supplements", label: "Supplements", icon: "est" }] : []),
+    { id: "payments", label: "Payments", icon: "dollar" },
+    { id: "drying", label: "Drying Logs", icon: "moisture" },
+    { id: "photos", label: "Photos & Docs", icon: "photo" },
+    { id: "communication", label: "Communication", icon: "msg" },
+    { id: "subcontractors", label: "Subcontractors", icon: "truck" },
+    { id: "activity", label: "Activity", icon: "clock" },
+  ];
+
   const visibleTabs = TAB_CONFIG.filter(t => {
     if (t.id === "payments" && !rm.canViewPayments && !rm.canViewInvoices) return false;
     if (t.id === "claim" && !rm.canViewClaims) return false;
@@ -45,6 +46,20 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
     if (t.id === "subcontractors" && !rm.canManageSubs && role !== "owner") return false;
     return true;
   });
+
+  // Build quick info bar items based on job type
+  const quickInfoItems = [
+    { label: "Job Type", value: isInsurance ? "Insurance" : "Self Pay", icon: isInsurance ? "shield" : "dollar" },
+    { label: "Loss Type", value: `${LOSS_TYPES.find(l => l.id === job.loss_type)?.label || job.loss_type}`, icon: "drop" },
+    { label: "Date of Loss", value: job.date_of_loss || "TBD", icon: "cal" },
+    ...(isInsurance ? [
+      { label: "Carrier", value: job.carrier || "TBD", icon: "shield" },
+      { label: "Claim #", value: job.claim_no || "TBD", icon: "note" },
+    ] : []),
+    { label: "PM", value: job.pm_name || "Unassigned", icon: "users" },
+    ...(isWater && job.day_of_drying ? [{ label: "Drying Day", value: `Day ${job.day_of_drying}`, icon: "moisture" }] : []),
+    ...(rm.canViewInvoices && job.contract_value ? [{ label: "Contract", value: `$${job.contract_value.toLocaleString()}`, icon: "dollar" }] : []),
+  ];
 
   return (
     <div style={{ padding: "0 0 40px" }}>
@@ -59,6 +74,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
               <Ic n="chevR" s={12} c={T.dim} />
               <span style={{ fontFamily: "monospace", fontSize: 12, color: T.orange, fontWeight: 700 }}>{job.id}</span>
               {job.priority === "high" && <Badge color="red" small>URGENT</Badge>}
+              <Badge color={isInsurance ? "orange" : "green"} small>{isInsurance ? "INSURANCE" : "SELF PAY"}</Badge>
             </div>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 2px", letterSpacing: "-0.02em" }}>{job.customer}</h1>
             <p style={{ margin: 0, color: T.muted, fontSize: 13 }}>{job.address}</p>
@@ -87,20 +103,12 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
 
         {/* Quick Info Bar */}
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginBottom: 0, padding: "12px 16px", background: T.surfaceHigh, borderRadius: 10, border: `1px solid ${T.border}` }}>
-          {[
-            { label: "Loss Type", value: `${LOSS_TYPES.find(l => l.id === job.loss_type)?.label || job.loss_type}`, icon: "drop" },
-            { label: "Date of Loss", value: job.date_of_loss || "TBD", icon: "cal" },
-            { label: "Carrier", value: job.carrier || "TBD", icon: "shield" },
-            { label: "Claim #", value: job.claim_no || "TBD", icon: "note" },
-            { label: "PM", value: job.pm_name || "Unassigned", icon: "users" },
-            ...(isWater && job.day_of_drying ? [{ label: "Drying Day", value: `Day ${job.day_of_drying}`, icon: "moisture" }] : []),
-            ...(rm.canViewInvoices && job.contract_value ? [{ label: "Contract", value: `$${job.contract_value.toLocaleString()}`, icon: "dollar" }] : []),
-          ].map((inf, i) => (
+          {quickInfoItems.map((inf, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <Ic n={inf.icon} s={13} c={T.orange} />
+              <Ic n={inf.icon} s={13} c={inf.label === "Job Type" ? (isInsurance ? T.orange : T.greenBright) : T.orange} />
               <div>
                 <div style={{ fontSize: 10, color: T.dim, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em" }}>{inf.label}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: T.text }}>{inf.value}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: inf.label === "Job Type" ? (isInsurance ? T.orange : T.greenBright) : T.text }}>{inf.value}</div>
               </div>
             </div>
           ))}
@@ -126,8 +134,8 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
 
         {/* Tab Content */}
         {tab === "overview" && <JobOverviewTab job={job} role={role} />}
-        {tab === "claim" && <JobClaimTab job={job} />}
-        {tab === "supplements" && <JobSupplementsTab job={job} />}
+        {tab === "claim" && isInsurance && <JobClaimTab job={job} />}
+        {tab === "supplements" && isInsurance && <JobSupplementsTab job={job} />}
         {tab === "payments" && <JobPaymentsTab job={job} />}
         {tab === "drying" && <JobDryingTab job={job} />}
         {tab === "photos" && <JobPhotosTab job={job} />}
@@ -139,7 +147,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
   );
 };
 
-// ── JOB COMMUNICATION TAB (kept inline, already existed) ──
+// ── JOB COMMUNICATION TAB (kept inline) ──
 const JobCommunicationTab = ({ job, role, members }: { job: DbJob; role: string; members: any[] }) => {
   const [lane, setLane] = useState<"internal" | "customer" | "insurance" | "subs">("internal");
   const [msgText, setMsgText] = useState("");
@@ -147,13 +155,19 @@ const JobCommunicationTab = ({ job, role, members }: { job: DbJob; role: string;
   const [mentionFilter, setMentionFilter] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const currentUser = members.find((m: any) => m.role === role) || members[0] || { id: "unknown", name: "You", role, avatar: "?" };
+  const isInsurance = job.payment_type === "insurance";
 
   const laneConfig = {
     internal: { label: "Internal Team", color: T.orange, icon: "users", desc: "Only visible to your team" },
     customer: { label: "Homeowner", color: T.greenBright, icon: "customer", desc: "Visible to the property owner" },
-    insurance: { label: "Adjuster / TPA", color: T.blueBright, icon: "shield", desc: "Carrier & adjuster correspondence" },
+    insurance: { label: "Adjuster / TPA", color: T.blueBright, icon: "shield", desc: "Log adjuster & carrier correspondence" },
     subs: { label: "Subcontractors", color: T.purpleBright, icon: "truck", desc: "Communication with assigned subs" },
   };
+
+  // Filter out insurance lane for self-pay jobs
+  const availableLanes = isInsurance
+    ? (Object.keys(laneConfig) as Array<keyof typeof laneConfig>)
+    : (Object.keys(laneConfig) as Array<keyof typeof laneConfig>).filter(l => l !== "insurance");
 
   type CommMessage = { sender: string; senderId: string; text: string; time: string; date: string; lane: string; mentions?: string[] };
   const [messages, setMessages] = useState<CommMessage[]>([]);
@@ -204,7 +218,7 @@ const JobCommunicationTab = ({ job, role, members }: { job: DbJob; role: string;
       </div>
 
       <div style={{ display: "flex", gap: 4, marginBottom: 14, flexWrap: "wrap" }}>
-        {(Object.keys(laneConfig) as Array<keyof typeof laneConfig>).map(l => {
+        {availableLanes.map(l => {
           const conf = laneConfig[l];
           const count = messages.filter(m => m.lane === l).length;
           const isActive = lane === l;
