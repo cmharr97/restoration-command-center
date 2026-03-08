@@ -214,3 +214,24 @@ export const stageColor: Record<string, string> = {
   mit_complete: "blue", recon_est: "yellow", reconstruction: "teal", final_walk: "purple",
   invoiced: "blue", paid: "green"
 };
+
+// ── COMPATIBILITY SHIMS (empty arrays — real data comes from useJobs/useTeamMembers hooks) ──
+export interface Job {
+  id: string; customer: string; address: string; phone: string; lossType: string; lossSubtype: string;
+  stage: string; pm: string; techs: string[]; carrier: string; claimNo: string; adjuster: string;
+  adjusterPhone: string; dateOfLoss: string; contractValue: number | null; mitigationValue: number | null;
+  recon: boolean; reconValue?: number; dayOfDrying: number | null; moistureAlerts: number;
+  equipment: { name: string; qty: number; placed: string }[]; notes: string; priority: string;
+}
+export interface TeamMember {
+  id: string; name: string; role: string; email: string; phone: string; certs: string[];
+  status: string; avatar: string; currentJob: string | null; profilePic?: string;
+}
+export interface DryingLog {
+  day: number; date: string; tech: string; gpp: number; temp: number; rh: number;
+  readings: { room: string; material: string; reading: number; dry: number; status: string }[];
+  equipment: { dehus: number; airMovers: number; scrubbers: number }; notes: string;
+}
+export const JOBS: Job[] = [];
+export const TEAM_MEMBERS: TeamMember[] = [];
+export const DRYING_LOGS: Record<string, DryingLog[]> = {};
