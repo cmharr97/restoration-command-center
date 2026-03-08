@@ -14,7 +14,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
   const rm = ROLES[role];
   const stage = stageInfo(job.stage);
   const logs = DRYING_LOGS[job.id] || [];
-  const tabs = ["overview", "contacts", "drying_log", "documents", "photos", "timeline", "notes"];
+  const tabs = ["overview", "contacts", "drying_log", "communication", "documents", "photos", "timeline", "notes"];
   const isWater = job.lossType === "water";
 
   return (
