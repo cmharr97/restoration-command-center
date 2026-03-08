@@ -183,6 +183,7 @@ export interface TeamMember {
   status: string;
   avatar: string;
   currentJob: string | null;
+  profilePic?: string;
 }
 
 export const TEAM_MEMBERS: TeamMember[] = [
