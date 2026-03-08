@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { T, ROLES, NAV, TEAM_MEMBERS, type TeamMember } from "@/lib/recon-data";
 import { Ic, Logo, Btn } from "@/components/recon/ReconUI";
+import { useTheme } from "@/hooks/useTheme";
 
 interface SidebarProps {
   role: string;
