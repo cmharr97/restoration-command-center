@@ -401,7 +401,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
                   {!ev.smsDispatched && (
                     <Btn v="secondary" sz="sm" icon="contact" onClick={() => handleSMSDispatch(ev.id)} style={{ marginTop: 6 }}>Send SMS</Btn>
                   )}
-                </div>
+                </Card>
               );
             })}
           </div>
