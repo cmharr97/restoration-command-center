@@ -34,6 +34,7 @@ export const SubcontractorsPageFull = () => {
       license_number: form.license_number,
       notes: form.notes,
       created_by: user.id,
+      company_id: companyId || null,
     } as any);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
