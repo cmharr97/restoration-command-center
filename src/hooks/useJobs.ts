@@ -17,6 +17,7 @@ export interface DbJob {
   claim_no: string | null;
   adjuster: string | null;
   adjuster_phone: string | null;
+  adjuster_email: string | null;
   date_of_loss: string | null;
   contract_value: number | null;
   mitigation_value: number | null;
@@ -32,6 +33,7 @@ export interface DbJob {
   company_id: string | null;
   mortgage_company: string | null;
   scope_notes: string | null;
+  payment_type: string;
 }
 
 export interface NewJobData {
@@ -40,10 +42,12 @@ export interface NewJobData {
   phone?: string;
   loss_type: string;
   loss_subtype?: string;
+  payment_type: string;
   carrier?: string;
   claim_no?: string;
   adjuster?: string;
   adjuster_phone?: string;
+  adjuster_email?: string;
   date_of_loss?: string;
   pm_name?: string;
   priority?: string;
