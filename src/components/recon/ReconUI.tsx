@@ -1,5 +1,7 @@
 import React from "react";
 import { T } from "@/lib/recon-data";
+import logoDark from "@/assets/logo-dark-mode.png";
+import logoLight from "@/assets/logo-light-mode.png";
 
 // ── ICON SVG ──
 const iconPaths: Record<string, React.ReactNode> = {
@@ -53,13 +55,16 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
 );
 
 // ── LOGO ──
-export const Logo = ({ size = 38 }: { size?: number }) => (
-  <svg width={size} height={size * 0.9} viewBox="0 0 60 54" fill="none">
-    <polygon points="30,2 54,20 45,20 30,9 15,20 6,20" fill="white"/>
-    <polygon points="30,16 51,32 42,32 30,23 18,32 9,32" fill={T.orange}/>
-    <polygon points="30,28 44,38 36,38 30,34 24,38 16,38" fill={T.orange} opacity="0.6"/>
-  </svg>
-);
+export const Logo = ({ size = 38 }: { size?: number }) => {
+  const isDark = !document.documentElement.classList.contains("light");
+  return (
+    <img
+      src={isDark ? logoDark : logoLight}
+      alt="ReCon Pro"
+      style={{ width: size, height: size, objectFit: "contain" }}
+    />
+  );
+};
 
 // ── BADGE ──
 const badgeColorMap: Record<string, [string, string]> = {
