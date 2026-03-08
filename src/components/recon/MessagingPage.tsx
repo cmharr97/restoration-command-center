@@ -386,7 +386,7 @@ export const MessagingPage = ({ role }: { role: string }) => {
       {/* ── NEW CHAT MODAL ── */}
       {showNewChat && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, backdropFilter: "blur(4px)" }} onClick={() => setShowNewChat(false)}>
-          <Card style={{ width: 420, maxHeight: "80vh", overflowY: "auto", background: T.surface }} onClick={e => (e as any).stopPropagation()}>
+          <Card style={{ width: 420, maxHeight: "80vh", overflowY: "auto", background: T.surface }} onClick={undefined}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: T.white }}>New Conversation</h3>
               <button onClick={() => setShowNewChat(false)} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted }}><Ic n="x" s={18}/></button>
