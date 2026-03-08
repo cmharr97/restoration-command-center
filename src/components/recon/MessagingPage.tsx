@@ -426,6 +426,7 @@ export const MessagingPage = ({ role }: { role: string }) => {
               ))}
             </div>
           </Card>
+          </div>
         </div>
       )}
     </div>
