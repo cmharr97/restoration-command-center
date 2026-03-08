@@ -117,7 +117,7 @@ const Index = () => {
             pageTitle={pageTitles[active] || active}
             role={role}
             onNewJob={() => setShowNewJob(true)}
-            onRoleChange={r => setRole(r)}
+            onRoleChange={() => {}}
             onSignOut={signOut}
             onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
           />
