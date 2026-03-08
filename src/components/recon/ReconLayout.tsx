@@ -70,11 +70,12 @@ interface TopBarProps {
   role: string;
   onNewJob: () => void;
   onRoleChange: (role: string) => void;
+  onSignOut?: () => void;
 }
 
 import { Btn } from "@/components/recon/ReconUI";
 
-export const TopBar = ({ pageTitle, role, onNewJob, onRoleChange }: TopBarProps) => (
+export const TopBar = ({ pageTitle, role, onNewJob, onRoleChange, onSignOut }: TopBarProps) => (
   <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 28px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <span style={{ color: T.dim, fontSize: 12 }}>ReCon Pro</span>
