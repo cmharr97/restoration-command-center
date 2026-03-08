@@ -54,20 +54,33 @@ const getWeekDates = (base: Date) => {
 };
 
 // ── MAIN COMPONENT ──
+// Define local TeamMember type  
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  email?: string;
+  avatar?: string;
+  status?: string;
+  profilePic?: string;
+}
+
 export const CalendarPage = ({ role }: { role: string }) => {
-  const [events, setEvents] = useState<ScheduleEvent[]>(INITIAL_EVENTS);
+  const [events, setEvents] = useState<ScheduleEvent[]>([]);
   const [view, setView] = useState<"week" | "day" | "crew">("week");
-  const [baseDate, setBaseDate] = useState(new Date(2026, 2, 8)); // Mar 8, 2026
+  const [baseDate, setBaseDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
   const [dragEvent, setDragEvent] = useState<string | null>(null);
   const [showNewEvent, setShowNewEvent] = useState(false);
   const [filterCrew, setFilterCrew] = useState<string | null>(null);
+  const { jobs } = useJobs();
+  const { members } = useTeamMembers();
 
   const weekDates = getWeekDates(baseDate);
-  const isToday = (d: Date) => dateStr(d) === "2026-03-08";
+  const isToday = (d: Date) => dateStr(d) === dateStr(new Date());
   const rm = ROLES[role];
 
-  const crewMembers = TEAM_MEMBERS.filter(m => ["field_tech", "project_manager", "estimator"].includes(m.role));
+  const crewMembers = members.filter((m: any) => ["field_tech", "project_manager", "estimator"].includes(m.role));
 
   const navigateWeek = (dir: number) => {
     const d = new Date(baseDate);
