@@ -512,7 +512,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 500, color: T.muted, display: "block", marginBottom: 4 }}>Job *</label>
                   <select style={{ width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none" }}>
-                    {JOBS.filter(j => j.stage !== "paid").map(j => <option key={j.id} value={j.id}>{j.id} – {j.customer}</option>)}
+                    {jobs.filter((j: any) => j.stage !== "paid").map((j: any) => <option key={j.id} value={j.id}>{j.id} – {j.customer}</option>)}
                   </select>
                 </div>
                 <div>
