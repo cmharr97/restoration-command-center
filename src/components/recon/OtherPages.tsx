@@ -585,6 +585,69 @@ export const SettingsPage = ({ role }: { role: string }) => {
     </div>
   );
 };
+// ── SUBCONTRACTORS PAGE ──
+export const SubcontractorsPage = () => {
+  const subs = [
+    { name: "Austin Drywall Pros", trade: "Drywall & Framing", contact: "Mike Torres", phone: "(512) 555-1100", coi: true, w9: true, jobs: 8, rating: 4.8, status: "Approved" },
+    { name: "Hill Country Flooring", trade: "Flooring Installation", contact: "Lisa Chen", phone: "(512) 555-2200", coi: true, w9: true, jobs: 5, rating: 4.6, status: "Approved" },
+    { name: "Capital City Paint", trade: "Painting & Finishing", contact: "James Wilson", phone: "(512) 555-3300", coi: true, w9: false, jobs: 3, rating: 4.5, status: "Pending W9" },
+    { name: "Lone Star Cabinets", trade: "Cabinet & Countertop", contact: "Maria Garcia", phone: "(512) 555-4400", coi: true, w9: true, jobs: 4, rating: 4.9, status: "Approved" },
+    { name: "TX Plumbing Solutions", trade: "Plumbing", contact: "Robert Kim", phone: "(512) 555-5500", coi: false, w9: true, jobs: 2, rating: 4.3, status: "Pending COI" },
+    { name: "ATX Electric", trade: "Electrical", contact: "David Lee", phone: "(512) 555-6600", coi: true, w9: true, jobs: 6, rating: 4.7, status: "Approved" },
+  ];
+  return (
+    <div style={{ padding: "0 0 40px" }}>
+      <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Subcontractors</h1>
+          <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Manage trade partners, compliance, and job access</p>
+        </div>
+        <Btn v="primary" sz="sm" icon="plus">Add Subcontractor</Btn>
+      </div>
+      <div style={{ padding: "0 28px" }}>
+        <Card style={{ marginBottom: 14, background: T.orangeDim, borderColor: T.orange + "44" }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <Ic n="shield" s={16} c={T.orange}/>
+            <div style={{ fontSize: 12, color: T.text }}>
+              <strong style={{ color: T.orange }}>Compliance Tracking:</strong> 2 subcontractors have missing documents. COI and W9 must be current before job assignment.
+            </div>
+          </div>
+        </Card>
+        {subs.map((s, i) => (
+          <Card key={i} style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <div style={{ width: 40, height: 40, borderRadius: 8, background: T.surfaceHigh, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🔧</div>
+                <div>
+                  <div style={{ fontWeight: 600, color: T.white, fontSize: 14 }}>{s.name}</div>
+                  <div style={{ fontSize: 11, color: T.muted }}>{s.trade} · {s.contact} · {s.phone}</div>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <Badge color={s.coi ? "green" : "red"} small>{s.coi ? "COI ✓" : "COI ✗"}</Badge>
+                  <Badge color={s.w9 ? "green" : "red"} small>{s.w9 ? "W9 ✓" : "W9 ✗"}</Badge>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: T.white }}>{s.jobs}</div>
+                  <div style={{ fontSize: 10, color: T.muted }}>Jobs</div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T.yellowBright }}>⭐ {s.rating}</div>
+                </div>
+                <Badge color={s.status === "Approved" ? "green" : "yellow"} small>{s.status}</Badge>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <Btn v="secondary" sz="sm" icon="eye">View</Btn>
+                  <Btn v="secondary" sz="sm" icon="contact">Call</Btn>
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // ── NEW JOB MODAL ──
 export const NewJobModal = ({ onClose }: { onClose: () => void }) => (
