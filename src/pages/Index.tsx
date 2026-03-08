@@ -22,7 +22,7 @@ import type { DbJob } from "@/hooks/useJobs";
 
 const Index = () => {
   const { profile, signOut } = useAuth();
-  const [role, setRole] = useState(profile?.role || "owner");
+  const [role] = useState(profile?.role || "owner");
   const [active, setActive] = useState("dashboard");
   const [selectedJob, setSelectedJob] = useState<DbJob | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
