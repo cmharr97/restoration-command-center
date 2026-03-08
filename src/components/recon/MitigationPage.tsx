@@ -1,14 +1,23 @@
-import { T, JOBS, DRYING_LOGS, type Job } from "@/lib/recon-data";
+import { T } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic } from "@/components/recon/ReconUI";
+import { useJobs, useDryingLogs, type DbJob } from "@/hooks/useJobs";
 
 interface MitigationProps {
   role: string;
-  setSelectedJob: (job: Job) => void;
+  setSelectedJob: (job: DbJob) => void;
   setActive: (id: string) => void;
 }
 
 export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationProps) => {
-  const waterJobs = JOBS.filter(j => j.lossType === "water" && ["mitigation", "mit_complete", "auth_signed"].includes(j.stage));
+  const { jobs, loading: jobsLoading } = useJobs();
+  const { logs, loading: logsLoading } = useDryingLogs();
+
+  const waterJobs = jobs.filter(j => j.loss_type === "water" && ["mitigation", "mit_complete", "auth_signed"].includes(j.stage));
+
+  if (jobsLoading || logsLoading) {
+    return <div style={{ padding: 40, textAlign: "center", color: T.muted }}>Loading drying logs...</div>;
+  }
+
   return (
     <div style={{ padding: "0 0 40px" }}>
       <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
@@ -19,12 +28,22 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
         <Btn v="primary" sz="sm" icon="plus">Add Reading</Btn>
       </div>
       <div style={{ padding: "0 28px" }}>
-        {waterJobs.length === 0 ? <div style={{ textAlign: "center", padding: 40, color: T.dim }}>No active water damage jobs</div> :
+        {waterJobs.length === 0 ? (
+          <div style={{ textAlign: "center", padding: 60, color: T.dim }}>
+            <Ic n="moisture" s={48} c={T.dim}/>
+            <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No active water damage jobs</div>
+            <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>
+              Create a water damage job and move it to the "Mitigation Active" stage to start logging drying readings.
+            </div>
+          </div>
+        ) : (
           waterJobs.map(job => {
-            const logs = DRYING_LOGS[job.id] || [];
-            const latest = logs[logs.length - 1];
-            const wetRooms = latest?.readings.filter(r => r.status === "wet") || [];
-            const dryRooms = latest?.readings.filter(r => r.status === "dry") || [];
+            const jobLogs = logs.filter(l => l.job_id === job.id).sort((a: any, b: any) => a.day - b.day);
+            const latest = jobLogs[jobLogs.length - 1];
+            const readings = latest?.readings as any[] || [];
+            const wetRooms = readings.filter((r: any) => r.status === "wet");
+            const dryRooms = readings.filter((r: any) => r.status === "dry");
+
             return (
               <Card key={job.id} style={{ marginBottom: 14 }} glow={job.priority === "high"}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
@@ -34,7 +53,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
                       <span style={{ fontWeight: 600, color: T.white, fontSize: 14 }}>{job.customer}</span>
                       {job.priority === "high" && <Badge color="red" small dot>Urgent</Badge>}
                     </div>
-                    <div style={{ fontSize: 12, color: T.muted }}>{job.lossSubtype} · Day {job.dayOfDrying} of drying</div>
+                    <div style={{ fontSize: 12, color: T.muted }}>{job.loss_subtype} · Day {job.day_of_drying || 0} of drying</div>
                   </div>
                   <div style={{ display: "flex", gap: 8 }}>
                     <Btn v="secondary" sz="sm" onClick={() => { setSelectedJob(job); setActive("job_detail"); }}>View Job</Btn>
@@ -42,13 +61,13 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
                   </div>
                 </div>
 
-                {latest && (
+                {latest && readings.length > 0 ? (
                   <div>
                     <div style={{ display: "flex", gap: 16, marginBottom: 12 }}>
                       {[
                         { label: "Latest GPP", value: latest.gpp, color: latest.gpp < 50 ? T.greenBright : latest.gpp < 60 ? T.yellowBright : T.redBright, big: true },
-                        { label: "Rooms Dry", value: `${dryRooms.length}/${latest.readings.length}`, color: T.greenBright, big: true },
-                        { label: "Temp/RH", value: `${latest.temp}°F / ${latest.rh}%`, color: T.text, big: false },
+                        { label: "Rooms Dry", value: `${dryRooms.length}/${readings.length}`, color: T.greenBright, big: true },
+                        { label: "Temp/RH", value: `${latest.temp || 0}°F / ${latest.rh || 0}%`, color: T.text, big: false },
                         { label: "Last Entry", value: latest.date, color: T.text, big: false },
                       ].map((stat, i) => (
                         <div key={i} style={{ background: T.surfaceHigh, borderRadius: 8, padding: "8px 14px", flex: 1 }}>
@@ -58,7 +77,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
                       ))}
                     </div>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                      {latest.readings.map((r, i) => (
+                      {readings.map((r: any, i: number) => (
                         <div key={i} style={{ background: r.status === "wet" ? T.yellowDim : T.greenDim, border: `1px solid ${r.status === "wet" ? T.yellowBright + "44" : T.greenBright + "44"}`, borderRadius: 7, padding: "6px 10px", textAlign: "center", minWidth: 80 }}>
                           <div style={{ fontSize: 10, color: r.status === "wet" ? T.yellowBright : T.greenBright, fontWeight: 500 }}>{r.room}</div>
                           <div style={{ fontSize: 11, color: T.muted }}>{r.material}</div>
@@ -68,12 +87,13 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
                       ))}
                     </div>
                   </div>
+                ) : (
+                  <div style={{ textAlign: "center", padding: 20, color: T.dim, fontSize: 12 }}>No drying logs yet — add first reading</div>
                 )}
-                {logs.length === 0 && <div style={{ textAlign: "center", padding: 20, color: T.dim, fontSize: 12 }}>No drying logs yet — add first reading</div>}
               </Card>
             );
           })
-        }
+        )}
       </div>
     </div>
   );
