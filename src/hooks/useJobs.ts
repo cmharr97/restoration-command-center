@@ -29,6 +29,9 @@ export interface DbJob {
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  company_id: string | null;
+  mortgage_company: string | null;
+  scope_notes: string | null;
 }
 
 export interface NewJobData {
@@ -45,6 +48,7 @@ export interface NewJobData {
   pm_name?: string;
   priority?: string;
   notes?: string;
+  mortgage_company?: string;
 }
 
 export const useJobs = () => {
@@ -63,7 +67,7 @@ export const useJobs = () => {
     if (error) {
       console.error("Error fetching jobs:", error);
     } else {
-      setJobs(data || []);
+      setJobs((data || []) as DbJob[]);
     }
     setLoading(false);
   }, [user]);
@@ -91,8 +95,9 @@ export const useJobs = () => {
       pm_name: jobData.pm_name || "",
       priority: jobData.priority || "normal",
       notes: jobData.notes || "",
+      mortgage_company: jobData.mortgage_company || "",
       created_by: user.id,
-    }).select().single();
+    } as any).select().single();
 
     if (error) {
       toast({ title: "Error creating job", description: error.message, variant: "destructive" });
@@ -104,7 +109,7 @@ export const useJobs = () => {
   };
 
   const updateJob = async (id: string, updates: Partial<DbJob>) => {
-    const { error } = await supabase.from("jobs").update(updates).eq("id", id);
+    const { error } = await supabase.from("jobs").update(updates as any).eq("id", id);
     if (error) {
       toast({ title: "Error updating job", description: error.message, variant: "destructive" });
       return false;
@@ -149,6 +154,94 @@ export const useDryingLogs = (jobId?: string) => {
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("drying_logs").select("*").order("day", { ascending: true });
+      if (jobId) query = query.eq("job_id", jobId);
+      const { data, error } = await query;
+      if (!error) setLogs(data || []);
+      setLoading(false);
+    };
+    fetch();
+  }, [jobId]);
+
+  return { logs, loading };
+};
+
+export const useClaims = (jobId?: string) => {
+  const [claims, setClaims] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      let query = supabase.from("claims").select("*").order("created_at", { ascending: false });
+      if (jobId) query = query.eq("job_id", jobId);
+      const { data, error } = await query;
+      if (!error) setClaims(data || []);
+      setLoading(false);
+    };
+    fetch();
+  }, [jobId]);
+
+  return { claims, loading };
+};
+
+export const useSupplements = (jobId?: string) => {
+  const [supplements, setSupplements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      let query = supabase.from("supplements").select("*").order("created_at", { ascending: false });
+      if (jobId) query = query.eq("job_id", jobId);
+      const { data, error } = await query;
+      if (!error) setSupplements(data || []);
+      setLoading(false);
+    };
+    fetch();
+  }, [jobId]);
+
+  return { supplements, loading };
+};
+
+export const usePayments = (jobId?: string) => {
+  const [payments, setPayments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      let query = supabase.from("payments").select("*").order("created_at", { ascending: false });
+      if (jobId) query = query.eq("job_id", jobId);
+      const { data, error } = await query;
+      if (!error) setPayments(data || []);
+      setLoading(false);
+    };
+    fetch();
+  }, [jobId]);
+
+  return { payments, loading };
+};
+
+export const useSubcontractors = () => {
+  const [subs, setSubs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data, error } = await supabase.from("subcontractors").select("*").order("name");
+      if (!error) setSubs(data || []);
+      setLoading(false);
+    };
+    fetch();
+  }, []);
+
+  return { subs, loading };
+};
+
+export const useActivityLogs = (jobId?: string) => {
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      let query = supabase.from("activity_logs").select("*").order("created_at", { ascending: false }).limit(50);
       if (jobId) query = query.eq("job_id", jobId);
       const { data, error } = await query;
       if (!error) setLogs(data || []);

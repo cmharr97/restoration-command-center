@@ -9,7 +9,11 @@ import { MessagingPage } from "@/components/recon/MessagingPage";
 import { CalendarPage } from "@/components/recon/CalendarPage";
 import { AutomationPage } from "@/components/recon/AutomationPage";
 import { CustomerPortalPage } from "@/components/recon/CustomerPortalPage";
-import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, ReportsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
+import { ClaimsPage } from "@/components/recon/ClaimsPage";
+import { SupplementsPage } from "@/components/recon/SupplementsPage";
+import { PaymentsPage } from "@/components/recon/PaymentsPage";
+import { ReportsPage } from "@/components/recon/ReportsPage";
+import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
 import { AIAssistant } from "@/components/recon/AIAssistant";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
@@ -33,7 +37,7 @@ const Index = () => {
   useEffect(() => {
     const roleNav = NAV[role] || NAV.owner;
     const allPages = roleNav.flatMap(g => g.items.map(i => i.id));
-    if (!allPages.includes(active)) { setActive(allPages[0] || "dashboard"); }
+    if (!allPages.includes(active) && active !== "job_detail") { setActive(allPages[0] || "dashboard"); }
   }, [role]);
 
   useEffect(() => {
@@ -59,9 +63,10 @@ const Index = () => {
     dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs",
     estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users",
     equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Referrals / CRM",
-    reports: "Reports", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs",
+    reports: "Reports & Analytics", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs",
     job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages",
     automations: "Automations", customer_portal: "Customer Portal",
+    claims: "Claim Tracking", supplements: "Supplements", payments: "Insurance Payments",
   };
 
   const pages: Record<string, React.ReactNode> = {
@@ -84,6 +89,9 @@ const Index = () => {
     messaging: <MessagingPage role={role}/>,
     automations: <AutomationPage role={role}/>,
     customer_portal: <CustomerPortalPage/>,
+    claims: <ClaimsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
+    supplements: <SupplementsPage role={role}/>,
+    payments: <PaymentsPage role={role}/>,
   };
 
   useEffect(() => {
