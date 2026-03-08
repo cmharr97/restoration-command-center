@@ -225,6 +225,8 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "integrations", label: "Integrations", icon: "plug" },
     ]},
     { group: "System", items: [
+      { id: "automations", label: "Automations", icon: "plug" },
+      { id: "customer_portal", label: "Customer Portal", icon: "customer" },
       { id: "settings", label: "Settings", icon: "cog" },
     ]},
   ],

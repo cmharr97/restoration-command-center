@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { T, NAV, TEAM_MEMBERS, type Job } from "@/lib/recon-data";
 import { ReconSidebar, TopBar } from "@/components/recon/ReconLayout";
 import { DashboardPage } from "@/components/recon/DashboardPage";
@@ -7,7 +7,9 @@ import { JobDetailPage } from "@/components/recon/JobDetailPage";
 import { MitigationPage } from "@/components/recon/MitigationPage";
 import { MessagingPage } from "@/components/recon/MessagingPage";
 import { CalendarPage } from "@/components/recon/CalendarPage";
-import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, ReportsPage, IntegrationsPage, SettingsPage, NewJobModal } from "@/components/recon/OtherPages";
+import { AutomationPage } from "@/components/recon/AutomationPage";
+import { CustomerPortalPage } from "@/components/recon/CustomerPortalPage";
+import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, ReportsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
 
@@ -26,7 +28,6 @@ const Index = () => {
 
   // Simulated push notifications
   useEffect(() => {
-    // Request desktop notification permission
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
@@ -37,6 +38,7 @@ const Index = () => {
       { title: "💬 New Message — Destiny Kim", desc: "Adjuster walkthrough at 2pm confirmed ✅", delay: 45000 },
       { title: "⚠️ Task Overdue", desc: "J-1049 mold estimate review — no activity in 3 days", delay: 60000 },
       { title: "📄 Supplement Approved", desc: "State Farm approved $2,400 supplement for J-1051 hardwood replacement", delay: 90000 },
+      { title: "⚡ Automation Triggered", desc: "No activity on J-1049 for 3 days — manager alerted", delay: 120000 },
     ];
 
     const timers = notificationMessages.map(msg =>
@@ -52,7 +54,14 @@ const Index = () => {
   }, []);
 
   const currentUser = TEAM_MEMBERS.find(m => m.role === role) || TEAM_MEMBERS[0];
-  const pageTitles: Record<string, string> = { dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs", estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users", equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Referrals / CRM", reports: "Reports", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs", job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages" };
+  const pageTitles: Record<string, string> = {
+    dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs",
+    estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users",
+    equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Referrals / CRM",
+    reports: "Reports", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs",
+    job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages",
+    automations: "Automations", customer_portal: "Customer Portal",
+  };
 
   const pages: Record<string, React.ReactNode> = {
     dashboard: <DashboardPage role={role} setActive={setActive} setSelectedJob={setSelectedJob}/>,
@@ -65,20 +74,22 @@ const Index = () => {
     calendar: <CalendarPage role={role}/>,
     team: <TeamPage role={role}/>,
     equipment: <EquipmentPage/>,
-    subcontractors: <div style={{ padding: 32, color: T.muted, textAlign: "center" }}><Ic n="truck" s={28} c={T.dim}/><div style={{ marginTop: 12 }}>Subcontractor management — controlled job access, W9 storage, COI tracking</div></div>,
+    subcontractors: <SubcontractorsPage/>,
     referrals: <ReferralsPage/>,
     reports: <ReportsPage role={role}/>,
     integrations: <IntegrationsPage/>,
     settings: <SettingsPage role={role}/>,
     my_jobs: <MyJobsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
     messaging: <MessagingPage role={role}/>,
+    automations: <AutomationPage role={role}/>,
+    customer_portal: <CustomerPortalPage/>,
   };
 
   return (
     <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, color: T.text, minHeight: "100vh", display: "flex", overflow: "hidden" }}>
-      <ReconSidebar role={role} active={active} setActive={setActive} user={currentUser}/>
+      {active !== "customer_portal" && <ReconSidebar role={role} active={active} setActive={setActive} user={currentUser}/>}
       <div style={{ flex: 1, overflowY: active === "messaging" ? "hidden" : "auto", height: "100vh" }}>
-        <TopBar pageTitle={pageTitles[active] || active} role={role} onNewJob={() => setShowNewJob(true)} onRoleChange={r => setRole(r)}/>
+        {active !== "customer_portal" && <TopBar pageTitle={pageTitles[active] || active} role={role} onNewJob={() => setShowNewJob(true)} onRoleChange={r => setRole(r)}/>}
         {pages[active] || <div style={{ padding: 40, color: T.muted }}>Page not available</div>}
       </div>
       {showNewJob && <NewJobModal onClose={() => setShowNewJob(false)}/>}
