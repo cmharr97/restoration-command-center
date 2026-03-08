@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { T, ROLES, JOB_STAGES, LOSS_TYPES, DRYING_LOGS, stageInfo, stageColor, type Job } from "@/lib/recon-data";
+import { useState, useRef, useEffect } from "react";
+import { T, ROLES, JOB_STAGES, LOSS_TYPES, DRYING_LOGS, TEAM_MEMBERS, stageInfo, stageColor, type Job } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Divider } from "@/components/recon/ReconUI";
+import { UserAvatar } from "@/components/recon/MessagingPage";
 
 interface JobDetailProps {
   job: Job;
@@ -13,7 +14,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
   const rm = ROLES[role];
   const stage = stageInfo(job.stage);
   const logs = DRYING_LOGS[job.id] || [];
-  const tabs = ["overview", "contacts", "drying_log", "documents", "photos", "timeline", "notes"];
+  const tabs = ["overview", "contacts", "drying_log", "communication", "documents", "photos", "timeline", "notes"];
   const isWater = job.lossType === "water";
 
   return (
@@ -197,6 +198,8 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
           </div>
         )}
 
+        {tab === "communication" && <JobCommunicationTab job={job} role={role}/>}
+
         {tab === "photos" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
@@ -295,6 +298,180 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
             ))}
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+
+// ── JOB COMMUNICATION TAB ──
+const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
+  const [lane, setLane] = useState<"internal" | "customer" | "insurance" | "subs">("internal");
+  const [msgText, setMsgText] = useState("");
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionFilter, setMentionFilter] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const currentUser = TEAM_MEMBERS.find(m => m.role === role) || TEAM_MEMBERS[0];
+
+  const laneConfig = {
+    internal: { label: "Internal Team", color: T.orange, icon: "users", desc: "Only visible to your team" },
+    customer: { label: "Customer", color: T.greenBright, icon: "customer", desc: "Visible to the property owner" },
+    insurance: { label: "Insurance / TPA", color: T.blueBright, icon: "shield", desc: "Carrier & adjuster correspondence" },
+    subs: { label: "Subcontractors", color: T.purpleBright, icon: "truck", desc: "Communication with assigned subs" },
+  };
+
+  type CommMessage = { sender: string; senderId: string; text: string; time: string; date: string; lane: string; mentions?: string[] };
+  
+  const [messages, setMessages] = useState<CommMessage[]>([
+    { sender: "Destiny Kim", senderId: "u2", text: "Crew mobilized. Marcus and Carlos are en route. Equipment loaded.", time: "2:30 PM", date: "Mar 2", lane: "internal" },
+    { sender: "Marcus Webb", senderId: "u5", text: "On site. Standing water confirmed in kitchen, laundry, and hall. Beginning extraction now.", time: "3:15 PM", date: "Mar 2", lane: "internal" },
+    { sender: "Destiny Kim", senderId: "u2", text: `Mrs. Martinez, our crew is on site and beginning water extraction. We'll have equipment running overnight. I'll update you tomorrow with drying progress.`, time: "4:00 PM", date: "Mar 2", lane: "customer" },
+    { sender: "Destiny Kim", senderId: "u2", text: "Tom, this is Destiny from ReCon Pro. We're on the Martinez loss (Claim #SF-2026-44821). Cat 2 water damage from washing machine supply line. Mitigation underway. Will send initial scope and photos today.", time: "4:30 PM", date: "Mar 2", lane: "insurance" },
+    { sender: "Marcus Webb", senderId: "u5", text: "Day 3 update: Hall drywall reached dry standard. Kitchen hardwood cupping significantly — documenting for potential replacement. @Tyler Nguyen please factor into Xactimate.", time: "10:00 AM", date: "Mar 4", lane: "internal", mentions: ["Tyler Nguyen"] },
+    { sender: "Tyler Nguyen", senderId: "u3", text: "Estimate submitted to State Farm. Included hardwood replacement. Adj: Tom Hendricks notified.", time: "4:15 PM", date: "Mar 4", lane: "insurance" },
+    { sender: "Destiny Kim", senderId: "u2", text: "Mrs. Martinez — drying is progressing well. Kitchen floor has some cupping that we're monitoring. Our estimator has submitted the full scope to State Farm. We'll keep you posted on approval.", time: "5:00 PM", date: "Mar 4", lane: "customer" },
+    { sender: "Marcus Webb", senderId: "u5", text: "Day 5: Most areas approaching dry standard. Laundry subfloor at 20% (19% needed). May need demo. @Destiny Kim let's discuss.", time: "10:20 AM", date: "Mar 6", lane: "internal", mentions: ["Destiny Kim"] },
+    { sender: "Destiny Kim", senderId: "u2", text: "Approved by @John Davis — proceeding with laundry subfloor demo tomorrow. Will supplement Xactimate accordingly.", time: "10:45 AM", date: "Mar 8", lane: "internal", mentions: ["John Davis"] },
+  ]);
+
+  const filteredMessages = messages.filter(m => m.lane === lane);
+
+  const handleSend = () => {
+    if (!msgText.trim()) return;
+    const mentions = msgText.match(/@([\w\s]+?)(?=\s|$|[.,!?])/g)?.map(m => m.slice(1).trim()) || [];
+    setMessages(prev => [...prev, {
+      sender: currentUser.name,
+      senderId: currentUser.id,
+      text: msgText,
+      time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+      date: "Mar 8",
+      lane,
+      mentions: mentions.length > 0 ? mentions : undefined,
+    }]);
+    setMsgText("");
+    setShowMentions(false);
+  };
+
+  const handleInputChange = (val: string) => {
+    setMsgText(val);
+    const lastAt = val.lastIndexOf("@");
+    if (lastAt !== -1 && (lastAt === val.length - 1 || !val.slice(lastAt).includes(" "))) {
+      setShowMentions(true);
+      setMentionFilter(val.slice(lastAt + 1));
+    } else {
+      setShowMentions(false);
+    }
+  };
+
+  const insertMention = (name: string) => {
+    const lastAt = msgText.lastIndexOf("@");
+    setMsgText(msgText.slice(0, lastAt) + `@${name} `);
+    setShowMentions(false);
+    inputRef.current?.focus();
+  };
+
+  const lc = laneConfig[lane];
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
+        <div style={{ fontWeight: 600, color: T.white }}>Job Communication — {job.id}</div>
+        <div style={{ display: "flex", gap: 6 }}>
+          <Btn v="secondary" sz="sm" icon="note">Templates</Btn>
+          <Btn v="secondary" sz="sm" icon="upload">Export Log</Btn>
+        </div>
+      </div>
+
+      {/* Lane Tabs */}
+      <div style={{ display: "flex", gap: 4, marginBottom: 14 }}>
+        {(Object.keys(laneConfig) as Array<keyof typeof laneConfig>).map(l => {
+          const conf = laneConfig[l];
+          const count = messages.filter(m => m.lane === l).length;
+          const isActive = lane === l;
+          return (
+            <div key={l} onClick={() => setLane(l)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 8, cursor: "pointer", background: isActive ? `${conf.color}1a` : T.surfaceHigh, border: `1px solid ${isActive ? conf.color + "55" : T.border}`, transition: "all 0.12s" }}>
+              <Ic n={conf.icon} s={14} c={isActive ? conf.color : T.muted}/>
+              <span style={{ fontSize: 12, fontWeight: isActive ? 600 : 400, color: isActive ? conf.color : T.muted }}>{conf.label}</span>
+              <span style={{ fontSize: 10, background: isActive ? conf.color + "33" : T.surfaceTop, color: isActive ? conf.color : T.dim, borderRadius: 10, padding: "1px 6px", fontWeight: 600 }}>{count}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ background: `${lc.color}0a`, border: `1px solid ${lc.color}22`, borderRadius: 6, padding: "6px 12px", marginBottom: 12, display: "flex", gap: 6, alignItems: "center" }}>
+        <Ic n={lc.icon} s={13} c={lc.color}/>
+        <span style={{ fontSize: 11, color: lc.color }}>{lc.desc}</span>
+      </div>
+
+      {/* Messages */}
+      <div style={{ maxHeight: 400, overflowY: "auto", marginBottom: 14 }}>
+        {filteredMessages.length === 0 ? (
+          <div style={{ textAlign: "center", padding: 40, color: T.dim }}>
+            <div style={{ fontSize: 13 }}>No {lc.label.toLowerCase()} messages yet</div>
+          </div>
+        ) : filteredMessages.map((msg, i) => {
+          const member = TEAM_MEMBERS.find(m => m.id === msg.senderId);
+          const showDate = i === 0 || filteredMessages[i - 1].date !== msg.date;
+          return (
+            <div key={i}>
+              {showDate && (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "10px 0" }}>
+                  <div style={{ flex: 1, height: 1, background: T.border }}/>
+                  <span style={{ fontSize: 10, color: T.dim }}>{msg.date}</span>
+                  <div style={{ flex: 1, height: 1, background: T.border }}/>
+                </div>
+              )}
+              <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+                <UserAvatar member={member} size={28}/>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", gap: 6, alignItems: "baseline", marginBottom: 2 }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: T.white }}>{msg.sender}</span>
+                    <span style={{ fontSize: 10, color: T.dim }}>{msg.time}</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: T.text, lineHeight: 1.6 }}>
+                    {msg.text.split(/(@[\w\s]+?)(?=\s|$|[.,!?])/g).map((part, pi) => {
+                      if (part.startsWith("@")) {
+                        return <span key={pi} style={{ background: T.orangeDim, color: T.orange, padding: "1px 4px", borderRadius: 3, fontWeight: 600, fontSize: 11 }}>{part}</span>;
+                      }
+                      return <span key={pi}>{part}</span>;
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Input */}
+      <div style={{ position: "relative" }}>
+        {showMentions && (
+          <div style={{ position: "absolute", bottom: "100%", left: 0, right: 0, background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: 4, maxHeight: 160, overflowY: "auto", marginBottom: 4 }}>
+            {TEAM_MEMBERS.filter(m => m.name.toLowerCase().includes(mentionFilter.toLowerCase())).map(m => (
+              <div key={m.id} onClick={() => insertMention(m.name)} style={{ display: "flex", gap: 6, alignItems: "center", padding: "6px 8px", borderRadius: 5, cursor: "pointer" }}
+                onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = T.surfaceTop}
+                onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = "transparent"}
+              >
+                <UserAvatar member={m} size={22}/>
+                <span style={{ fontSize: 12, color: T.white }}>{m.name}</span>
+                <span style={{ fontSize: 10, color: T.muted }}>{ROLES[m.role]?.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder={`Message ${lc.label}... (type @ to mention)`}
+            value={msgText}
+            onChange={e => handleInputChange(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); handleSend(); } }}
+            style={{ flex: 1, background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 14px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
+            onFocus={e => (e.target as HTMLInputElement).style.borderColor = lc.color}
+            onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
+          />
+          <Btn v="primary" sz="sm" icon="send" onClick={handleSend} disabled={!msgText.trim()}>Send</Btn>
+        </div>
       </div>
     </div>
   );

@@ -183,6 +183,7 @@ export interface TeamMember {
   status: string;
   avatar: string;
   currentJob: string | null;
+  profilePic?: string;
 }
 
 export const TEAM_MEMBERS: TeamMember[] = [
@@ -205,6 +206,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "customers", label: "Customers", icon: "customer" },
       { id: "mitigation", label: "Drying Logs", icon: "moisture" },
       { id: "calendar", label: "Schedule", icon: "cal" },
+    ]},
+    { group: "Communication", items: [
+      { id: "messaging", label: "Messages", icon: "msg", badge: 6 },
     ]},
     { group: "Finance", items: [
       { id: "estimates", label: "Estimates", icon: "est" },
@@ -231,6 +235,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "mitigation", label: "Drying Logs", icon: "moisture" },
       { id: "calendar", label: "Schedule", icon: "cal" },
     ]},
+    { group: "Communication", items: [
+      { id: "messaging", label: "Messages", icon: "msg", badge: 3 },
+    ]},
     { group: "Job Tools", items: [
       { id: "estimates", label: "Estimates", icon: "est" },
       { id: "equipment", label: "Equipment", icon: "tool" },
@@ -243,6 +250,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "jobs", label: "Jobs", icon: "jobs" },
       { id: "estimates", label: "Estimates", icon: "est" },
       { id: "calendar", label: "Calendar", icon: "cal" },
+      { id: "messaging", label: "Messages", icon: "msg" },
     ]},
   ],
   office_admin: [
@@ -251,6 +259,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "jobs", label: "Jobs", icon: "jobs" },
       { id: "customers", label: "Customers", icon: "customer" },
       { id: "calendar", label: "Schedule", icon: "cal" },
+    ]},
+    { group: "Communication", items: [
+      { id: "messaging", label: "Messages", icon: "msg" },
     ]},
     { group: "Billing", items: [
       { id: "invoices", label: "Invoices", icon: "inv" },
@@ -264,11 +275,13 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "my_jobs", label: "My Jobs", icon: "myjobs", badge: 2 },
       { id: "mitigation", label: "Drying Logs", icon: "moisture" },
       { id: "equipment", label: "Equipment", icon: "tool" },
+      { id: "messaging", label: "Messages", icon: "msg", badge: 1 },
     ]},
   ],
   subcontractor: [
     { group: "My Work", items: [
       { id: "my_jobs", label: "My Jobs", icon: "myjobs" },
+      { id: "messaging", label: "Messages", icon: "msg" },
     ]},
   ],
 };

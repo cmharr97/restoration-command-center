@@ -5,6 +5,7 @@ import { DashboardPage } from "@/components/recon/DashboardPage";
 import { JobsPage } from "@/components/recon/JobsPage";
 import { JobDetailPage } from "@/components/recon/JobDetailPage";
 import { MitigationPage } from "@/components/recon/MitigationPage";
+import { MessagingPage } from "@/components/recon/MessagingPage";
 import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, ReportsPage, IntegrationsPage, SettingsPage, NewJobModal } from "@/components/recon/OtherPages";
 import { Ic } from "@/components/recon/ReconUI";
 
@@ -21,7 +22,7 @@ const Index = () => {
   }, [role]);
 
   const currentUser = TEAM_MEMBERS.find(m => m.role === role) || TEAM_MEMBERS[0];
-  const pageTitles: Record<string, string> = { dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs", estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users", equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Referrals / CRM", reports: "Reports", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs", job_detail: `Job ${selectedJob?.id || ""}` };
+  const pageTitles: Record<string, string> = { dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs", estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users", equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Referrals / CRM", reports: "Reports", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs", job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages" };
 
   const pages: Record<string, React.ReactNode> = {
     dashboard: <DashboardPage role={role} setActive={setActive} setSelectedJob={setSelectedJob}/>,
@@ -40,12 +41,13 @@ const Index = () => {
     integrations: <IntegrationsPage/>,
     settings: <SettingsPage role={role}/>,
     my_jobs: <MyJobsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
+    messaging: <MessagingPage role={role}/>,
   };
 
   return (
     <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, color: T.text, minHeight: "100vh", display: "flex", overflow: "hidden" }}>
       <ReconSidebar role={role} active={active} setActive={setActive} user={currentUser}/>
-      <div style={{ flex: 1, overflowY: "auto", height: "100vh" }}>
+      <div style={{ flex: 1, overflowY: active === "messaging" ? "hidden" : "auto", height: "100vh" }}>
         <TopBar pageTitle={pageTitles[active] || active} role={role} onNewJob={() => setShowNewJob(true)} onRoleChange={r => setRole(r)}/>
         {pages[active] || <div style={{ padding: 40, color: T.muted }}>Page not available</div>}
       </div>
