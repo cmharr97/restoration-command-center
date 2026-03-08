@@ -250,6 +250,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "jobs", label: "Jobs", icon: "jobs" },
       { id: "estimates", label: "Estimates", icon: "est" },
       { id: "calendar", label: "Calendar", icon: "cal" },
+      { id: "messaging", label: "Messages", icon: "msg" },
     ]},
   ],
   office_admin: [
