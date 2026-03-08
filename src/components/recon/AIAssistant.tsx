@@ -27,7 +27,7 @@ export const AIAssistant = ({ onClose }: { onClose: () => void }) => {
   }, [messages]);
 
   const streamChat = async (userMessages: Msg[], action?: string, jobId?: string | null) => {
-    const jobData = jobId ? JOBS.find(j => j.id === jobId) : JOBS.filter(j => !["paid"].includes(j.stage));
+    const jobData = jobId ? jobs.find(j => j.id === jobId) : jobs.filter(j => !["paid"].includes(j.stage));
 
     const resp = await fetch(CHAT_URL, {
       method: "POST",
