@@ -13,8 +13,8 @@ const ROLES = [
   { value: "subcontractor", label: "Subcontractor", desc: "View assigned jobs only" },
 ];
 
-const Auth = () => {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "signup"; onBack?: () => void }) => {
+  const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
