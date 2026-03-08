@@ -10,15 +10,23 @@ import { CalendarPage } from "@/components/recon/CalendarPage";
 import { AutomationPage } from "@/components/recon/AutomationPage";
 import { CustomerPortalPage } from "@/components/recon/CustomerPortalPage";
 import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, ReportsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
+import { AIAssistant } from "@/components/recon/AIAssistant";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
-  const [role, setRole] = useState("owner");
+  const { profile, signOut } = useAuth();
+  const [role, setRole] = useState(profile?.role || "owner");
   const [active, setActive] = useState("dashboard");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
+  const [showAI, setShowAI] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (profile?.role) setRole(profile.role);
+  }, [profile]);
 
   useEffect(() => {
     const roleNav = NAV[role] || NAV.owner;
@@ -89,10 +97,26 @@ const Index = () => {
     <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, color: T.text, minHeight: "100vh", display: "flex", overflow: "hidden" }}>
       {active !== "customer_portal" && <ReconSidebar role={role} active={active} setActive={setActive} user={currentUser}/>}
       <div style={{ flex: 1, overflowY: active === "messaging" ? "hidden" : "auto", height: "100vh" }}>
-        {active !== "customer_portal" && <TopBar pageTitle={pageTitles[active] || active} role={role} onNewJob={() => setShowNewJob(true)} onRoleChange={r => setRole(r)}/>}
+        {active !== "customer_portal" && <TopBar pageTitle={pageTitles[active] || active} role={role} onNewJob={() => setShowNewJob(true)} onRoleChange={r => setRole(r)} onSignOut={signOut}/>}
         {pages[active] || <div style={{ padding: 40, color: T.muted }}>Page not available</div>}
       </div>
       {showNewJob && <NewJobModal onClose={() => setShowNewJob(false)}/>}
+
+      {/* AI Assistant FAB */}
+      {!showAI && (
+        <button onClick={() => setShowAI(true)} style={{
+          position: "fixed", right: 24, bottom: 24, width: 56, height: 56,
+          borderRadius: "50%", background: `linear-gradient(135deg, ${T.orange}, #c84009)`,
+          border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: `0 8px 30px ${T.orangeGlow}`, zIndex: 999, fontSize: 24, transition: "transform 0.2s",
+        }}
+          onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)"}
+          onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"}
+        >
+          🤖
+        </button>
+      )}
+      {showAI && <AIAssistant onClose={() => setShowAI(false)} />}
     </div>
   );
 };
