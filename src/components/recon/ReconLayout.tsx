@@ -33,7 +33,6 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
 
   return (
     <>
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div onClick={onMobileClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 49, display: "none" }}
           className="mobile-overlay" />
@@ -127,17 +126,12 @@ export const TopBar = ({ pageTitle, role, onNewJob, onRoleChange, onSignOut, onM
         <span style={{ color: T.text, fontSize: 13, fontWeight: 500 }}>{pageTitle}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        {/* Theme toggle */}
         <button onClick={toggleTheme} title={isDark ? "Switch to light mode" : "Switch to dark mode"} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, display: "flex", alignItems: "center", padding: 6 }}>
           {isDark ? <Sun size={18} /> : <Moon size={18} />}
         </button>
-        <select value={role} onChange={e => onRoleChange(e.target.value)} className="hide-mobile" style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer", outline: "none" }}>
-          {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-        </select>
         {ROLES[role]?.canViewAllJobs !== false && <Btn v="primary" sz="sm" icon="plus" onClick={onNewJob}><span className="hide-mobile">New Job</span></Btn>}
         <div style={{ position: "relative", cursor: "pointer", padding: 4 }}>
           <Ic n="bell" s={17} c={T.muted}/>
-          <div style={{ position: "absolute", top: 2, right: 2, width: 7, height: 7, background: T.orange, borderRadius: "50%", border: `2px solid ${T.surface}` }}/>
         </div>
         {onSignOut && (
           <button onClick={onSignOut} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>
