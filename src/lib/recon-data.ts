@@ -235,6 +235,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "mitigation", label: "Drying Logs", icon: "moisture" },
       { id: "calendar", label: "Schedule", icon: "cal" },
     ]},
+    { group: "Communication", items: [
+      { id: "messaging", label: "Messages", icon: "msg", badge: 3 },
+    ]},
     { group: "Job Tools", items: [
       { id: "estimates", label: "Estimates", icon: "est" },
       { id: "equipment", label: "Equipment", icon: "tool" },
