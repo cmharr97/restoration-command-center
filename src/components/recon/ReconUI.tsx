@@ -1,7 +1,5 @@
 import React from "react";
 import { T } from "@/lib/recon-data";
-import logoDark from "@/assets/logo-dark-mode.png";
-import logoLight from "@/assets/logo-light-mode.png";
 
 // ── ICON SVG ──
 const iconPaths: Record<string, React.ReactNode> = {
