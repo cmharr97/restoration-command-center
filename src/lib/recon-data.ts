@@ -207,6 +207,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
       { id: "mitigation", label: "Drying Logs", icon: "moisture" },
       { id: "calendar", label: "Schedule", icon: "cal" },
     ]},
+    { group: "Communication", items: [
+      { id: "messaging", label: "Messages", icon: "msg", badge: 6 },
+    ]},
     { group: "Finance", items: [
       { id: "estimates", label: "Estimates", icon: "est" },
       { id: "invoices", label: "Invoices", icon: "inv" },
