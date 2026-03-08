@@ -102,33 +102,40 @@ interface TopBarProps {
   onMenuToggle?: () => void;
 }
 
-export const TopBar = ({ pageTitle, role, onNewJob, onRoleChange, onSignOut, onMenuToggle }: TopBarProps) => (
-  <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      {onMenuToggle && (
-        <button onClick={onMenuToggle} className="mobile-menu-btn" style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 6, display: "none", marginRight: 4 }}>
-          <Ic n="dash" s={20} />
-        </button>
-      )}
-      <span className="hide-mobile" style={{ color: T.dim, fontSize: 12 }}>ReCon Pro</span>
-      <Ic n="chevR" s={13} c={T.dim}/>
-      <span style={{ color: T.text, fontSize: 13, fontWeight: 500 }}>{pageTitle}</span>
-    </div>
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <select value={role} onChange={e => onRoleChange(e.target.value)} className="hide-mobile" style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer", outline: "none" }}>
-        {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-      </select>
-      {ROLES[role]?.canViewAllJobs !== false && <Btn v="primary" sz="sm" icon="plus" onClick={onNewJob}><span className="hide-mobile">New Job</span></Btn>}
-      <div style={{ position: "relative", cursor: "pointer", padding: 4 }}>
-        <Ic n="bell" s={17} c={T.muted}/>
-        <div style={{ position: "absolute", top: 2, right: 2, width: 7, height: 7, background: T.orange, borderRadius: "50%", border: `2px solid ${T.surface}` }}/>
+export const TopBar = ({ pageTitle, role, onNewJob, onRoleChange, onSignOut, onMenuToggle }: TopBarProps) => {
+  const { toggleTheme, isDark } = useTheme();
+  return (
+    <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {onMenuToggle && (
+          <button onClick={onMenuToggle} className="mobile-menu-btn" style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 6, display: "none", marginRight: 4 }}>
+            <Ic n="dash" s={20} />
+          </button>
+        )}
+        <span className="hide-mobile" style={{ color: T.dim, fontSize: 12 }}>ReCon Pro</span>
+        <Ic n="chevR" s={13} c={T.dim}/>
+        <span style={{ color: T.text, fontSize: 13, fontWeight: 500 }}>{pageTitle}</span>
       </div>
-      {onSignOut && (
-        <button onClick={onSignOut} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>
-          <span className="hide-mobile">Sign Out</span>
-          <span className="show-mobile" style={{ display: "none" }}>↪</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {/* Theme toggle */}
+        <button onClick={toggleTheme} title={isDark ? "Switch to light mode" : "Switch to dark mode"} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 8px", cursor: "pointer", color: T.muted, display: "flex", alignItems: "center", fontSize: 15 }}>
+          {isDark ? "☀️" : "🌙"}
         </button>
-      )}
+        <select value={role} onChange={e => onRoleChange(e.target.value)} className="hide-mobile" style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer", outline: "none" }}>
+          {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+        </select>
+        {ROLES[role]?.canViewAllJobs !== false && <Btn v="primary" sz="sm" icon="plus" onClick={onNewJob}><span className="hide-mobile">New Job</span></Btn>}
+        <div style={{ position: "relative", cursor: "pointer", padding: 4 }}>
+          <Ic n="bell" s={17} c={T.muted}/>
+          <div style={{ position: "absolute", top: 2, right: 2, width: 7, height: 7, background: T.orange, borderRadius: "50%", border: `2px solid ${T.surface}` }}/>
+        </div>
+        {onSignOut && (
+          <button onClick={onSignOut} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>
+            <span className="hide-mobile">Sign Out</span>
+            <span className="show-mobile" style={{ display: "none" }}>↪</span>
+          </button>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
