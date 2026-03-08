@@ -157,7 +157,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
   const EventCard = ({ ev, compact = false }: { ev: ScheduleEvent; compact?: boolean }) => {
     const blocked = getBlockedBy(ev);
     const job = jobs.find((j: any) => j.id === ev.jobId);
-    const assigneeMembers = ev.assignees.map(id => members.find((m: any) => m.id === id)).filter(Boolean) as TeamMember[];
+    const assigneeMembers = ev.assignees.map(id => members.find((m: any) => m.id === id)).filter(Boolean) as CalendarTeamMember[];
 
     return (
       <div
