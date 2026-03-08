@@ -84,10 +84,17 @@ export const JobsPage = ({ role, setSelectedJob, setActive }: JobsPageProps) => 
 
         <div>
           {jobs.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 60, color: T.dim }}>
-              <Ic n="jobs" s={48} c={T.dim}/>
-              <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No jobs yet</div>
-              <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Click "New Job" to create your first job and get started.</div>
+            <div style={{ textAlign: "center", padding: 48 }}>
+              <div style={{ width: 56, height: 56, borderRadius: 14, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+                <Ic n="jobs" s={28} c={T.orange}/>
+              </div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: T.white }}>Job Pipeline</div>
+              <div style={{ fontSize: 13, color: T.muted, marginTop: 8, maxWidth: 420, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
+                Create your first restoration job to start tracking the full lifecycle — from initial lead through drying, reconstruction, and final payment.
+              </div>
+              <div style={{ marginTop: 20 }}>
+                <Btn v="primary" icon="plus" onClick={() => {}}>Create First Job</Btn>
+              </div>
             </div>
           ) : filtered.length === 0 ? (
             <div style={{ textAlign: "center", padding: 40, color: T.dim }}>No jobs match that filter</div>
