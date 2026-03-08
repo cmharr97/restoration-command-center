@@ -31,10 +31,6 @@ const Index = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (profile?.role) setRole(profile.role);
-  }, [profile]);
-
-  useEffect(() => {
     const roleNav = NAV[role] || NAV.owner;
     const allPages = roleNav.flatMap(g => g.items.map(i => i.id));
     if (!allPages.includes(active) && active !== "job_detail") { setActive(allPages[0] || "dashboard"); }
