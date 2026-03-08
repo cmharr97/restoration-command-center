@@ -330,7 +330,7 @@ export const AutomationPage = ({ role }: { role: string }) => {
                     ))}
                   </div>
                 </div>
-                <Sel label="Notify Who" options={TEAM_MEMBERS.map(m => ({ value: m.id, label: `${m.name} (${ROLES[m.role]?.label})` }))}/>
+                <Sel label="Notify Who" options={[{ value: "pm", label: "Project Manager" }, { value: "owner", label: "Owner" }, { value: "all", label: "All Team Members" }]}/>
               </div>
               <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 16 }}>
                 <Btn v="secondary" onClick={() => setShowNewRule(false)}>Cancel</Btn>

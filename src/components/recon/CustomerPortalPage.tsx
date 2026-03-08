@@ -183,7 +183,7 @@ export const CustomerPortalPage = () => {
               <div style={{ fontSize: 11, color: "#999", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Insurance Status</div>
               {[
                 { label: "Carrier", value: job.carrier },
-                { label: "Claim Number", value: job.claimNo },
+                { label: "Claim Number", value: job.claim_no },
                 { label: "Adjuster", value: job.adjuster },
                 { label: "Estimate Status", value: "Submitted — awaiting approval" },
               ].map((item, i) => (

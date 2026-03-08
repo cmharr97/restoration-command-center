@@ -55,7 +55,7 @@ const getWeekDates = (base: Date) => {
 
 // ── MAIN COMPONENT ──
 // Define local TeamMember type  
-interface TeamMember {
+interface CalendarTeamMember {
   id: string;
   name: string;
   role: string;
