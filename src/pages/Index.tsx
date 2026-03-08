@@ -40,15 +40,20 @@ const Index = () => {
     setMobileMenuOpen(false);
   }, [active]);
 
-  const currentUser = TEAM_MEMBERS.find(m => m.role === role) || TEAM_MEMBERS[0];
-  // Use profile data if available
   const displayUser = profile ? {
-    ...currentUser,
-    name: profile.name || currentUser.name,
-    email: profile.email || currentUser.email,
-    role: profile.role || currentUser.role,
-    avatar: profile.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || currentUser.avatar,
-  } : currentUser;
+    id: "u0",
+    name: profile.name || "User",
+    email: profile.email || "",
+    role: profile.role || "owner",
+    avatar: profile.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "U",
+    phone: "",
+    certs: [] as string[],
+    status: "office",
+    currentJob: null,
+  } : {
+    id: "u0", name: "User", email: "", role: role, avatar: "U",
+    phone: "", certs: [] as string[], status: "office", currentJob: null,
+  };
 
   const pageTitles: Record<string, string> = {
     dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs",
