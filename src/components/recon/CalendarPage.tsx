@@ -55,7 +55,7 @@ const getWeekDates = (base: Date) => {
 
 // ── MAIN COMPONENT ──
 // Define local TeamMember type  
-interface TeamMember {
+interface CalendarTeamMember {
   id: string;
   name: string;
   role: string;
@@ -157,7 +157,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
   const EventCard = ({ ev, compact = false }: { ev: ScheduleEvent; compact?: boolean }) => {
     const blocked = getBlockedBy(ev);
     const job = jobs.find((j: any) => j.id === ev.jobId);
-    const assigneeMembers = ev.assignees.map(id => members.find((m: any) => m.id === id)).filter(Boolean) as TeamMember[];
+    const assigneeMembers = ev.assignees.map(id => members.find((m: any) => m.id === id)).filter(Boolean) as CalendarTeamMember[];
 
     return (
       <div
@@ -453,7 +453,7 @@ export const CalendarPage = ({ role }: { role: string }) => {
                 <div style={{ fontSize: 11, color: T.dim, textTransform: "uppercase", marginBottom: 6 }}>Assigned Crew</div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {selectedEvent.assignees.map(id => {
-                    const m = members.find((t: any) => t.id === id) as TeamMember | undefined;
+                    const m = members.find((t: any) => t.id === id) as CalendarTeamMember | undefined;
                     return m ? (
                       <div key={id} style={{ display: "flex", gap: 6, alignItems: "center", background: T.surfaceHigh, padding: "6px 10px", borderRadius: 6 }}>
                         <UserAvatar member={m} size={24}/>

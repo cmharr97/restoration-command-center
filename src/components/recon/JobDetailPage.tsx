@@ -4,6 +4,16 @@ import { Badge, ReconCard as Card, Btn, Ic, Divider } from "@/components/recon/R
 import { UserAvatar } from "@/components/recon/MessagingPage";
 import { useDryingLogs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
 
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  email?: string;
+  avatar?: string;
+  status?: string;
+  profilePic?: string;
+}
+
 interface JobDetailProps {
   job: DbJob;
   role: string;
@@ -56,13 +66,13 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
 
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginBottom: 0, padding: "12px 16px", background: T.surfaceHigh, borderRadius: 10, border: `1px solid ${T.border}` }}>
           {[
-            { label: "Loss Type", value: `${LOSS_TYPES.find(l => l.id === job.lossType)?.label || job.lossType} – ${job.lossSubtype}`, icon: "drop" },
-            { label: "Date of Loss", value: job.dateOfLoss, icon: "cal" },
-            { label: "Carrier", value: job.carrier, icon: "shield" },
-            { label: "Claim #", value: job.claimNo, icon: "note" },
-            { label: "PM", value: job.pm, icon: "users" },
-            ...(isWater && job.dayOfDrying ? [{ label: "Drying Day", value: `Day ${job.dayOfDrying}`, icon: "moisture" }] : []),
-            ...(rm.canViewInvoices && job.contractValue ? [{ label: "Contract", value: `$${job.contractValue.toLocaleString()}`, icon: "dollar" }] : []),
+            { label: "Loss Type", value: `${LOSS_TYPES.find(l => l.id === job.loss_type)?.label || job.loss_type} – ${job.loss_subtype || ""}`, icon: "drop" },
+            { label: "Date of Loss", value: job.date_of_loss || "TBD", icon: "cal" },
+            { label: "Carrier", value: job.carrier || "TBD", icon: "shield" },
+            { label: "Claim #", value: job.claim_no || "TBD", icon: "note" },
+            { label: "PM", value: job.pm_name || "Unassigned", icon: "users" },
+            ...(isWater && job.day_of_drying ? [{ label: "Drying Day", value: `Day ${job.day_of_drying}`, icon: "moisture" }] : []),
+            ...(rm.canViewInvoices && job.contract_value ? [{ label: "Contract", value: `$${job.contract_value.toLocaleString()}`, icon: "dollar" }] : []),
           ].map((inf, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <Ic n={inf.icon} s={13} c={T.orange}/>
@@ -87,7 +97,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
             <Card>
               <div style={{ fontWeight: 600, color: T.white, marginBottom: 12 }}>Loss Details</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {[["Type", `${LOSS_TYPES.find(l => l.id === job.lossType)?.label} – ${job.lossSubtype}`], ["Date of Loss", job.dateOfLoss], ["Description", job.notes]].map(([k, v]) => (
+                {[["Type", `${LOSS_TYPES.find(l => l.id === job.loss_type)?.label || job.loss_type} – ${job.loss_subtype || ""}`], ["Date of Loss", job.date_of_loss || "TBD"], ["Description", job.notes || "No notes"]].map(([k, v]) => (
                   <div key={k}><div style={{ fontSize: 11, color: T.dim, marginBottom: 2 }}>{k}</div><div style={{ fontSize: 13, color: T.text, lineHeight: 1.5 }}>{v}</div></div>
                 ))}
               </div>
@@ -95,7 +105,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
             <Card>
               <div style={{ fontWeight: 600, color: T.white, marginBottom: 12 }}>Insurance Info</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {[["Carrier", job.carrier], ["Claim #", job.claimNo], ["Adjuster", job.adjuster], ["Adj. Phone", job.adjusterPhone || "TBD"]].map(([k, v]) => (
+                {[["Carrier", job.carrier || "TBD"], ["Claim #", job.claim_no || "TBD"], ["Adjuster", job.adjuster || "TBD"], ["Adj. Phone", job.adjuster_phone || "TBD"]].map(([k, v]) => (
                   <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ fontSize: 11, color: T.muted }}>{k}</span>
                     <span style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{v}</span>
@@ -105,24 +115,18 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
             </Card>
             <Card>
               <div style={{ fontWeight: 600, color: T.white, marginBottom: 12 }}>Assigned Team</div>
-              {[{ label: "Project Manager", name: job.pm }, ...job.techs.map((t, i) => ({ label: i === 0 ? "Lead Tech" : "Technician", name: t }))].map((m, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: `linear-gradient(135deg,${T.orange},${T.blue})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff" }}>{m.name?.split(" ").map(x => x[0]).join("") || "?"}</div>
-                  <div><div style={{ fontSize: 12, fontWeight: 500, color: T.text }}>{m.name || "Unassigned"}</div><div style={{ fontSize: 10, color: T.muted }}>{m.label}</div></div>
+              {job.pm_name ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: `linear-gradient(135deg,${T.orange},${T.blue})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: "#fff" }}>{job.pm_name?.split(" ").map(x => x[0]).join("") || "?"}</div>
+                  <div><div style={{ fontSize: 12, fontWeight: 500, color: T.text }}>{job.pm_name}</div><div style={{ fontSize: 10, color: T.muted }}>Project Manager</div></div>
                 </div>
-              ))}
-              {job.techs.length === 0 && <div style={{ fontSize: 12, color: T.dim }}>No techs assigned yet</div>}
+              ) : (
+                <div style={{ fontSize: 12, color: T.dim }}>No team assigned yet</div>
+              )}
             </Card>
             <Card>
               <div style={{ fontWeight: 600, color: T.white, marginBottom: 12 }}>Active Equipment</div>
-              {job.equipment.length === 0 ? <div style={{ fontSize: 12, color: T.dim }}>No equipment on site</div> :
-                job.equipment.map((eq, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, padding: "7px 10px", background: T.surfaceHigh, borderRadius: 7 }}>
-                    <div><div style={{ fontSize: 12, fontWeight: 500, color: T.text }}>{eq.name}</div><div style={{ fontSize: 10, color: T.muted }}>Placed {eq.placed}</div></div>
-                    <Badge color="blue" small>Qty: {eq.qty}</Badge>
-                  </div>
-                ))
-              }
+              <div style={{ fontSize: 12, color: T.dim }}>No equipment tracked yet</div>
             </Card>
           </div>
         )}
@@ -139,7 +143,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
                   </div>
                 </div>
                 {logs.length === 0 ? <div style={{ textAlign: "center", padding: 40, color: T.dim }}>No drying logs yet for this job</div> :
-                  logs.map((log, i) => (
+                  logs.map((log: any, i: number) => (
                     <Card key={i} style={{ marginBottom: 12 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -148,27 +152,31 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
                             <div style={{ fontSize: 10, color: T.muted }}>{log.date}</div>
                           </div>
                           <div>
-                            <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>Tech: {log.tech}</div>
-                            <div style={{ fontSize: 11, color: T.muted }}>{log.equipment.dehus} dehus · {log.equipment.airMovers} air movers · {log.equipment.scrubbers} scrubbers</div>
+                            <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>Tech: {log.tech_name}</div>
+                            <div style={{ fontSize: 11, color: T.muted }}>
+                              {log.equipment ? `${log.equipment.dehus || 0} dehus · ${log.equipment.airMovers || 0} air movers · ${log.equipment.scrubbers || 0} scrubbers` : "No equipment data"}
+                            </div>
                           </div>
                         </div>
                         <div style={{ display: "flex", gap: 16 }}>
-                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 10, color: T.dim }}>GPP</div><div style={{ fontSize: 16, fontWeight: 700, color: log.gpp < 50 ? T.greenBright : T.yellowBright }}>{log.gpp}</div></div>
-                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 10, color: T.dim }}>TEMP</div><div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{log.temp}°F</div></div>
-                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 10, color: T.dim }}>RH</div><div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{log.rh}%</div></div>
+                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 10, color: T.dim }}>GPP</div><div style={{ fontSize: 16, fontWeight: 700, color: (log.gpp || 0) < 50 ? T.greenBright : T.yellowBright }}>{log.gpp || "—"}</div></div>
+                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 10, color: T.dim }}>TEMP</div><div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{log.temp || "—"}°F</div></div>
+                          <div style={{ textAlign: "center" }}><div style={{ fontSize: 10, color: T.dim }}>RH</div><div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{log.rh || "—"}%</div></div>
                         </div>
                       </div>
-                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
-                        {log.readings.map((r, ri) => (
-                          <div key={ri} style={{ background: r.status === "wet" ? T.yellowDim : T.greenDim, border: `1px solid ${r.status === "wet" ? T.yellowBright + "44" : T.greenBright + "44"}`, borderRadius: 7, padding: "5px 10px", textAlign: "center", minWidth: 70 }}>
-                            <div style={{ fontSize: 10, color: r.status === "wet" ? T.yellowBright : T.greenBright, fontWeight: 500 }}>{r.room}</div>
-                            <div style={{ fontSize: 9, color: T.muted }}>{r.material}</div>
-                            <div style={{ fontSize: 14, fontWeight: 700, color: r.status === "wet" ? T.yellowBright : T.greenBright }}>{r.reading}%</div>
-                            <div style={{ fontSize: 8, color: r.status === "wet" ? T.yellowBright : T.greenBright }}>{r.status === "dry" ? "✓ DRY" : `WET (${r.dry})`}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{ fontSize: 12, color: T.muted, fontStyle: "italic" }}>{log.notes}</div>
+                      {Array.isArray(log.readings) && log.readings.length > 0 && (
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+                          {log.readings.map((r: any, ri: number) => (
+                            <div key={ri} style={{ background: r.status === "wet" ? T.yellowDim : T.greenDim, border: `1px solid ${r.status === "wet" ? T.yellowBright + "44" : T.greenBright + "44"}`, borderRadius: 7, padding: "5px 10px", textAlign: "center", minWidth: 70 }}>
+                              <div style={{ fontSize: 10, color: r.status === "wet" ? T.yellowBright : T.greenBright, fontWeight: 500 }}>{r.room}</div>
+                              <div style={{ fontSize: 9, color: T.muted }}>{r.material}</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: r.status === "wet" ? T.yellowBright : T.greenBright }}>{r.reading}%</div>
+                              <div style={{ fontSize: 8, color: r.status === "wet" ? T.yellowBright : T.greenBright }}>{r.status === "dry" ? "✓ DRY" : `WET (${r.dry})`}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {log.notes && <div style={{ fontSize: 12, color: T.muted, fontStyle: "italic" }}>{log.notes}</div>}
                     </Card>
                   ))
                 }
@@ -181,7 +189,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <Card>
               <div style={{ fontWeight: 600, color: T.white, marginBottom: 12 }}>Customer</div>
-              {[["Name", job.customer], ["Phone", job.phone], ["Address", job.address]].map(([k, v]) => (
+              {[["Name", job.customer], ["Phone", job.phone || "N/A"], ["Address", job.address]].map(([k, v]) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                   <span style={{ fontSize: 11, color: T.muted }}>{k}</span>
                   <span style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{v}</span>
@@ -190,7 +198,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
             </Card>
             <Card>
               <div style={{ fontWeight: 600, color: T.white, marginBottom: 12 }}>Insurance Adjuster</div>
-              {[["Carrier", job.carrier], ["Adjuster", job.adjuster], ["Phone", job.adjusterPhone || "TBD"], ["Claim #", job.claimNo]].map(([k, v]) => (
+              {[["Carrier", job.carrier || "TBD"], ["Adjuster", job.adjuster || "TBD"], ["Phone", job.adjuster_phone || "TBD"], ["Claim #", job.claim_no || "TBD"]].map(([k, v]) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                   <span style={{ fontSize: 11, color: T.muted }}>{k}</span>
                   <span style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{v}</span>
@@ -200,7 +208,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
           </div>
         )}
 
-        {tab === "communication" && <JobCommunicationTab job={job} role={role}/>}
+        {tab === "communication" && <JobCommunicationTab job={job} role={role} members={members}/>}
 
         {tab === "photos" && (
           <div>
@@ -208,18 +216,10 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
               <div style={{ fontWeight: 600, color: T.white }}>Photo Documentation</div>
               <Btn v="primary" sz="sm" icon="photo">Upload Photos</Btn>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 10 }}>
-              {[["Initial damage – kitchen floor", "Mar 2"], ["Extraction complete", "Mar 2"], ["Equipment placement", "Mar 2"], ["Moisture map – Day 1", "Mar 2"], ["Day 3 – hardwood cupping", "Mar 4"], ["Day 5 – progress", "Mar 6"]].map(([cap, date], i) => (
-                <div key={i} style={{ borderRadius: 8, overflow: "hidden", border: `1px solid ${T.border}`, cursor: "pointer" }}>
-                  <div style={{ height: 90, background: `linear-gradient(135deg, ${T.surfaceHigh}, ${T.surfaceTop})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Ic n="photo" s={24} c={T.dim}/>
-                  </div>
-                  <div style={{ padding: "6px 8px" }}>
-                    <div style={{ fontSize: 10, color: T.text, fontWeight: 500 }}>{cap}</div>
-                    <div style={{ fontSize: 9, color: T.muted }}>{date}</div>
-                  </div>
-                </div>
-              ))}
+            <div style={{ textAlign: "center", padding: 40, color: T.dim }}>
+              <Ic n="photo" s={32} c={T.dim}/>
+              <div style={{ marginTop: 12, fontSize: 13 }}>No photos uploaded yet</div>
+              <div style={{ fontSize: 11, marginTop: 4 }}>Upload photos to document this job</div>
             </div>
           </div>
         )}
@@ -230,48 +230,23 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
               <div style={{ fontWeight: 600, color: T.white }}>Documents</div>
               <Btn v="primary" sz="sm" icon="upload">Upload Document</Btn>
             </div>
-            {[
-              { name: "Authorization to Perform Services (AOB).pdf", type: "Legal", date: "Mar 2", signed: true },
-              { name: "Certificate of Completion – Mitigation.pdf", type: "Mitigation", date: "Pending", signed: false },
-              { name: "Xactimate Estimate v1.pdf", type: "Estimate", date: "Mar 3", signed: false },
-              { name: "State Farm Claim Summary.pdf", type: "Insurance", date: "Mar 2", signed: false },
-              { name: "Drying Report – Day 1-5.pdf", type: "Drying Log", date: "Auto-generated", signed: false },
-            ].map((doc, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", background: T.surfaceHigh, borderRadius: 8, marginBottom: 8, border: `1px solid ${T.border}` }}>
-                <Ic n="note" s={18} c={T.blueBright}/>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: T.text }}>{doc.name}</div>
-                  <div style={{ fontSize: 11, color: T.muted }}>{doc.type} · {doc.date}</div>
-                </div>
-                {doc.signed && <Badge color="green" small>Signed</Badge>}
-                <Btn v="secondary" sz="sm" icon="eye">View</Btn>
-              </div>
-            ))}
+            <div style={{ textAlign: "center", padding: 40, color: T.dim }}>
+              <Ic n="note" s={32} c={T.dim}/>
+              <div style={{ marginTop: 12, fontSize: 13 }}>No documents uploaded yet</div>
+            </div>
           </div>
         )}
 
         {tab === "timeline" && (
           <Card>
             <div style={{ fontWeight: 600, color: T.white, marginBottom: 16 }}>Job Timeline</div>
-            {[
-              { date: "Mar 2", event: "Job created – Water damage Cat 2", color: T.orange },
-              { date: "Mar 2", event: "AOB signed by customer", color: T.purpleBright },
-              { date: "Mar 2", event: "Mitigation crew dispatched", color: T.blueBright },
-              { date: "Mar 2", event: "Equipment placed – 2 dehus, 8 air movers", color: T.greenBright },
-              { date: "Mar 3", event: "Day 2 drying log recorded", color: T.blueBright },
-              { date: "Mar 4", event: "Xactimate estimate submitted to State Farm", color: T.yellowBright },
-              { date: "Mar 4", event: "Hall drywall reached dry standard", color: T.greenBright },
-              { date: "Mar 6", event: "Day 5 drying check – subfloor still elevated", color: T.redBright },
-            ].map((ev, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, marginBottom: 12 }}>
-                <div style={{ width: 60, fontSize: 11, color: T.muted, textAlign: "right", flexShrink: 0, paddingTop: 2 }}>{ev.date}</div>
-                <div style={{ width: 10, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: ev.color, flexShrink: 0 }}/>
-                  {i < 7 && <div style={{ width: 1, flex: 1, background: T.border }}/>}
-                </div>
-                <div style={{ fontSize: 12, color: T.text, paddingTop: 1 }}>{ev.event}</div>
+            <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+              <div style={{ width: 60, fontSize: 11, color: T.muted, textAlign: "right", flexShrink: 0, paddingTop: 2 }}>{new Date(job.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
+              <div style={{ width: 10, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.orange, flexShrink: 0 }}/>
               </div>
-            ))}
+              <div style={{ fontSize: 12, color: T.text, paddingTop: 1 }}>Job created – {job.loss_type} damage</div>
+            </div>
           </Card>
         )}
 
@@ -281,23 +256,13 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
               <div style={{ fontWeight: 600, color: T.white }}>Internal Notes</div>
               <Btn v="primary" sz="sm" icon="plus">Add Note</Btn>
             </div>
-            {[
-              { author: "Destiny Kim", date: "Mar 6", note: "Subfloor readings still elevated in laundry. May need to demo to expose and dry. Will discuss with adjuster tomorrow.", isInternal: true },
-              { author: "Marcus Webb", date: "Mar 4", note: "Hardwood in kitchen showing significant cupping. Took detailed photos. Likely non-salvageable — will need replacement.", isInternal: true },
-              { author: "Tyler Nguyen", date: "Mar 4", note: "Xactimate estimate submitted. Included line items for hardwood replacement based on field notes.", isInternal: false },
-            ].map((n, i) => (
-              <Card key={i} style={{ marginBottom: 10 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: `linear-gradient(135deg,${T.orange},${T.blue})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{n.author.split(" ").map(x => x[0]).join("")}</div>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: T.white }}>{n.author}</span>
-                    {n.isInternal && <Badge color="orange" small>Internal</Badge>}
-                  </div>
-                  <span style={{ fontSize: 11, color: T.muted }}>{n.date}</span>
-                </div>
-                <div style={{ fontSize: 13, color: T.text, lineHeight: 1.6 }}>{n.note}</div>
+            {job.notes ? (
+              <Card>
+                <div style={{ fontSize: 13, color: T.text, lineHeight: 1.6 }}>{job.notes}</div>
               </Card>
-            ))}
+            ) : (
+              <div style={{ textAlign: "center", padding: 40, color: T.dim }}>No notes yet</div>
+            )}
           </div>
         )}
       </div>
@@ -306,13 +271,13 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
 };
 
 // ── JOB COMMUNICATION TAB ──
-const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
+const JobCommunicationTab = ({ job, role, members }: { job: DbJob; role: string; members: any[] }) => {
   const [lane, setLane] = useState<"internal" | "customer" | "insurance" | "subs">("internal");
   const [msgText, setMsgText] = useState("");
   const [showMentions, setShowMentions] = useState(false);
   const [mentionFilter, setMentionFilter] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const currentUser = TEAM_MEMBERS.find(m => m.role === role) || TEAM_MEMBERS[0];
+  const currentUser = members.find((m: any) => m.role === role) || members[0] || { id: "unknown", name: "You", role, avatar: "?" };
 
   const laneConfig = {
     internal: { label: "Internal Team", color: T.orange, icon: "users", desc: "Only visible to your team" },
@@ -322,18 +287,7 @@ const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
   };
 
   type CommMessage = { sender: string; senderId: string; text: string; time: string; date: string; lane: string; mentions?: string[] };
-  
-  const [messages, setMessages] = useState<CommMessage[]>([
-    { sender: "Destiny Kim", senderId: "u2", text: "Crew mobilized. Marcus and Carlos are en route. Equipment loaded.", time: "2:30 PM", date: "Mar 2", lane: "internal" },
-    { sender: "Marcus Webb", senderId: "u5", text: "On site. Standing water confirmed in kitchen, laundry, and hall. Beginning extraction now.", time: "3:15 PM", date: "Mar 2", lane: "internal" },
-    { sender: "Destiny Kim", senderId: "u2", text: `Mrs. Martinez, our crew is on site and beginning water extraction. We'll have equipment running overnight. I'll update you tomorrow with drying progress.`, time: "4:00 PM", date: "Mar 2", lane: "customer" },
-    { sender: "Destiny Kim", senderId: "u2", text: "Tom, this is Destiny from ReCon Pro. We're on the Martinez loss (Claim #SF-2026-44821). Cat 2 water damage from washing machine supply line. Mitigation underway. Will send initial scope and photos today.", time: "4:30 PM", date: "Mar 2", lane: "insurance" },
-    { sender: "Marcus Webb", senderId: "u5", text: "Day 3 update: Hall drywall reached dry standard. Kitchen hardwood cupping significantly — documenting for potential replacement. @Tyler Nguyen please factor into Xactimate.", time: "10:00 AM", date: "Mar 4", lane: "internal", mentions: ["Tyler Nguyen"] },
-    { sender: "Tyler Nguyen", senderId: "u3", text: "Estimate submitted to State Farm. Included hardwood replacement. Adj: Tom Hendricks notified.", time: "4:15 PM", date: "Mar 4", lane: "insurance" },
-    { sender: "Destiny Kim", senderId: "u2", text: "Mrs. Martinez — drying is progressing well. Kitchen floor has some cupping that we're monitoring. Our estimator has submitted the full scope to State Farm. We'll keep you posted on approval.", time: "5:00 PM", date: "Mar 4", lane: "customer" },
-    { sender: "Marcus Webb", senderId: "u5", text: "Day 5: Most areas approaching dry standard. Laundry subfloor at 20% (19% needed). May need demo. @Destiny Kim let's discuss.", time: "10:20 AM", date: "Mar 6", lane: "internal", mentions: ["Destiny Kim"] },
-    { sender: "Destiny Kim", senderId: "u2", text: "Approved by @John Davis — proceeding with laundry subfloor demo tomorrow. Will supplement Xactimate accordingly.", time: "10:45 AM", date: "Mar 8", lane: "internal", mentions: ["John Davis"] },
-  ]);
+  const [messages, setMessages] = useState<CommMessage[]>([]);
 
   const filteredMessages = messages.filter(m => m.lane === lane);
 
@@ -345,7 +299,7 @@ const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
       senderId: currentUser.id,
       text: msgText,
       time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
-      date: "Mar 8",
+      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
       lane,
       mentions: mentions.length > 0 ? mentions : undefined,
     }]);
@@ -383,7 +337,6 @@ const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
         </div>
       </div>
 
-      {/* Lane Tabs */}
       <div style={{ display: "flex", gap: 4, marginBottom: 14 }}>
         {(Object.keys(laneConfig) as Array<keyof typeof laneConfig>).map(l => {
           const conf = laneConfig[l];
@@ -404,14 +357,13 @@ const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
         <span style={{ fontSize: 11, color: lc.color }}>{lc.desc}</span>
       </div>
 
-      {/* Messages */}
       <div style={{ maxHeight: 400, overflowY: "auto", marginBottom: 14 }}>
         {filteredMessages.length === 0 ? (
           <div style={{ textAlign: "center", padding: 40, color: T.dim }}>
             <div style={{ fontSize: 13 }}>No {lc.label.toLowerCase()} messages yet</div>
           </div>
         ) : filteredMessages.map((msg, i) => {
-          const member = TEAM_MEMBERS.find(m => m.id === msg.senderId);
+          const member = members.find((m: any) => m.id === msg.senderId);
           const showDate = i === 0 || filteredMessages[i - 1].date !== msg.date;
           return (
             <div key={i}>
@@ -429,14 +381,7 @@ const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
                     <span style={{ fontSize: 12, fontWeight: 600, color: T.white }}>{msg.sender}</span>
                     <span style={{ fontSize: 10, color: T.dim }}>{msg.time}</span>
                   </div>
-                  <div style={{ fontSize: 12, color: T.text, lineHeight: 1.6 }}>
-                    {msg.text.split(/(@[\w\s]+?)(?=\s|$|[.,!?])/g).map((part, pi) => {
-                      if (part.startsWith("@")) {
-                        return <span key={pi} style={{ background: T.orangeDim, color: T.orange, padding: "1px 4px", borderRadius: 3, fontWeight: 600, fontSize: 11 }}>{part}</span>;
-                      }
-                      return <span key={pi}>{part}</span>;
-                    })}
-                  </div>
+                  <div style={{ fontSize: 12, color: T.text, lineHeight: 1.6 }}>{msg.text}</div>
                 </div>
               </div>
             </div>
@@ -444,11 +389,10 @@ const JobCommunicationTab = ({ job, role }: { job: Job; role: string }) => {
         })}
       </div>
 
-      {/* Input */}
       <div style={{ position: "relative" }}>
         {showMentions && (
           <div style={{ position: "absolute", bottom: "100%", left: 0, right: 0, background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: 4, maxHeight: 160, overflowY: "auto", marginBottom: 4 }}>
-            {TEAM_MEMBERS.filter(m => m.name.toLowerCase().includes(mentionFilter.toLowerCase())).map(m => (
+            {members.filter((m: any) => m.name.toLowerCase().includes(mentionFilter.toLowerCase())).map((m: any) => (
               <div key={m.id} onClick={() => insertMention(m.name)} style={{ display: "flex", gap: 6, alignItems: "center", padding: "6px 8px", borderRadius: 5, cursor: "pointer" }}
                 onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = T.surfaceTop}
                 onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = "transparent"}
