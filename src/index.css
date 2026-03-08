@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root,
+  .dark {
     --background: 220 10% 5%;
     --foreground: 220 15% 90%;
     
@@ -78,6 +79,119 @@
     --sidebar-accent-foreground: 220 15% 90%;
     --sidebar-border: 220 10% 18%;
     --sidebar-ring: 22 90% 48%;
+    
+    /* T token CSS vars for inline styles */
+    --t-bg: #0c0d0f;
+    --t-surface: #161719;
+    --t-surface-high: #1e2024;
+    --t-surface-top: #26292f;
+    --t-border: #2a2d33;
+    --t-border-mid: #363a42;
+    --t-white: #f4f5f7;
+    --t-text: #dde1e8;
+    --t-muted: #7c8494;
+    --t-dim: #4a5060;
+    --t-orange-dim: rgba(232,92,13,0.12);
+    --t-orange-glow: rgba(232,92,13,0.25);
+    --t-green-dim: rgba(34,197,94,0.12);
+    --t-blue-dim: rgba(59,130,246,0.12);
+    --t-yellow-dim: rgba(245,158,11,0.12);
+    --t-red-dim: rgba(239,68,68,0.12);
+    --t-purple-dim: rgba(167,139,250,0.12);
+    --t-teal-dim: rgba(45,212,191,0.12);
+  }
+
+  .light {
+    --background: 0 0% 97%;
+    --foreground: 220 15% 15%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
+    
+    --primary: 22 90% 48%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 15% 15%;
+    
+    --muted: 220 14% 94%;
+    --muted-foreground: 220 8% 46%;
+    
+    --accent: 220 14% 92%;
+    --accent-foreground: 220 15% 15%;
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 22 90% 48%;
+    
+    --surface: 0 0% 100%;
+    --surface-high: 220 14% 96%;
+    --surface-top: 220 14% 92%;
+    --border-mid: 220 13% 80%;
+    
+    --recon-orange: 22 90% 48%;
+    --recon-orange-light: 22 90% 42%;
+    --recon-orange-dim: 22 90% 48% / 0.08;
+    --recon-orange-glow: 22 90% 48% / 0.15;
+    
+    --recon-green: 142 72% 29%;
+    --recon-green-bright: 142 71% 35%;
+    --recon-green-dim: 142 71% 45% / 0.10;
+    
+    --recon-blue: 217 91% 50%;
+    --recon-blue-bright: 217 91% 50%;
+    --recon-blue-dim: 217 91% 60% / 0.10;
+    
+    --recon-yellow: 38 92% 40%;
+    --recon-yellow-bright: 38 92% 40%;
+    --recon-yellow-dim: 38 92% 50% / 0.10;
+    
+    --recon-red: 0 84% 50%;
+    --recon-red-bright: 0 84% 50%;
+    --recon-red-dim: 0 84% 60% / 0.10;
+    
+    --recon-purple: 263 70% 50%;
+    --recon-purple-bright: 263 70% 50%;
+    --recon-purple-dim: 263 70% 74% / 0.10;
+    
+    --recon-teal: 174 85% 28%;
+    --recon-teal-bright: 174 70% 35%;
+    --recon-teal-dim: 174 70% 50% / 0.10;
+    
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 15% 15%;
+    --sidebar-primary: 22 90% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 15% 15%;
+    --sidebar-border: 220 13% 87%;
+    --sidebar-ring: 22 90% 48%;
+    
+    /* T token CSS vars for inline styles */
+    --t-bg: #f7f7f8;
+    --t-surface: #ffffff;
+    --t-surface-high: #f3f4f6;
+    --t-surface-top: #e8eaed;
+    --t-border: #d9dce2;
+    --t-border-mid: #c5c9d2;
+    --t-white: #1a1d24;
+    --t-text: #2d3240;
+    --t-muted: #6b7280;
+    --t-dim: #9ca3af;
+    --t-orange-dim: rgba(232,92,13,0.08);
+    --t-orange-glow: rgba(232,92,13,0.15);
+    --t-green-dim: rgba(34,197,94,0.10);
+    --t-blue-dim: rgba(59,130,246,0.10);
+    --t-yellow-dim: rgba(245,158,11,0.10);
+    --t-red-dim: rgba(239,68,68,0.10);
+    --t-purple-dim: rgba(167,139,250,0.10);
+    --t-teal-dim: rgba(45,212,191,0.10);
   }
 }
 
