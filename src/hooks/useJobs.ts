@@ -58,29 +58,21 @@ export const useJobs = () => {
   const { toast } = useToast();
 
   const fetchJobs = useCallback(async () => {
-    if (!user) { setLoading(false); return; }
+    if (!user) { setJobs([]); setLoading(false); return; }
     setLoading(true);
-    let query = supabase
+    // RLS handles company isolation now — just fetch all visible jobs
+    const { data, error } = await supabase
       .from("jobs")
       .select("*")
       .order("created_at", { ascending: false });
 
-    // Company-level isolation: only show jobs for current company
-    if (companyId) {
-      query = query.eq("company_id", companyId);
-    } else {
-      // No company yet — only show jobs created by this user
-      query = query.eq("created_by", user.id);
-    }
-
-    const { data, error } = await query;
     if (error) {
       console.error("Error fetching jobs:", error);
     } else {
       setJobs((data || []) as DbJob[]);
     }
     setLoading(false);
-  }, [user, companyId]);
+  }, [user]);
 
   useEffect(() => {
     fetchJobs();
@@ -114,6 +106,18 @@ export const useJobs = () => {
       toast({ title: "Error creating job", description: error.message, variant: "destructive" });
       return null;
     }
+
+    // Log activity
+    await supabase.from("activity_logs").insert({
+      title: `Job ${jobId} created`,
+      description: `${jobData.loss_type} – ${jobData.customer}`,
+      action_type: "status_change",
+      job_id: jobId,
+      user_id: user.id,
+      user_name: user.user_metadata?.name || user.email || "User",
+      company_id: companyId || null,
+    } as any);
+
     toast({ title: "Job Created", description: `${jobId} – ${jobData.customer}` });
     await fetchJobs();
     return data;
@@ -145,20 +149,16 @@ export const useJobs = () => {
 export const useTeamMembers = () => {
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
-      let query = supabase.from("profiles").select("*").order("created_at");
-      if (companyId) {
-        query = query.eq("company_id", companyId);
-      }
-      const { data, error } = await query;
+      // RLS handles company scoping
+      const { data, error } = await supabase.from("profiles").select("*").order("created_at");
       if (!error) setMembers(data || []);
       setLoading(false);
     };
     fetch();
-  }, [companyId]);
+  }, []);
 
   return { members, loading };
 };
@@ -184,22 +184,17 @@ export const useDryingLogs = (jobId?: string) => {
 export const useClaims = (jobId?: string) => {
   const [claims, setClaims] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("claims").select("*").order("created_at", { ascending: false });
-      if (jobId) {
-        query = query.eq("job_id", jobId);
-      } else if (companyId) {
-        query = query.eq("company_id", companyId);
-      }
+      if (jobId) query = query.eq("job_id", jobId);
       const { data, error } = await query;
       if (!error) setClaims(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId, companyId]);
+  }, [jobId]);
 
   return { claims, loading };
 };
@@ -207,22 +202,17 @@ export const useClaims = (jobId?: string) => {
 export const useSupplements = (jobId?: string) => {
   const [supplements, setSupplements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("supplements").select("*").order("created_at", { ascending: false });
-      if (jobId) {
-        query = query.eq("job_id", jobId);
-      } else if (companyId) {
-        query = query.eq("company_id", companyId);
-      }
+      if (jobId) query = query.eq("job_id", jobId);
       const { data, error } = await query;
       if (!error) setSupplements(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId, companyId]);
+  }, [jobId]);
 
   return { supplements, loading };
 };
@@ -230,22 +220,17 @@ export const useSupplements = (jobId?: string) => {
 export const usePayments = (jobId?: string) => {
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("payments").select("*").order("created_at", { ascending: false });
-      if (jobId) {
-        query = query.eq("job_id", jobId);
-      } else if (companyId) {
-        query = query.eq("company_id", companyId);
-      }
+      if (jobId) query = query.eq("job_id", jobId);
       const { data, error } = await query;
       if (!error) setPayments(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId, companyId]);
+  }, [jobId]);
 
   return { payments, loading };
 };
@@ -253,20 +238,16 @@ export const usePayments = (jobId?: string) => {
 export const useSubcontractors = () => {
   const [subs, setSubs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
-      let query = supabase.from("subcontractors").select("*").order("name");
-      if (companyId) {
-        query = query.eq("company_id", companyId);
-      }
-      const { data, error } = await query;
+      // RLS handles company scoping
+      const { data, error } = await supabase.from("subcontractors").select("*").order("name");
       if (!error) setSubs(data || []);
       setLoading(false);
     };
     fetch();
-  }, [companyId]);
+  }, []);
 
   return { subs, loading };
 };
@@ -274,22 +255,34 @@ export const useSubcontractors = () => {
 export const useActivityLogs = (jobId?: string) => {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { companyId } = useAuth();
 
   useEffect(() => {
     const fetch = async () => {
       let query = supabase.from("activity_logs").select("*").order("created_at", { ascending: false }).limit(50);
-      if (jobId) {
-        query = query.eq("job_id", jobId);
-      } else if (companyId) {
-        query = query.eq("company_id", companyId);
-      }
+      if (jobId) query = query.eq("job_id", jobId);
       const { data, error } = await query;
       if (!error) setLogs(data || []);
       setLoading(false);
     };
     fetch();
-  }, [jobId, companyId]);
+  }, [jobId]);
 
   return { logs, loading };
+};
+
+export const useJobPhotos = (jobId?: string) => {
+  const [photos, setPhotos] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchPhotos = useCallback(async () => {
+    let query = supabase.from("job_photos").select("*").order("created_at", { ascending: false });
+    if (jobId) query = query.eq("job_id", jobId);
+    const { data, error } = await query;
+    if (!error) setPhotos(data || []);
+    setLoading(false);
+  }, [jobId]);
+
+  useEffect(() => { fetchPhotos(); }, [fetchPhotos]);
+
+  return { photos, loading, refetch: fetchPhotos };
 };

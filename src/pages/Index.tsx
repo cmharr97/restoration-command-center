@@ -22,17 +22,13 @@ import type { DbJob } from "@/hooks/useJobs";
 
 const Index = () => {
   const { profile, signOut } = useAuth();
-  const [role, setRole] = useState(profile?.role || "owner");
+  const [role] = useState(profile?.role || "owner");
   const [active, setActive] = useState("dashboard");
   const [selectedJob, setSelectedJob] = useState<DbJob | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (profile?.role) setRole(profile.role);
-  }, [profile]);
 
   useEffect(() => {
     const roleNav = NAV[role] || NAV.owner;
@@ -117,7 +113,7 @@ const Index = () => {
             pageTitle={pageTitles[active] || active}
             role={role}
             onNewJob={() => setShowNewJob(true)}
-            onRoleChange={r => setRole(r)}
+            onRoleChange={() => {}}
             onSignOut={signOut}
             onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
           />

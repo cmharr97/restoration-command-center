@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { T, ROLES, JOB_STAGES, stageInfo, stageColor } from "@/lib/recon-data";
 import { Badge, Btn, Ic, Inp } from "@/components/recon/ReconUI";
 import { useJobs, type DbJob } from "@/hooks/useJobs";
@@ -35,73 +35,6 @@ const JobCard = ({ job, onClick }: { job: DbJob; onClick: () => void }) => {
   );
 };
 
-// Simple map component using Leaflet
-const JobMapView = ({ jobs, onSelectJob }: { jobs: DbJob[]; onSelectJob: (job: DbJob) => void }) => {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return;
-
-    const loadMap = async () => {
-      const L = await import("leaflet");
-      // Import leaflet CSS
-      if (!document.querySelector('link[href*="leaflet"]')) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-        document.head.appendChild(link);
-      }
-
-      const map = L.map(mapRef.current!, { zoomControl: true }).setView([30.2672, -97.7431], 11); // Austin TX default
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '© OpenStreetMap',
-      }).addTo(map);
-
-      // Add markers for jobs with addresses
-      jobs.forEach(job => {
-        // For now, use a simple geocoded offset based on job id hash
-        const hash = job.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-        const lat = 30.2672 + (hash % 50 - 25) * 0.004;
-        const lng = -97.7431 + (hash % 30 - 15) * 0.005;
-
-        const stageColors: Record<string, string> = {
-          lead: "#6b7280", assessment: "#f59e0b", auth_signed: "#a78bfa", mitigation: "#e85c0d",
-          mit_complete: "#3b82f6", recon_est: "#f59e0b", reconstruction: "#2dd4bf",
-          final_walk: "#a78bfa", invoiced: "#3b82f6", paid: "#22c55e",
-        };
-        const color = stageColors[job.stage] || "#6b7280";
-
-        const icon = L.divIcon({
-          html: `<div style="background:${color};width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>`,
-          className: "",
-          iconSize: [16, 16],
-          iconAnchor: [8, 8],
-        });
-
-        L.marker([lat, lng], { icon })
-          .addTo(map)
-          .bindPopup(`<b>${job.id}</b><br/>${job.customer}<br/><small>${job.address}</small><br/><span style="color:${color};font-weight:bold">${stageInfo(job.stage).label}</span>`);
-      });
-
-      mapInstanceRef.current = map;
-    };
-
-    loadMap();
-
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-  }, [jobs]);
-
-  return (
-    <div ref={mapRef} style={{ width: "100%", height: 500, borderRadius: 12, overflow: "hidden", border: `1px solid ${T.border}` }} />
-  );
-};
-
 interface JobsPageProps {
   role: string;
   setSelectedJob: (job: DbJob) => void;
@@ -111,7 +44,6 @@ interface JobsPageProps {
 export const JobsPage = ({ role, setSelectedJob, setActive }: JobsPageProps) => {
   const [stageFilter, setStageFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const rm = ROLES[role];
   const { jobs, loading } = useJobs();
 
@@ -132,13 +64,6 @@ export const JobsPage = ({ role, setSelectedJob, setActive }: JobsPageProps) => 
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Jobs</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>{jobs.length} total job{jobs.length !== 1 ? "s" : ""}</p>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          {rm.canViewAllJobs && (
-            <Btn v="secondary" sz="sm" icon="map" onClick={() => setViewMode(viewMode === "list" ? "map" : "list")}>
-              {viewMode === "list" ? "Map View" : "List View"}
-            </Btn>
-          )}
-        </div>
       </div>
       <div style={{ padding: "0 28px" }}>
         {jobs.length > 0 && (
@@ -157,23 +82,19 @@ export const JobsPage = ({ role, setSelectedJob, setActive }: JobsPageProps) => 
           </>
         )}
 
-        {viewMode === "map" && jobs.length > 0 ? (
-          <JobMapView jobs={filtered} onSelectJob={(j) => { setSelectedJob(j); setActive("job_detail"); }} />
-        ) : (
-          <div>
-            {jobs.length === 0 ? (
-              <div style={{ textAlign: "center", padding: 60, color: T.dim }}>
-                <Ic n="jobs" s={48} c={T.dim}/>
-                <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No jobs yet</div>
-                <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Click "New Job" to create your first job and get started.</div>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div style={{ textAlign: "center", padding: 40, color: T.dim }}>No jobs match that filter</div>
-            ) : (
-              filtered.map(j => <JobCard key={j.id} job={j} onClick={() => { setSelectedJob(j); setActive("job_detail"); }}/>)
-            )}
-          </div>
-        )}
+        <div>
+          {jobs.length === 0 ? (
+            <div style={{ textAlign: "center", padding: 60, color: T.dim }}>
+              <Ic n="jobs" s={48} c={T.dim}/>
+              <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No jobs yet</div>
+              <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Click "New Job" to create your first job and get started.</div>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div style={{ textAlign: "center", padding: 40, color: T.dim }}>No jobs match that filter</div>
+          ) : (
+            filtered.map(j => <JobCard key={j.id} job={j} onClick={() => { setSelectedJob(j); setActive("job_detail"); }}/>)
+          )}
+        </div>
       </div>
     </div>
   );
