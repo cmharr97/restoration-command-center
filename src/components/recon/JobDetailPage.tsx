@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { T, ROLES, JOB_STAGES, LOSS_TYPES, DRYING_LOGS, stageInfo, stageColor, type Job } from "@/lib/recon-data";
+import { useState, useRef, useEffect } from "react";
+import { T, ROLES, JOB_STAGES, LOSS_TYPES, DRYING_LOGS, TEAM_MEMBERS, stageInfo, stageColor, type Job } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Divider } from "@/components/recon/ReconUI";
+import { UserAvatar } from "@/components/recon/MessagingPage";
 
 interface JobDetailProps {
   job: Job;
