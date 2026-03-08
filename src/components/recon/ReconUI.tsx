@@ -53,7 +53,7 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
 );
 
 // ── LOGO (theme-aware SVG matching the brand mark) ──
-export const Logo = ({ size = 38 }: { size?: number }) => {
+export const Logo = ({ size = 52 }: { size?: number }) => {
   // Top chevron + "ReCon" text: white in dark mode, dark in light mode
   const swap = "var(--t-white)";
   const orange = "#e85c0d";
