@@ -150,7 +150,7 @@ export const CustomerPortalPage = () => {
             </div>
 
             <div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #e5e7eb", marginBottom: 16 }}>
-              <div style={{ fontSize: 11, color: "#999", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Drying Progress — Day {job.dayOfDrying}</div>
+              <div style={{ fontSize: 11, color: "#999", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Drying Progress — Day {job.day_of_drying}</div>
               {logs.length > 0 && (() => {
                 const latest = logs[logs.length - 1];
                 const dry = latest.readings.filter(r => r.status === "dry").length;
