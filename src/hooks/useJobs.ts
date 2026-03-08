@@ -85,6 +85,7 @@ export const useJobs = () => {
   const createJob = async (jobData: NewJobData) => {
     if (!user) return null;
     const jobId = `J-${Date.now().toString().slice(-4)}`;
+    const isInsurance = jobData.payment_type === "insurance";
     const { data, error } = await supabase.from("jobs").insert({
       id: jobId,
       customer: jobData.customer,
@@ -93,15 +94,17 @@ export const useJobs = () => {
       loss_type: jobData.loss_type || "water",
       loss_subtype: jobData.loss_subtype || "",
       stage: "lead",
-      carrier: jobData.carrier || "",
-      claim_no: jobData.claim_no || "",
-      adjuster: jobData.adjuster || "",
-      adjuster_phone: jobData.adjuster_phone || "",
+      payment_type: jobData.payment_type || "insurance",
+      carrier: isInsurance ? (jobData.carrier || "") : "",
+      claim_no: isInsurance ? (jobData.claim_no || "") : "",
+      adjuster: isInsurance ? (jobData.adjuster || "") : "",
+      adjuster_phone: isInsurance ? (jobData.adjuster_phone || "") : "",
+      adjuster_email: isInsurance ? (jobData.adjuster_email || "") : "",
       date_of_loss: jobData.date_of_loss || null,
       pm_name: jobData.pm_name || "",
       priority: jobData.priority || "normal",
       notes: jobData.notes || "",
-      mortgage_company: jobData.mortgage_company || "",
+      mortgage_company: isInsurance ? (jobData.mortgage_company || "") : "",
       created_by: user.id,
       company_id: companyId || null,
     } as any).select().single();
