@@ -133,6 +133,7 @@ export const EquipmentPage = () => (
 export const MyJobsPage = ({ role, setSelectedJob, setActive }: { role: string; setSelectedJob: (job: DbJob) => void; setActive: (id: string) => void }) => {
   const [clockedIn, setClockedIn] = useState(false);
   const { jobs, loading } = useJobs();
+  const { toast } = useToast();
 
   return (
     <div style={{ padding: "0 0 40px" }}>
