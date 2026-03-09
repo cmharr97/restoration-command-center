@@ -401,7 +401,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1, duration: 0.6 }}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: "rgba(34,197,94,0.15)" }}>✓</div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "rgba(34,197,94,0.15)" }}><Ic n="check" s={10} c="#22c55e"/></div>
                     <div>
                       <div className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>Payment Recorded</div>
                       <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>Carrier — $18,400</div>
