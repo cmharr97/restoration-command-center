@@ -368,10 +368,13 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
               <MetricCard label="Completed (Month)" value={closedThisMonth.length} icon="check" color={T.greenBright} onClick={() => setActive("jobs")} subtitle="Jobs closed this month" />
             </div>
 
-            {/* ═══ ZONE 2: JOB PIPELINE ═══ */}
+            {/* ═══ ZONE 2: JOB PIPELINE (Drag & Drop) ═══ */}
             <Card style={{ marginBottom: 20, padding: "16px 0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px", marginBottom: 14 }}>
-                <div style={{ fontWeight: 700, fontSize: 14, color: T.white }}>Job Pipeline</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontWeight: 700, fontSize: 14, color: T.white }}>Job Pipeline</span>
+                  <span style={{ fontSize: 10, color: T.dim, fontWeight: 500 }}>Drag to move</span>
+                </div>
                 <Btn v="ghost" sz="sm" onClick={() => setActive("jobs")}>View All →</Btn>
               </div>
               {/* Stage progress bar */}
@@ -382,14 +385,19 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
                   return cnt > 0 ? <div key={s.id} style={{ flex: pct, background: s.color, minWidth: 3, borderRadius: 2 }} title={`${s.label}: ${cnt}`}/> : null;
                 })}
               </div>
-              {/* Horizontal scrolling pipeline */}
-              <div style={{ overflowX: "auto", padding: "0 16px", WebkitOverflowScrolling: "touch" }}>
-                <div style={{ display: "flex", gap: 10, minWidth: "max-content", paddingBottom: 4 }}>
-                  {JOB_STAGES.map(s => (
-                    <PipelineColumn key={s.id} stage={s} jobs={jobs} onJobClick={handleJobClick} />
-                  ))}
+              {/* Horizontal scrolling pipeline with DnD */}
+              <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <div style={{ overflowX: "auto", padding: "0 16px", WebkitOverflowScrolling: "touch" }}>
+                  <div style={{ display: "flex", gap: 10, minWidth: "max-content", paddingBottom: 4 }}>
+                    {JOB_STAGES.map(s => (
+                      <PipelineColumn key={s.id} stage={s} jobs={jobs} onJobClick={handleJobClick} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+                <DragOverlay>
+                  {draggingJob ? <DragOverlayCard job={draggingJob} /> : null}
+                </DragOverlay>
+              </DndContext>
             </Card>
 
             {/* ═══ ZONE 3 & 4: ATTENTION + ACTIVITY side by side ═══ */}
