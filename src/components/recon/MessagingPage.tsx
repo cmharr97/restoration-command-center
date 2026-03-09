@@ -198,7 +198,7 @@ export const MessagingPage = ({ role }: { role: string }) => {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      await supabase.from("messages").insert({
+      await (supabase as any).from("messages").insert({
         channel_id: activeChannel,
         sender_id: user.id,
         sender_name: currentUser.name,
