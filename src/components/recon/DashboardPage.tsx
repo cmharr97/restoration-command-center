@@ -97,7 +97,7 @@ const WelcomeDashboard = ({ onNewJob }: { onNewJob?: () => void }) => (
       border: `1px solid ${T.orange}22`, borderRadius: 14,
       padding: "36px 32px", textAlign: "center", marginBottom: 24,
     }}>
-      <div style={{ fontSize: 32, marginBottom: 12 }}>🏗️</div>
+      <div style={{ width: 48, height: 48, borderRadius: 12, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}><Ic n="jobs" s={24} c={T.orange}/></div>
       <h2 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Welcome to ReCon Pro</h2>
       <p style={{ fontSize: 14, color: T.muted, margin: "0 0 6px", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
         The all-in-one command center for restoration companies. Manage jobs, insurance claims, drying logs, supplements, payments, and subcontractors — all in one place.
