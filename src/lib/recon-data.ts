@@ -135,6 +135,9 @@ export const TRADES = [
 // ── NAVIGATION ──
 export const NAV: Record<string, { group: string; items: { id: string; label: string; icon: string; badge?: number }[] }[]> = {
   owner: [
+    { group: "Home", items: [
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
+    ]},
     { group: "Operations", items: [
       { id: "jobs", label: "Jobs", icon: "jobs" },
       { id: "referrals", label: "Lead Pipeline", icon: "chart" },
@@ -156,7 +159,6 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     ]},
     { group: "Analytics", items: [
       { id: "reports", label: "Reports", icon: "chart" },
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
     { group: "System", items: [
       { id: "settings", label: "Settings", icon: "cog" },
