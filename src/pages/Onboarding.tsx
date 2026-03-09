@@ -148,7 +148,7 @@ const Onboarding = () => {
                 background: workspaceMode === "blank" ? T.orangeDim : T.surfaceHigh,
                 transition: "all 0.2s",
               }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>🏗️</div>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}><Ic n="jobs" s={24} c={T.orange}/></div>
                 <div style={{ fontWeight: 700, color: T.white, fontSize: 15, marginBottom: 6 }}>Blank Workspace</div>
                 <div style={{ fontSize: 12, color: T.muted, lineHeight: 1.5 }}>Start fresh with an empty company. Add your own jobs, team, and data from scratch.</div>
               </div>
