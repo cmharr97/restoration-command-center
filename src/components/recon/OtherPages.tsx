@@ -47,8 +47,8 @@ export const InvoicesPage = ({ role }: { role: string }) => {
       <div style={{ padding: "0 28px" }}>
         <Card style={{ textAlign: "center", padding: 48 }}>
           <Ic n="inv" s={40} c={T.dim}/>
-          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Invoices Module</div>
-          <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Invoices will appear here when you create them from completed jobs. QuickBooks integration coming soon — you'll need an API key.</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Invoices</div>
+          <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Invoices will appear here when you create them from completed jobs. Use the Payments section within each job to track financial activity.</div>
         </Card>
       </div>
     </div>
