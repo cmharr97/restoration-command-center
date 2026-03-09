@@ -120,8 +120,8 @@ const Onboarding = () => {
       <div style={{ width: 580, margin: "0 auto", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "24px 40px 26px", maxHeight: "calc(100vh - 20px)", overflowY: "auto" }}>
         {/* Header */}
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: -6 }}>
-            <Logo width={320} height={128} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 0 }}>
+            <Logo size={300} />
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Set Up Your Company</h1>
           <p style={{ color: T.muted, fontSize: 13, margin: "0 0 18px" }}>Let's get your restoration business running on ReCon Pro</p>
