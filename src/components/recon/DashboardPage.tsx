@@ -81,7 +81,7 @@ const DemoBanner = ({ jobs }: { jobs: DbJob[] }) => {
       borderRadius: 8, padding: "8px 16px", marginBottom: 16,
       display: "flex", alignItems: "center", gap: 10,
     }}>
-      <span style={{ fontSize: 14 }}>🎯</span>
+      <span style={{ fontSize: 14 }}><Ic n="star" s={14} c={T.orange}/></span>
       <span style={{ fontSize: 12, color: T.orange, fontWeight: 600 }}>Demo Workspace</span>
       <span style={{ fontSize: 11, color: T.muted }}>You're viewing sample data. Create real jobs anytime — demo data won't interfere.</span>
     </div>
