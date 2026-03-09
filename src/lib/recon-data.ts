@@ -103,18 +103,18 @@ export const ROLES: Record<string, {
 
 // ── JOB LIFECYCLE STAGES ──
 export const JOB_STAGES = [
-  { id: "lead", label: "New Lead", color: T.muted, icon: "📋" },
-  { id: "inspection", label: "Inspection Scheduled", color: T.yellowBright, icon: "🔍" },
-  { id: "mitigation", label: "Mitigation In Progress", color: T.orange, icon: "💧" },
-  { id: "drying", label: "Drying Monitoring", color: T.blueBright, icon: "📊" },
-  { id: "estimate_submitted", label: "Estimate Submitted", color: T.purpleBright, icon: "📐" },
-  { id: "supplement", label: "Supplement Submitted", color: T.yellowBright, icon: "📝" },
-  { id: "carrier_approval", label: "Carrier Approval Pending", color: T.redBright, icon: "⏳" },
-  { id: "recon_scheduled", label: "Reconstruction Scheduled", color: T.tealBright, icon: "📅" },
-  { id: "reconstruction", label: "Reconstruction In Progress", color: T.teal, icon: "🔨" },
-  { id: "punch_list", label: "Punch List", color: T.purpleBright, icon: "✅" },
-  { id: "invoiced", label: "Final Invoice Sent", color: T.blueBright, icon: "🧾" },
-  { id: "closed", label: "Closed", color: T.greenBright, icon: "💰" },
+  { id: "lead", label: "New Lead", color: T.muted, icon: "est" },
+  { id: "inspection", label: "Inspection Scheduled", color: T.yellowBright, icon: "search" },
+  { id: "mitigation", label: "Mitigation In Progress", color: T.orange, icon: "drop" },
+  { id: "drying", label: "Drying Monitoring", color: T.blueBright, icon: "moisture" },
+  { id: "estimate_submitted", label: "Estimate Submitted", color: T.purpleBright, icon: "est" },
+  { id: "supplement", label: "Supplement Submitted", color: T.yellowBright, icon: "note" },
+  { id: "carrier_approval", label: "Carrier Approval Pending", color: T.redBright, icon: "clock" },
+  { id: "recon_scheduled", label: "Reconstruction Scheduled", color: T.tealBright, icon: "cal" },
+  { id: "reconstruction", label: "Reconstruction In Progress", color: T.teal, icon: "tool" },
+  { id: "punch_list", label: "Punch List", color: T.purpleBright, icon: "check" },
+  { id: "invoiced", label: "Final Invoice Sent", color: T.blueBright, icon: "inv" },
+  { id: "closed", label: "Closed", color: T.greenBright, icon: "dollar" },
 ];
 
 export const LOSS_TYPES = [
