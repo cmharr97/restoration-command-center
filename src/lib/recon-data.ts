@@ -136,85 +136,87 @@ export const TRADES = [
 export const NAV: Record<string, { group: string; items: { id: string; label: string; icon: string; badge?: number }[] }[]> = {
   owner: [
     { group: "Operations", items: [
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
       { id: "jobs", label: "Jobs", icon: "jobs" },
-      { id: "claims", label: "Insurance Jobs", icon: "shield" },
-      { id: "mitigation", label: "Drying Logs", icon: "moisture" },
-      { id: "calendar", label: "Schedule", icon: "cal" },
+      { id: "referrals", label: "Lead Pipeline", icon: "chart" },
+      { id: "customers", label: "Customers", icon: "customer" },
     ]},
-    { group: "Finance", items: [
-      { id: "supplements", label: "Supplements", icon: "est" },
+    { group: "Project Management", items: [
+      { id: "calendar", label: "Schedule", icon: "cal" },
+      { id: "subcontractors", label: "Subcontractors", icon: "truck" },
+      { id: "mitigation", label: "Drying Logs", icon: "moisture" },
+    ]},
+    { group: "Financials", items: [
       { id: "payments", label: "Payments", icon: "dollar" },
-      { id: "estimates", label: "Estimates", icon: "est" },
-      { id: "invoices", label: "Invoices", icon: "inv" },
+      { id: "supplements", label: "Supplements", icon: "est" },
+      { id: "claims", label: "Insurance Jobs", icon: "shield" },
     ]},
     { group: "Communication", items: [
       { id: "messaging", label: "Messages", icon: "msg" },
+      { id: "customer_portal", label: "Homeowner Portal", icon: "myjobs" },
     ]},
-    { group: "Team", items: [
-      { id: "team", label: "Team & Users", icon: "users" },
-      { id: "subcontractors", label: "Subcontractors", icon: "truck" },
-      { id: "equipment", label: "Equipment", icon: "tool" },
-    ]},
-    { group: "Growth", items: [
-      { id: "customers", label: "Customers", icon: "customer" },
-      { id: "referrals", label: "Lead Pipeline", icon: "chart" },
+    { group: "Analytics", items: [
       { id: "reports", label: "Reports", icon: "chart" },
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
     { group: "System", items: [
-      { id: "automations", label: "Automations", icon: "plug" },
-      { id: "integrations", label: "Integrations", icon: "plug" },
       { id: "settings", label: "Settings", icon: "cog" },
+      { id: "team", label: "Team & Users", icon: "users" },
+      { id: "equipment", label: "Equipment", icon: "tool" },
     ]},
   ],
   project_manager: [
-    { group: "My Work", items: [
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
+    { group: "Operations", items: [
       { id: "jobs", label: "My Jobs", icon: "jobs" },
-      { id: "claims", label: "Insurance Jobs", icon: "shield" },
-      { id: "mitigation", label: "Drying Logs", icon: "moisture" },
-      { id: "calendar", label: "Schedule", icon: "cal" },
+      { id: "customers", label: "Customers", icon: "customer" },
     ]},
-    { group: "Finance", items: [
+    { group: "Project Management", items: [
+      { id: "calendar", label: "Schedule", icon: "cal" },
+      { id: "subcontractors", label: "Subcontractors", icon: "truck" },
+      { id: "mitigation", label: "Drying Logs", icon: "moisture" },
+    ]},
+    { group: "Financials", items: [
       { id: "supplements", label: "Supplements", icon: "est" },
-      { id: "estimates", label: "Estimates", icon: "est" },
+      { id: "claims", label: "Insurance Jobs", icon: "shield" },
     ]},
     { group: "Communication", items: [
       { id: "messaging", label: "Messages", icon: "msg" },
     ]},
-    { group: "Job Tools", items: [
-      { id: "equipment", label: "Equipment", icon: "tool" },
-      { id: "subcontractors", label: "Subcontractors", icon: "truck" },
+    { group: "Analytics", items: [
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
   ],
   estimator: [
-    { group: "My Work", items: [
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
+    { group: "Operations", items: [
       { id: "jobs", label: "Jobs", icon: "jobs" },
-      { id: "claims", label: "Insurance Jobs", icon: "shield" },
+    ]},
+    { group: "Financials", items: [
       { id: "supplements", label: "Supplements", icon: "est" },
-      { id: "estimates", label: "Estimates", icon: "est" },
-      { id: "calendar", label: "Calendar", icon: "cal" },
+      { id: "claims", label: "Insurance Jobs", icon: "shield" },
+    ]},
+    { group: "Communication", items: [
       { id: "messaging", label: "Messages", icon: "msg" },
+    ]},
+    { group: "Analytics", items: [
+      { id: "calendar", label: "Calendar", icon: "cal" },
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
   ],
   office_admin: [
     { group: "Operations", items: [
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
       { id: "jobs", label: "Jobs", icon: "jobs" },
-      { id: "claims", label: "Insurance Jobs", icon: "shield" },
       { id: "customers", label: "Customers", icon: "customer" },
-      { id: "calendar", label: "Schedule", icon: "cal" },
+      { id: "referrals", label: "Lead Pipeline", icon: "chart" },
     ]},
-    { group: "Finance", items: [
+    { group: "Financials", items: [
       { id: "payments", label: "Payments", icon: "dollar" },
-      { id: "invoices", label: "Invoices", icon: "inv" },
+      { id: "claims", label: "Insurance Jobs", icon: "shield" },
     ]},
     { group: "Communication", items: [
       { id: "messaging", label: "Messages", icon: "msg" },
     ]},
-    { group: "Growth", items: [
-      { id: "referrals", label: "Referrals / CRM", icon: "handshake" },
+    { group: "Analytics", items: [
+      { id: "calendar", label: "Schedule", icon: "cal" },
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
   ],
   field_tech: [
