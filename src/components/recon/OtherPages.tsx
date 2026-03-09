@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { T, ROLES, JOB_STAGES, LOSS_TYPES, stageColor, stageInfo } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel, Divider } from "@/components/recon/ReconUI";
 import { useJobs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
@@ -178,9 +178,8 @@ export const MyJobsPage = ({ role, setSelectedJob, setActive }: { role: string; 
                 <Btn v="primary" sz="sm" onClick={() => { setSelectedJob(j); setActive("job_detail"); }}>Open Job</Btn>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
-                <Btn v="secondary" sz="sm" icon="moisture" onClick={() => toast({ title: "Log Reading", description: "Opening moisture log form..." })}>Log Reading</Btn>
-                <Btn v="secondary" sz="sm" icon="photo" onClick={() => toast({ title: "Photos", description: "Camera integration coming soon" })}>Add Photos</Btn>
-                <Btn v="secondary" sz="sm" icon="note" onClick={() => toast({ title: "Note added" })}>Add Note</Btn>
+                <Btn v="secondary" sz="sm" icon="moisture" onClick={() => { setSelectedJob(j); setActive("job_detail"); }}>Log Reading</Btn>
+                <Btn v="secondary" sz="sm" icon="photo" onClick={() => { setSelectedJob(j); setActive("job_detail"); }}>Photos</Btn>
               </div>
             </Card>
           ))
@@ -267,7 +266,7 @@ export const IntegrationsPage = () => (
                       <Badge color="gray" small>Not Connected</Badge>
                     </div>
                     <div style={{ fontSize: 11, color: T.muted, lineHeight: 1.5, marginBottom: 10 }}>{int.desc}</div>
-                    <span style={{ fontSize: 11, color: T.dim, fontStyle: "italic" }}>Requires API key — coming soon</span>
+                    <span style={{ fontSize: 11, color: T.dim, fontStyle: "italic" }}>Requires API key</span>
                   </div>
                 </div>
               </Card>
@@ -290,7 +289,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
   const [loaded, setLoaded] = useState(false);
 
   // Load company data
-  useState(() => {
+  useEffect(() => {
     if (companyId) {
       supabase.from("companies").select("*").eq("id", companyId).single().then(({ data }) => {
         if (data) {
@@ -304,7 +303,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
         setLoaded(true);
       });
     } else { setLoaded(true); }
-  });
+  }, [companyId]);
 
   const handleSaveCompany = async () => {
     if (!companyId) { toast({ title: "No company linked", variant: "destructive" }); return; }
@@ -328,7 +327,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
       </div>
       <div style={{ padding: "0 28px" }}>
         <div style={{ display: "flex", gap: 0, borderBottom: `1px solid ${T.border}`, marginBottom: 20, overflowX: "auto" }}>
-          {["company", "billing", "job_stages", "notifications"].map(t => (
+          {["company", "job_stages", "notifications"].map(t => (
             <div key={t} onClick={() => setTab(t)} style={{ padding: "10px 16px", cursor: "pointer", fontSize: 12, fontWeight: tab === t ? 600 : 400, color: tab === t ? T.orange : T.muted, borderBottom: `2px solid ${tab === t ? T.orange : "transparent"}`, marginBottom: -1, whiteSpace: "nowrap", textTransform: "capitalize" }}>{t.replace("_", " ")}</div>
           ))}
         </div>
@@ -364,22 +363,23 @@ export const SettingsPage = ({ role }: { role: string }) => {
             ))}
           </Card>
         )}
-        {tab === "billing" && (
-          <Card style={{ maxWidth: 600 }}>
-            <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
-              <Ic n="dollar" s={28} c={T.dim}/>
-              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Billing & Subscription</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Subscription management and billing settings will be available here.</div>
-            </div>
-          </Card>
-        )}
         {tab === "notifications" && (
           <Card style={{ maxWidth: 600 }}>
-            <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
-              <Ic n="bell" s={28} c={T.dim}/>
-              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Notification Preferences</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Email and in-app notification settings will be configurable here.</div>
-            </div>
+            <div style={{ fontWeight: 600, color: T.white, marginBottom: 16 }}>Notification Preferences</div>
+            {[
+              { label: "Job stage changes", desc: "Get notified when a job moves to a new stage" },
+              { label: "New messages", desc: "Receive alerts for new messages in job channels" },
+              { label: "Payment received", desc: "Notifications when payments are recorded" },
+              { label: "Supplement updates", desc: "Alerts when supplement status changes" },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: i < 3 ? `1px solid ${T.border}` : "none" }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: T.text }}>{item.label}</div>
+                  <div style={{ fontSize: 11, color: T.muted, marginTop: 2 }}>{item.desc}</div>
+                </div>
+                <div style={{ fontSize: 11, color: T.dim, fontStyle: "italic" }}>In-app only</div>
+              </div>
+            ))}
           </Card>
         )}
       </div>
@@ -458,7 +458,7 @@ export const NewJobModal = ({ onClose }: { onClose: () => void }) => {
               border: `2px solid ${formData.payment_type === pt ? (pt === "insurance" ? T.orange : T.greenBright) : T.border}`,
               transition: "all 0.15s",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 4 }}>{pt === "insurance" ? "🛡️" : "💵"}</div>
+              <div style={{ fontSize: 18, marginBottom: 4 }}><Ic n={pt === "insurance" ? "shield" : "dollar"} s={18} c={formData.payment_type === pt ? (pt === "insurance" ? T.orange : T.greenBright) : T.muted} /></div>
               <div style={{ fontSize: 13, fontWeight: 700, color: formData.payment_type === pt ? T.white : T.muted }}>
                 {pt === "insurance" ? "Insurance" : "Self Pay"}
               </div>
