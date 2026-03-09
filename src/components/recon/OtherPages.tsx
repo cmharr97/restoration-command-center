@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { T, ROLES, JOB_STAGES, LOSS_TYPES, stageColor, stageInfo } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel, Divider } from "@/components/recon/ReconUI";
 import { useJobs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
