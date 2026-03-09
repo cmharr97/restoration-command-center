@@ -123,7 +123,7 @@ export const EquipmentPage = () => (
       <Card style={{ textAlign: "center", padding: 48 }}>
         <Ic n="tool" s={40} c={T.dim}/>
         <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Equipment Tracking</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Equipment tracking for dehumidifiers, air movers, and moisture meters is coming soon. For now, log equipment placement in your drying log entries.</div>
+        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Equipment tracking for dehumidifiers, air movers, and moisture meters. For now, log equipment placement in your drying log entries within each job.</div>
       </Card>
     </div>
   </div>
