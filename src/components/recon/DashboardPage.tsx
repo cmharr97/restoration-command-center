@@ -173,7 +173,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
       </div>
 
       <div style={{ padding: "0 28px" }}>
-        <DemoBanner />
+        <DemoBanner jobs={jobs} />
 
         {/* If no jobs, show welcome */}
         {jobs.length === 0 ? (

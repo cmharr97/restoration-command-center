@@ -342,7 +342,7 @@ async function seedDemoData(companyId: string, userId: string) {
   // Demo payments
   await supabase.from("payments").insert([
     { job_id: "DEMO-003", amount: 45000, payment_type: "initial", source: "carrier", date_received: "2026-02-28", check_number: "CHK-881204", company_id: companyId, created_by: userId },
-    { job_id: "DEMO-007", amount: 6800, payment_type: "initial", source: "carrier", date_received: "2026-02-10", deductible_amount: 1000, deductible_collected: true, company_id: companyId, created_by: userId },
+    { job_id: "DEMO-007", amount: 6800, payment_type: "initial", source: "homeowner", date_received: "2026-02-10", deductible_amount: 0, deductible_collected: false, company_id: companyId, created_by: userId },
     { job_id: "DEMO-001", amount: 8200, payment_type: "initial", source: "carrier", date_received: "2026-03-05", check_number: "CHK-991830", deductible_amount: 2500, deductible_collected: false, company_id: companyId, created_by: userId },
   ] as any[]);
 
