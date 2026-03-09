@@ -67,7 +67,7 @@ const Index = () => {
 
   const pages: Record<string, React.ReactNode> = {
     dashboard: <DashboardPage role={role} setActive={setActive} setSelectedJob={setSelectedJob} onNewJob={() => setShowNewJob(true)}/>,
-    jobs: <JobsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
+    jobs: <JobsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive} onNewJob={() => setShowNewJob(true)}/>,
     job_detail: selectedJob ? <JobDetailPage job={selectedJob as any} role={role} setActive={setActive}/> : <div style={{ padding: 40, color: T.muted }}>Select a job first</div>,
     customers: <CustomersPage/>,
     mitigation: <MitigationPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,

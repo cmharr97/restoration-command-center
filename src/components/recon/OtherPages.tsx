@@ -245,18 +245,17 @@ export const CustomersPage = () => {
 // ── REFERRALS PAGE ──
 export const ReferralsPage = () => (
   <div style={{ padding: "0 0 40px" }}>
-    <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+    <div style={{ padding: "24px 28px 0", marginBottom: 18 }}>
       <div>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Referrals & CRM</h1>
         <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Track lead sources and referral partners</p>
       </div>
-      <Btn v="primary" sz="sm" icon="plus">Add Partner</Btn>
     </div>
     <div style={{ padding: "0 28px" }}>
       <Card style={{ textAlign: "center", padding: 48 }}>
         <Ic n="handshake" s={40} c={T.dim}/>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No referral partners yet</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Add your plumbers, insurance agents, and property managers to track referral sources.</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Referral Tracking</div>
+        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Referral partner management for plumbers, insurance agents, and property managers is coming soon.</div>
       </Card>
     </div>
   </div>
