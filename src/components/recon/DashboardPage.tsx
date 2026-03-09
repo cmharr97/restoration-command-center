@@ -43,7 +43,7 @@ const QuickStartChecklist = ({ setActive, jobs, onNewJob }: { setActive: (id: st
           </div>
         </div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+      <div className="dashboard-checklist-grid">
         {steps.map(s => (
           <div key={s.id} onClick={() => { if (!s.done) { s.action === "new_job" && onNewJob ? onNewJob() : setActive(s.action); } }} style={{
             display: "flex", alignItems: "center", gap: 10, padding: "10px 12px",
