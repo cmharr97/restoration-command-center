@@ -414,7 +414,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 0.6 }}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: "rgba(59,130,246,0.15)" }}>💧</div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "rgba(59,130,246,0.15)" }}><Ic n="drop" s={10} c="#3b82f6"/></div>
                     <div>
                       <div className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>Drying Day 3</div>
                       <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>RH 48% — Logged</div>
