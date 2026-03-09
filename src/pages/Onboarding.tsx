@@ -300,7 +300,7 @@ const Onboarding = () => {
               color: "#fff", fontSize: 13, fontWeight: 700, fontFamily: "'DM Sans',sans-serif",
               cursor: canProceed() && !saving ? "pointer" : "not-allowed",
               boxShadow: canProceed() ? `0 4px 16px ${T.orangeGlow}` : "none",
-            }}>{saving ? "Setting up..." : "Launch ReCon Pro 🚀"}</button>
+            }}>{saving ? "Setting up..." : "Launch ReCon Pro"}</button>
           )}
         </div>
       </div>

@@ -37,12 +37,12 @@ export const PaymentsPage = ({ role }: { role: string }) => {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginTop: 20, maxWidth: 480, margin: "20px auto 0" }}>
               {[
-                { icon: "💰", label: "Carrier Payments", desc: "Initial & supplement" },
-                { icon: "🏠", label: "Deductibles", desc: "Track homeowner portion" },
-                { icon: "🏦", label: "Mortgage Holds", desc: "Monitor release status" },
+                { icon: "dollar", label: "Carrier Payments", desc: "Initial & supplement" },
+                { icon: "myjobs", label: "Deductibles", desc: "Track homeowner portion" },
+                { icon: "lock", label: "Mortgage Holds", desc: "Monitor release status" },
               ].map(p => (
                 <div key={p.label} style={{ background: T.surfaceHigh, borderRadius: 8, padding: "12px 10px", textAlign: "center" }}>
-                  <div style={{ fontSize: 20, marginBottom: 6 }}>{p.icon}</div>
+                  <div style={{ width: 32, height: 32, borderRadius: 8, background: T.greenDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px" }}><Ic n={p.icon} s={16} c={T.greenBright}/></div>
                   <div style={{ fontSize: 11, fontWeight: 600, color: T.white }}>{p.label}</div>
                   <div style={{ fontSize: 10, color: T.dim }}>{p.desc}</div>
                 </div>

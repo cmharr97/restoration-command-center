@@ -9,14 +9,14 @@ type Msg = { role: "user" | "assistant"; content: string };
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
 
 const QUICK_ACTIONS = [
-  { label: "📋 Summarize Jobs", action: "summarize", prompt: "Summarize all active jobs and their current status" },
-  { label: "✉️ Adjuster Email", action: "draft_email", prompt: "Draft a professional email to an insurance adjuster requesting supplement approval" },
-  { label: "📝 F9 Notes", action: "f9_notes", prompt: "Help me write F9 notes for an Xactimate estimate. I'll provide the room and scope details." },
-  { label: "💰 Supplement Justification", action: "supplement", prompt: "Help me build a supplement justification for denied or missing line items" },
-  { label: "📄 Scope Notes", action: "scope_notes", prompt: "Help me write scope explanation notes for this restoration project" },
-  { label: "🔄 Change Order", action: "change_order", prompt: "Draft a change order explanation for additional discovered damage" },
-  { label: "📊 Daily Update", action: "daily_update", prompt: "Help me write today's daily field update report" },
-  { label: "⚖️ Carrier Rebuttal", action: "rebuttal", prompt: "Help me write a rebuttal to a carrier denial" },
+  { label: "Summarize Jobs", action: "summarize", prompt: "Summarize all active jobs and their current status", icon: "est" },
+  { label: "Adjuster Email", action: "draft_email", prompt: "Draft a professional email to an insurance adjuster requesting supplement approval", icon: "send" },
+  { label: "F9 Notes", action: "f9_notes", prompt: "Help me write F9 notes for an Xactimate estimate. I'll provide the room and scope details.", icon: "note" },
+  { label: "Supplement Justification", action: "supplement", prompt: "Help me build a supplement justification for denied or missing line items", icon: "dollar" },
+  { label: "Scope Notes", action: "scope_notes", prompt: "Help me write scope explanation notes for this restoration project", icon: "est" },
+  { label: "Change Order", action: "change_order", prompt: "Draft a change order explanation for additional discovered damage", icon: "edit" },
+  { label: "Daily Update", action: "daily_update", prompt: "Help me write today's daily field update report", icon: "chart" },
+  { label: "Carrier Rebuttal", action: "rebuttal", prompt: "Help me write a rebuttal to a carrier denial", icon: "shield" },
 ];
 
 export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobContext?: DbJob }) => {
