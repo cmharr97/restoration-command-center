@@ -54,8 +54,12 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
 );
 
 // ── LOGO ──
-export const Logo = ({ size = 80 }: { size?: number }) => (
-  <img src={logoImage} alt="ReCon Pro" style={{ width: size, height: size, objectFit: "contain" }} />
+export const Logo = ({ size = 80, width, height }: { size?: number; width?: number; height?: number }) => (
+  <img
+    src={logoImage}
+    alt="ReCon Pro"
+    style={{ width: width ?? size, height: height ?? size, objectFit: "contain", display: "block" }}
+  />
 );
 
 // ── BADGE ──
