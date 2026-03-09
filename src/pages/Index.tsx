@@ -15,7 +15,7 @@ import { PaymentsPage } from "@/components/recon/PaymentsPage";
 import { ReportsPage } from "@/components/recon/ReportsPage";
 import { CustomersPage } from "@/components/recon/CustomersPage";
 import { LeadsPage } from "@/components/recon/LeadsPage";
-import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, ReferralsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
+import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
 import { AIAssistant } from "@/components/recon/AIAssistant";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
