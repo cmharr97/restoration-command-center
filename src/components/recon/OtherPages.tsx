@@ -289,7 +289,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
   const [loaded, setLoaded] = useState(false);
 
   // Load company data
-  useState(() => {
+  useEffect(() => {
     if (companyId) {
       supabase.from("companies").select("*").eq("id", companyId).single().then(({ data }) => {
         if (data) {
@@ -303,7 +303,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
         setLoaded(true);
       });
     } else { setLoaded(true); }
-  });
+  }, [companyId]);
 
   const handleSaveCompany = async () => {
     if (!companyId) { toast({ title: "No company linked", variant: "destructive" }); return; }
