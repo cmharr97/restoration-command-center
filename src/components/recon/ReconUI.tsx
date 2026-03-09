@@ -144,7 +144,7 @@ export const Input = ({ placeholder, type = "text", value, onChange, icon, style
   <div style={{ position: "relative" }}>
     {icon && <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}><Ic n={icon} s={14} c={T.muted} /></div>}
     <input type={type} placeholder={placeholder} value={value || ""} onChange={onChange}
-      style={{ width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: icon ? "10px 12px 10px 36px" : "10px 12px", color: T.text, fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", ...style }}
+      style={{ width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: icon ? "10px 12px 10px 36px" : "10px 12px", color: T.text, fontSize: 14, fontFamily: "'Inter',sans-serif", outline: "none", ...style }}
       onFocus={e => (e.target as HTMLInputElement).style.borderColor = T.orange}
       onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
     />
