@@ -57,7 +57,7 @@ export const JobDryingTab = ({ job }: { job: DbJob }) => {
     if (!confirm("Delete this drying log entry?")) return;
     const { error } = await supabase.from("drying_logs").delete().eq("id", id);
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
-    else { toast({ title: "Entry deleted" }); window.location.reload(); }
+    else { toast({ title: "Entry deleted" }); }
   };
 
   if (!isWater) {
