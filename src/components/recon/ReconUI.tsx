@@ -1,6 +1,8 @@
 import React from "react";
 import { T } from "@/lib/recon-data";
-import logoImage from "@/assets/logo.png";
+import logoDark from "@/assets/reconpro-logo-dark.png";
+import logoLight from "@/assets/reconpro-logo-light.png";
+import { useTheme } from "@/hooks/useTheme";
 
 // ── ICON SVG ──
 const iconPaths: Record<string, React.ReactNode> = {
@@ -55,21 +57,14 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
 
 // ── LOGO ──
 export const Logo = ({ size = 80, width, height }: { size?: number; width?: number; height?: number }) => {
-  // The logo.png has ~30% internal padding baked in. We render it larger and use
-  // a clipping wrapper so the visible mark fills the requested dimensions.
-  const w = width ?? size;
-  const h = height ?? size;
-  const scale = 1.55; // render image 55% larger to compensate for internal padding
-  const imgW = w * scale;
-  const imgH = h * scale;
+  const { isDark } = useTheme();
+  const logoSrc = isDark ? logoDark : logoLight;
   return (
-    <div style={{ width: w, height: h, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-      <img
-        src={logoImage}
-        alt="ReCon Pro"
-        style={{ width: imgW, height: imgH, objectFit: "contain", display: "block", flexShrink: 0 }}
-      />
-    </div>
+    <img
+      src={logoSrc}
+      alt="ReCon Pro"
+      style={{ maxHeight: height ?? size, width: width ?? "auto", objectFit: "contain", display: "block" }}
+    />
   );
 };
 
