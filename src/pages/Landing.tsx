@@ -484,7 +484,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               <FadeIn key={v.title} delay={i * 0.1}>
                 <div className="rounded-xl border overflow-hidden transition-all hover:border-opacity-60 group" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
                   <div className="relative h-44 flex items-center justify-center" style={{ background: "linear-gradient(135deg, var(--t-surface-high), var(--t-bg))" }}>
-                    <div className="text-5xl opacity-40">{v.icon}</div>
+                    <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: T.orangeDim }}><Ic n={v.icon} s={24} c={T.orange}/></div>
                   </div>
                   <div className="p-4">
                     <div className="text-sm font-bold mb-1" style={{ color: "var(--t-white)" }}>{v.title}</div>
