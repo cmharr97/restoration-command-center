@@ -122,7 +122,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
       {/* Header */}
       <div style={{ padding: "14px 18px", borderBottom: `1px solid ${T.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${T.orange}, #c84009)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🤖</div>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${T.orange}, #c84009)`, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n="edit" s={16} c="#fff"/></div>
           <div>
             <div style={{ fontWeight: 700, color: T.text, fontSize: 14 }}>ReCon AI Writer</div>
             <div style={{ fontSize: 10, color: T.greenBright }}>● Restoration Writing Assistant</div>
