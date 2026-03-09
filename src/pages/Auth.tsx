@@ -72,8 +72,8 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
           </button>
         )}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 30 }}>
-            <Logo size={200} />
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+            <Logo size={280} />
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: T.white, margin: "0 0 4px", letterSpacing: "-0.02em" }}>ReCon Pro</h1>
           <p style={{ color: T.muted, fontSize: 13, margin: 0 }}>
