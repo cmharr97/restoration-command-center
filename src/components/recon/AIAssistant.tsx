@@ -145,7 +145,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
         <Ic n="jobs" s={12} c={T.muted} />
         <span style={{ color: T.dim }}>Context:</span>
         <button onClick={() => setShowJobPicker(!showJobPicker)}
-          style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 6, padding: "3px 10px", color: selectedJob ? T.orange : T.muted, cursor: "pointer", fontSize: 12, fontFamily: "'DM Sans',sans-serif" }}>
+          style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 6, padding: "3px 10px", color: selectedJob ? T.orange : T.muted, cursor: "pointer", fontSize: 12, fontFamily: "'Inter',sans-serif" }}>
           {selectedJob ? `${selectedJob.id} - ${selectedJob.customer}` : "All Active Jobs"}
         </button>
         {selectedJob && (
