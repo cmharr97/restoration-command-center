@@ -26,20 +26,20 @@ const FEATURES_STRIP = [
 ];
 
 const PRODUCT_PREVIEWS = [
-  { title: "Platform Overview", desc: "See the full ReCon Pro workspace — dashboard, job pipeline, and operational controls.", icon: "📊" },
-  { title: "Job Workflow", desc: "Follow a restoration job from lead intake through reconstruction and final payment.", icon: "🏗️" },
-  { title: "Insurance Tracking", desc: "Manually track carrier responses, supplement statuses, and payment milestones.", icon: "🛡️" },
-  { title: "Job Communication", desc: "Structured chat channels for internal teams, homeowners, and subcontractors.", icon: "💬" },
-  { title: "Owner Dashboard", desc: "See active jobs, outstanding payments, and team activity in one view.", icon: "📋" },
+  { title: "Platform Overview", desc: "See the full ReCon Pro workspace — dashboard, job pipeline, and operational controls.", icon: "dash" },
+  { title: "Job Workflow", desc: "Follow a restoration job from lead intake through reconstruction and final payment.", icon: "jobs" },
+  { title: "Insurance Tracking", desc: "Manually track carrier responses, supplement statuses, and payment milestones.", icon: "shield" },
+  { title: "Job Communication", desc: "Structured chat channels for internal teams, homeowners, and subcontractors.", icon: "msg" },
+  { title: "Owner Dashboard", desc: "See active jobs, outstanding payments, and team activity in one view.", icon: "chart" },
 ];
 
 const AUDIENCE = [
-  { icon: "🏗️", title: "Restoration Companies", desc: "Full-service teams managing water, fire, and storm damage restoration projects end to end." },
-  { icon: "💧", title: "Mitigation Teams", desc: "Emergency response crews tracking equipment placement, moisture readings, and drying progress." },
-  { icon: "🔨", title: "Reconstruction Contractors", desc: "Rebuild crews managing scopes, trade coordination, and project scheduling through completion." },
-  { icon: "🛡️", title: "Insurance Restoration Specialists", desc: "Companies tracking carrier responses, supplements, and claim progress internally." },
-  { icon: "📋", title: "Project Managers", desc: "Managers coordinating field teams, schedules, subcontractors, and documentation across jobs." },
-  { icon: "📱", title: "Field Technicians", desc: "Techs logging moisture readings, equipment usage, photos, and daily drying progress on site." },
+  { icon: "tool", title: "Restoration Companies", desc: "Full-service teams managing water, fire, and storm damage restoration projects end to end." },
+  { icon: "drop", title: "Mitigation Teams", desc: "Emergency response crews tracking equipment placement, moisture readings, and drying progress." },
+  { icon: "jobs", title: "Reconstruction Contractors", desc: "Rebuild crews managing scopes, trade coordination, and project scheduling through completion." },
+  { icon: "shield", title: "Insurance Restoration Specialists", desc: "Companies tracking carrier responses, supplements, and claim progress internally." },
+  { icon: "est", title: "Project Managers", desc: "Managers coordinating field teams, schedules, subcontractors, and documentation across jobs." },
+  { icon: "moisture", title: "Field Technicians", desc: "Techs logging moisture readings, equipment usage, photos, and daily drying progress on site." },
 ];
 
 const FEATURE_STORIES = [
