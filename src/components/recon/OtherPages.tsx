@@ -67,7 +67,7 @@ export const TeamPage = ({ role: userRole }: { role: string }) => {
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Team & Users</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Role-based access control — {members.length} user{members.length !== 1 ? "s" : ""}</p>
         </div>
-        {ROLES[userRole]?.canManageUsers && <Btn v="primary" sz="sm" icon="plus">Invite User</Btn>}
+        {/* Team invites coming soon — users sign up and join via company code */}
       </div>
       <div style={{ padding: "0 28px" }}>
         {loading ? (
