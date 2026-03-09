@@ -44,7 +44,7 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
       }}>
          <div style={{ padding: "12px 12px 12px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10, justifyContent: "space-between" }}>
            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-             <Logo size={80}/>
+             <Logo size={100}/>
            </div>
           {onMobileClose && (
             <button onClick={onMobileClose} className="mobile-close-btn" style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4, display: "none" }}>
