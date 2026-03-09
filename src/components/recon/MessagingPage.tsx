@@ -114,7 +114,7 @@ export const MessagingPage = ({ role }: { role: string }) => {
   useEffect(() => {
     if (!activeChannel) return;
     const loadMessages = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("messages")
         .select("*")
         .eq("channel_id", activeChannel)
