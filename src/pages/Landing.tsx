@@ -447,7 +447,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   <div className="h-40 flex items-center justify-center" style={{ background: "var(--t-bg)" }}>
                     <div className="w-48 h-28 rounded-lg border flex items-center justify-center" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                       <div className="text-center">
-                        <div className="text-2xl mb-1">{["📊", "🏗️", "🛡️", "📋", "💰", "💧", "💬"][i]}</div>
+                        <div className="flex items-center justify-center mb-1"><Ic n={["dash", "jobs", "shield", "est", "dollar", "drop", "msg"][i]} s={20} c={T.muted}/></div>
                         <div className="text-[9px] font-semibold" style={{ color: "var(--t-muted)" }}>{f.title}</div>
                       </div>
                     </div>
