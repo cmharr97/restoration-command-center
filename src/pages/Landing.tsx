@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Logo, Ic } from "@/components/recon/ReconUI";
 import { T } from "@/lib/recon-data";
+import { Flame } from "lucide-react";
 
 /* ── ANIMATION ── */
 const FadeIn = ({ children, className = "", delay = 0, y = 30 }: { children: React.ReactNode; className?: string; delay?: number; y?: number }) => {
@@ -627,13 +628,15 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { icon: "drop", label: "Water Damage" },
-                  { icon: "flame", label: "Fire & Smoke" },
-                  { icon: "alert", label: "Storm Restoration" },
-                  { icon: "moisture", label: "Mold Remediation" },
+                  { icon: "drop", label: "Water Damage", lucide: false },
+                  { icon: "flame", label: "Fire & Smoke", lucide: true },
+                  { icon: "alert", label: "Storm Restoration", lucide: false },
+                  { icon: "moisture", label: "Mold Remediation", lucide: false },
                 ].map(s => (
                   <div key={s.label} className="rounded-xl border p-4" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
-                    <div className="flex items-center justify-center mb-2"><Ic n={s.icon} s={20} c="#e85c0d" /></div>
+                    <div className="flex items-center justify-center mb-2">
+                      {s.lucide ? <Flame size={20} color="#e85c0d" /> : <Ic n={s.icon} s={20} c="#e85c0d" />}
+                    </div>
                     <div className="text-xs font-bold" style={{ color: "var(--t-white)" }}>{s.label}</div>
                   </div>
                 ))}
