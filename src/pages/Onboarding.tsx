@@ -116,14 +116,14 @@ const Onboarding = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: 48, fontFamily: "'DM Sans',sans-serif" }}>
-      <div style={{ width: 580, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "24px 40px 36px", maxHeight: "90vh", overflowY: "auto" }}>
+    <div style={{ background: T.bg, padding: "8px 0 20px", fontFamily: "'DM Sans',sans-serif" }}>
+      <div style={{ width: 580, margin: "0 auto", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "10px 40px 28px", maxHeight: "calc(100vh - 28px)", overflowY: "auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 0 }}>
-            <Logo size={240} />
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: -10, marginBottom: 18 }}>
+            <Logo size={260} />
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 4px", letterSpacing: "-0.02em" }}>Set Up Your Company</h1>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 12px", letterSpacing: "-0.02em" }}>Set Up Your Company</h1>
           <p style={{ color: T.muted, fontSize: 13, margin: 0 }}>Let's get your restoration business running on ReCon Pro</p>
         </div>
 
