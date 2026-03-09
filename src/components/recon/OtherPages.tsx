@@ -266,7 +266,7 @@ export const IntegrationsPage = () => (
                       <Badge color="gray" small>Not Connected</Badge>
                     </div>
                     <div style={{ fontSize: 11, color: T.muted, lineHeight: 1.5, marginBottom: 10 }}>{int.desc}</div>
-                    <span style={{ fontSize: 11, color: T.dim, fontStyle: "italic" }}>Requires API key — coming soon</span>
+                    <span style={{ fontSize: 11, color: T.dim, fontStyle: "italic" }}>Requires API key</span>
                   </div>
                 </div>
               </Card>
