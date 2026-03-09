@@ -35,7 +35,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
             </div>
             <div style={{ fontSize: 18, fontWeight: 700, color: T.white }}>Moisture Monitoring</div>
             <div style={{ fontSize: 13, color: T.muted, marginTop: 8, maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
-              Track daily moisture readings, GPP levels, equipment placement, and room-by-room drying progress for water damage jobs. Compliant with IICRC S500 documentation standards.
+              Track daily moisture readings, GPP levels, equipment placement, and room-by-room drying progress for water damage jobs. Internal documentation and field reference logs.
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginTop: 20, maxWidth: 420, margin: "20px auto 0" }}>
               {[
