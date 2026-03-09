@@ -457,7 +457,7 @@ export const NewJobModal = ({ onClose }: { onClose: () => void }) => {
               border: `2px solid ${formData.payment_type === pt ? (pt === "insurance" ? T.orange : T.greenBright) : T.border}`,
               transition: "all 0.15s",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 4 }}>{pt === "insurance" ? "🛡️" : "💵"}</div>
+              <div style={{ fontSize: 18, marginBottom: 4 }}><Ic n={pt === "insurance" ? "shield" : "dollar"} s={18} c={formData.payment_type === pt ? (pt === "insurance" ? T.orange : T.greenBright) : T.muted} /></div>
               <div style={{ fontSize: 13, fontWeight: 700, color: formData.payment_type === pt ? T.white : T.muted }}>
                 {pt === "insurance" ? "Insurance" : "Self Pay"}
               </div>
