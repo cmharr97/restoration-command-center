@@ -363,15 +363,6 @@ export const SettingsPage = ({ role }: { role: string }) => {
             ))}
           </Card>
         )}
-        {tab === "billing" && (
-          <Card style={{ maxWidth: 600 }}>
-            <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
-              <Ic n="dollar" s={28} c={T.dim}/>
-              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Billing & Subscription</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Subscription management and billing settings will be available here.</div>
-            </div>
-          </Card>
-        )}
         {tab === "notifications" && (
           <Card style={{ maxWidth: 600 }}>
             <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
