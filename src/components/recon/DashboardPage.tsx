@@ -401,7 +401,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
             </Card>
 
             {/* ═══ ZONE 3 & 4: ATTENTION + ACTIVITY side by side ═══ */}
-            <div style={{ display: "grid", gridTemplateColumns: attentionItems.length > 0 ? "1fr 1fr" : "1fr", gap: 16, marginBottom: 20 }}>
+            <div className="dashboard-two-col" style={{ marginBottom: 20, ...(attentionItems.length === 0 ? { gridTemplateColumns: "1fr" } : {}) }}>
               {/* Attention Required */}
               {attentionItems.length > 0 && (
                 <Card>
