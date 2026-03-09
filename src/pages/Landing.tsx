@@ -124,7 +124,7 @@ const DashboardMockup = () => (
   <div className="p-5">
     <div className="flex items-center gap-3 mb-5">
       <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--t-orange-dim)" }}>
-        <span className="text-xs">📊</span>
+        <Ic n="dash" s={16} c="#e85c0d"/>
       </div>
       <div>
         <div className="text-xs font-bold" style={{ color: "var(--t-white)" }}>Operations Dashboard</div>
