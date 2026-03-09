@@ -18,6 +18,15 @@ export const JobDryingTab = ({ job }: { job: DbJob }) => {
   const [saving, setSaving] = useState(false);
   const isWater = job.loss_type === "water";
 
+  const fetchLogs = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from("drying_logs").select("*").eq("job_id", job.id).order("day", { ascending: true });
+    if (!error) setLogs(data || []);
+    setLoading(false);
+  }, [job.id]);
+
+  useEffect(() => { fetchLogs(); }, [fetchLogs]);
+
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0],
     room: ROOMS[0], material: MATERIALS[0],
