@@ -13,13 +13,14 @@ import { ClaimsPage } from "@/components/recon/ClaimsPage";
 import { SupplementsPage } from "@/components/recon/SupplementsPage";
 import { PaymentsPage } from "@/components/recon/PaymentsPage";
 import { ReportsPage } from "@/components/recon/ReportsPage";
-import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, CustomersPage, ReferralsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
+import { CustomersPage } from "@/components/recon/CustomersPage";
+import { LeadsPage } from "@/components/recon/LeadsPage";
+import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, ReferralsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
 import { AIAssistant } from "@/components/recon/AIAssistant";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import type { DbJob } from "@/hooks/useJobs";
-
 const Index = () => {
   const { profile, signOut } = useAuth();
   const [role] = useState(profile?.role || "owner");
