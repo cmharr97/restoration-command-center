@@ -178,9 +178,8 @@ export const MyJobsPage = ({ role, setSelectedJob, setActive }: { role: string; 
                 <Btn v="primary" sz="sm" onClick={() => { setSelectedJob(j); setActive("job_detail"); }}>Open Job</Btn>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
-                <Btn v="secondary" sz="sm" icon="moisture" onClick={() => toast({ title: "Log Reading", description: "Opening moisture log form..." })}>Log Reading</Btn>
-                <Btn v="secondary" sz="sm" icon="photo" onClick={() => toast({ title: "Photos", description: "Camera integration coming soon" })}>Add Photos</Btn>
-                <Btn v="secondary" sz="sm" icon="note" onClick={() => toast({ title: "Note added" })}>Add Note</Btn>
+                <Btn v="secondary" sz="sm" icon="moisture" onClick={() => { setSelectedJob(j); setActive("job_detail"); }}>Log Reading</Btn>
+                <Btn v="secondary" sz="sm" icon="photo" onClick={() => { setSelectedJob(j); setActive("job_detail"); }}>Photos</Btn>
               </div>
             </Card>
           ))
