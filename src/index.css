@@ -203,6 +203,9 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  input, textarea, select, button {
+    font-family: inherit;
+  }
 }
 
 /* Scrollbar styling */
