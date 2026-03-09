@@ -116,19 +116,19 @@ const Onboarding = () => {
   };
 
   return (
-    <div style={{ background: T.bg, padding: "0 0 20px", fontFamily: "'DM Sans',sans-serif" }}>
-      <div style={{ width: 580, margin: "8px auto 0", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "26px 40px 28px", maxHeight: "calc(100vh - 28px)", overflowY: "auto" }}>
+    <div style={{ background: T.bg, padding: "0", fontFamily: "'DM Sans',sans-serif" }}>
+      <div style={{ width: 580, margin: "0 auto", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "24px 40px 26px", maxHeight: "calc(100vh - 20px)", overflowY: "auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 22 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-            <Logo size={260} />
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
+            <Logo width={320} height={120} />
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 10px", letterSpacing: "-0.02em" }}>Set Up Your Company</h1>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Set Up Your Company</h1>
           <p style={{ color: T.muted, fontSize: 13, margin: 0 }}>Let's get your restoration business running on ReCon Pro</p>
         </div>
 
         {/* Progress */}
-        <div style={{ display: "flex", gap: 4, marginBottom: 24 }}>
+        <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
           {STEPS.map((s, i) => (
             <div key={i} style={{ flex: 1, textAlign: "center" }}>
               <div style={{ height: 4, borderRadius: 2, marginBottom: 6, background: i <= step ? T.orange : T.surfaceHigh, transition: "background 0.3s" }} />

@@ -42,9 +42,9 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
         display: "flex", flexDirection: "column", height: "100vh", position: "sticky", top: 0, overflowY: "auto",
         transition: "transform 0.25s ease",
       }}>
-         <div style={{ height: 118, padding: "8px 12px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+         <div style={{ height: 110, padding: "6px 10px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" }}>
-             <Logo size={150}/>
+             <Logo width={188} height={84} />
            </div>
            {onMobileClose && (
              <button onClick={onMobileClose} className="mobile-close-btn" style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4, display: "none" }}>
@@ -53,7 +53,7 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
            )}
          </div>
 
-         <div style={{ margin: "6px 12px 4px", background: T.orangeDim, border: `1px solid ${T.orange}44`, borderRadius: 8, padding: "7px 10px", display: "flex", alignItems: "center", gap: 7 }}>
+         <div style={{ margin: "4px 12px 4px", background: T.orangeDim, border: `1px solid ${T.orange}44`, borderRadius: 8, padding: "7px 10px", display: "flex", alignItems: "center", gap: 7 }}>
            <Ic n="lock" s={12} c={T.orange}/>
           <div>
             <div style={{ fontSize: 10, color: T.orange, fontWeight: 700, letterSpacing: "0.05em" }}>{roleInfo?.label}</div>
