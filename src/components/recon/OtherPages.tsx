@@ -190,58 +190,8 @@ export const MyJobsPage = ({ role, setSelectedJob, setActive }: { role: string; 
   );
 };
 
-// ── CUSTOMERS PAGE ──
-export const CustomersPage = () => {
-  const { jobs } = useJobs();
-  // Derive unique customers from jobs
-  const customers = Object.values(
-    jobs.reduce((acc, j) => {
-      const key = j.customer;
-      if (!acc[key]) {
-        acc[key] = { name: j.customer, jobs: 0, value: 0, carrier: j.carrier || "—", lastAddress: j.address };
-      }
-      acc[key].jobs += 1;
-      acc[key].value += j.contract_value || 0;
-      return acc;
-    }, {} as Record<string, { name: string; jobs: number; value: number; carrier: string; lastAddress: string }>)
-  );
-
-  return (
-    <div style={{ padding: "0 0 40px" }}>
-      <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
-        <div><h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Customers</h1><p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Derived from your jobs</p></div>
-      </div>
-      <div style={{ padding: "0 28px" }}>
-        {customers.length === 0 ? (
-          <Card style={{ textAlign: "center", padding: 48 }}>
-            <Ic n="customer" s={40} c={T.dim}/>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No customers yet</div>
-            <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Customers are automatically created when you add new jobs.</div>
-          </Card>
-        ) : (
-          customers.map((c, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 16px", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 10, marginBottom: 8 }}
-              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = T.borderMid; (e.currentTarget as HTMLDivElement).style.background = T.surfaceHigh; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = T.border; (e.currentTarget as HTMLDivElement).style.background = T.surface; }}
-            >
-              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                <div style={{ width: 38, height: 38, borderRadius: "50%", background: `linear-gradient(135deg,${T.orange}88,${T.blue}88)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "#fff" }}>{c.name[0]}</div>
-                <div>
-                  <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>{c.name}</div>
-                  <div style={{ fontSize: 11, color: T.muted }}>{c.carrier}</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
-                <div style={{ textAlign: "center" }}><div style={{ fontSize: 16, fontWeight: 700, color: T.white }}>{c.jobs}</div><div style={{ fontSize: 10, color: T.muted }}>Jobs</div></div>
-                <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, fontWeight: 700, color: T.greenBright }}>{c.value ? `$${c.value.toLocaleString()}` : "—"}</div><div style={{ fontSize: 10, color: T.muted }}>Total Value</div></div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-};
+// ── CUSTOMERS PAGE (delegated to separate file) ──
+// CustomersPage is now in CustomersPage.tsx
 
 // ── REFERRALS PAGE ──
 export const ReferralsPage = () => (
