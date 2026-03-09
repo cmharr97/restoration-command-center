@@ -528,7 +528,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
             {AUDIENCE.map((a, i) => (
               <FadeIn key={a.title} delay={i * 0.08}>
                 <div className="rounded-xl border p-6 transition-all hover:border-opacity-60" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                  <div className="text-3xl mb-4">{a.icon}</div>
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ background: T.orangeDim }}><Ic n={a.icon} s={20} c={T.orange}/></div>
                   <div className="text-base font-bold mb-2" style={{ color: "var(--t-white)" }}>{a.title}</div>
                   <div className="text-xs leading-relaxed" style={{ color: "var(--t-muted)" }}>{a.desc}</div>
                 </div>
