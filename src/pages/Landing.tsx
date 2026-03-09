@@ -638,7 +638,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
             <div className="sm:col-span-2">
                <div className="flex items-center gap-2 mb-3">
-                 <Logo size={32} />
+                 <Logo size={48} />
                </div>
               <p className="text-xs leading-relaxed max-w-sm" style={{ color: "var(--t-dim)" }}>
                 The command center for restoration companies. Manage jobs, claims, drying logs, supplements, payments, and subcontractors in one platform.
