@@ -327,7 +327,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
       </div>
       <div style={{ padding: "0 28px" }}>
         <div style={{ display: "flex", gap: 0, borderBottom: `1px solid ${T.border}`, marginBottom: 20, overflowX: "auto" }}>
-          {["company", "billing", "job_stages", "notifications"].map(t => (
+          {["company", "job_stages", "notifications"].map(t => (
             <div key={t} onClick={() => setTab(t)} style={{ padding: "10px 16px", cursor: "pointer", fontSize: 12, fontWeight: tab === t ? 600 : 400, color: tab === t ? T.orange : T.muted, borderBottom: `2px solid ${tab === t ? T.orange : "transparent"}`, marginBottom: -1, whiteSpace: "nowrap", textTransform: "capitalize" }}>{t.replace("_", " ")}</div>
           ))}
         </div>
