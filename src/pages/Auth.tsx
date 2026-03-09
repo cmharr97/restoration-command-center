@@ -124,7 +124,7 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
           <button type="submit" disabled={loading} style={{
             width: "100%", padding: "12px 0", borderRadius: 8, border: "none",
             background: `linear-gradient(135deg, ${T.orange}, #c84009)`,
-            color: "#fff", fontSize: 14, fontWeight: 700, fontFamily: "'DM Sans',sans-serif",
+            color: "#fff", fontSize: 14, fontWeight: 700, fontFamily: "'Inter',sans-serif",
             cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1,
             marginTop: 4, boxShadow: `0 4px 16px ${T.orangeGlow}`,
           }}>
