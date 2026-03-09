@@ -79,7 +79,7 @@ const Index = () => {
     equipment: <EquipmentPage/>,
     subcontractors: <SubcontractorsPage/>,
     referrals: <LeadsPage setActive={setActive} />,
-    reports: <ReportsPage />,
+    reports: <ReportsPage role={role} />,
     integrations: <IntegrationsPage/>,
     settings: <SettingsPage role={role}/>,
     my_jobs: <MyJobsPage role={role} setSelectedJob={setSelectedJob as any} setActive={setActive}/>,
