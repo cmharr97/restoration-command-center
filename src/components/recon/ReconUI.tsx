@@ -54,9 +54,18 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
 );
 
 // ── LOGO ──
-export const Logo = ({ size = 80 }: { size?: number }) => (
-  <img src={logoImage} alt="ReCon Pro" style={{ width: size, height: size, objectFit: "contain" }} />
-);
+export const Logo = ({ size = 80 }: { size?: number }) => {
+  const zoom = 3.4;
+  return (
+    <div style={{ width: size, height: size, overflow: "hidden", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+      <img
+        src={logoImage}
+        alt="ReCon Pro"
+        style={{ width: size * zoom, height: size * zoom, objectFit: "cover", objectPosition: "center 46%", flexShrink: 0 }}
+      />
+    </div>
+  );
+};
 
 // ── BADGE ──
 const badgeColorMap: Record<string, [string, string]> = {
