@@ -1,19 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { T, TRADES } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel } from "@/components/recon/ReconUI";
-import { useSubcontractors, useJobs } from "@/hooks/useJobs";
+import { useJobs } from "@/hooks/useJobs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
 export const SubcontractorsPageFull = () => {
-  const { subs, loading } = useSubcontractors();
+  const [subs, setSubs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { jobs } = useJobs();
   const { user, companyId } = useAuth();
   const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
   const [filterTrade, setFilterTrade] = useState("all");
   const [form, setForm] = useState({ name: "", company_name: "", trade: "General Labor", phone: "", email: "", license_number: "", notes: "" });
+
+  const fetchSubs = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from("subcontractors").select("*").order("name");
+    if (!error) setSubs(data || []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { fetchSubs(); }, [fetchSubs]);
 
   const filtered = filterTrade === "all" ? subs : subs.filter((s: any) => s.trade === filterTrade);
 
@@ -36,6 +46,7 @@ export const SubcontractorsPageFull = () => {
       toast({ title: "Subcontractor added", description: form.name });
       setShowAdd(false);
       setForm({ name: "", company_name: "", trade: "General Labor", phone: "", email: "", license_number: "", notes: "" });
+      fetchSubs();
     }
   };
 

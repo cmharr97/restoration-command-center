@@ -112,7 +112,7 @@ const WelcomeDashboard = ({ onNewJob }: { onNewJob?: () => void }) => (
       {[
         { icon: "jobs", title: "Job Pipeline", desc: "Track every restoration project from lead to close with a visual stage-based workflow.", color: T.orange },
         { icon: "shield", title: "Insurance Tracking", desc: "Log claim status, carrier responses, and supplement approvals for insurance jobs.", color: T.blueBright },
-        { icon: "moisture", title: "Drying Logs", desc: "IICRC S500 compliant moisture readings. Track GPP, room-by-room status, and equipment.", color: T.tealBright },
+        { icon: "moisture", title: "Drying Logs", desc: "Internal moisture reference logs. Track GPP, room-by-room status, and equipment.", color: T.tealBright },
         { icon: "est", title: "Supplements", desc: "Compare contractor vs. carrier estimates. Identify missing items and pricing gaps.", color: T.purpleBright },
         { icon: "dollar", title: "Payment Tracking", desc: "Track insurance payments, deductibles, mortgage holds, and recoverable depreciation.", color: T.greenBright },
         { icon: "truck", title: "Subcontractors", desc: "Manage trade partners, assign them to jobs, and track completion status.", color: T.yellowBright },

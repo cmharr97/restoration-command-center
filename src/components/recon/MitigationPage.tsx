@@ -23,7 +23,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
       <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Drying Logs</h1>
-          <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>IICRC S500 compliant moisture tracking</p>
+          <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Internal moisture reference logs across active jobs</p>
         </div>
         {waterJobs.length > 0 && <Btn v="primary" sz="sm" icon="plus" onClick={() => { if (waterJobs[0]) { setSelectedJob(waterJobs[0]); setActive("job_detail"); } }}>Add Reading</Btn>}
       </div>

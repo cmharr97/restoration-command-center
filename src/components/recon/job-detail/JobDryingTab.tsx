@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { T } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel } from "@/components/recon/ReconUI";
-import { useDryingLogs } from "@/hooks/useJobs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -11,12 +10,22 @@ const ROOMS = ["Kitchen", "Living Room", "Bedroom 1", "Bedroom 2", "Bathroom", "
 const MATERIALS = ["Drywall", "Subfloor (OSB)", "Subfloor (Plywood)", "Hardwood", "Carpet", "Concrete", "Baseboard", "Cabinet Toe Kick", "Insulation", "Framing"];
 
 export const JobDryingTab = ({ job }: { job: DbJob }) => {
-  const { logs, loading } = useDryingLogs(job.id);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { user, profile } = useAuth();
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const isWater = job.loss_type === "water";
+
+  const fetchLogs = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from("drying_logs").select("*").eq("job_id", job.id).order("day", { ascending: true });
+    if (!error) setLogs(data || []);
+    setLoading(false);
+  }, [job.id]);
+
+  useEffect(() => { fetchLogs(); }, [fetchLogs]);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0],
@@ -49,7 +58,7 @@ export const JobDryingTab = ({ job }: { job: DbJob }) => {
     } as any);
 
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
-    else { toast({ title: "Drying log saved", description: `Day ${nextDay} recorded` }); setShowForm(false); window.location.reload(); }
+    else { toast({ title: "Drying log saved", description: `Day ${nextDay} recorded` }); setShowForm(false); fetchLogs(); }
     setSaving(false);
   };
 
@@ -57,7 +66,7 @@ export const JobDryingTab = ({ job }: { job: DbJob }) => {
     if (!confirm("Delete this drying log entry?")) return;
     const { error } = await supabase.from("drying_logs").delete().eq("id", id);
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
-    else { toast({ title: "Entry deleted" }); window.location.reload(); }
+    else { toast({ title: "Entry deleted" }); fetchLogs(); }
   };
 
   if (!isWater) {

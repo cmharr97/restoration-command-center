@@ -4,6 +4,7 @@ import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel, Divider } from "@/componen
 import { useJobs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 // ── ESTIMATES PAGE ──
 export const EstimatesPage = ({ role }: { role: string }) => {
@@ -19,11 +20,11 @@ export const EstimatesPage = ({ role }: { role: string }) => {
       <div style={{ padding: "0 28px" }}>
         <Card style={{ textAlign: "center", padding: 48 }}>
           <Ic n="est" s={40} c={T.dim}/>
-          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Estimates Module</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Estimates</div>
           <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>
             {jobs.length === 0
               ? "Create a job first, then add estimates to it."
-              : `Xactimate integration coming soon — you'll be able to create estimates for your ${jobs.length} job${jobs.length > 1 ? "s" : ""} once connected. You'll need an API key from Xactware.`
+              : `Manage estimates for your ${jobs.length} job${jobs.length > 1 ? "s" : ""}. Estimates are created and tracked within each job's detail page.`
             }
           </div>
         </Card>
@@ -47,8 +48,8 @@ export const InvoicesPage = ({ role }: { role: string }) => {
       <div style={{ padding: "0 28px" }}>
         <Card style={{ textAlign: "center", padding: 48 }}>
           <Ic n="inv" s={40} c={T.dim}/>
-          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Invoices Module</div>
-          <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Invoices will appear here when you create them from completed jobs. QuickBooks integration coming soon — you'll need an API key.</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Invoices</div>
+          <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Invoices will appear here when you create them from completed jobs. Use the Payments section within each job to track financial activity.</div>
         </Card>
       </div>
     </div>
@@ -123,7 +124,7 @@ export const EquipmentPage = () => (
       <Card style={{ textAlign: "center", padding: 48 }}>
         <Ic n="tool" s={40} c={T.dim}/>
         <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Equipment Tracking</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Equipment tracking for dehumidifiers, air movers, and moisture meters is coming soon. For now, log equipment placement in your drying log entries.</div>
+        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Equipment tracking for dehumidifiers, air movers, and moisture meters. For now, log equipment placement in your drying log entries within each job.</div>
       </Card>
     </div>
   </div>
@@ -255,7 +256,7 @@ export const ReferralsPage = () => (
       <Card style={{ textAlign: "center", padding: 48 }}>
         <Ic n="handshake" s={40} c={T.dim}/>
         <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Referral Tracking</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Referral partner management for plumbers, insurance agents, and property managers is coming soon.</div>
+        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Referral partner management for plumbers, insurance agents, and property managers. Track lead sources and measure referral performance.</div>
       </Card>
     </div>
   </div>
@@ -333,6 +334,42 @@ export const SettingsPage = ({ role }: { role: string }) => {
   const [tab, setTab] = useState("company");
   const rm = ROLES[role];
   const { toast } = useToast();
+  const { companyId } = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [companyForm, setCompanyForm] = useState({ name: "", license_number: "", phone: "", email: "", address: "", city: "", state: "", zip: "" });
+  const [loaded, setLoaded] = useState(false);
+
+  // Load company data
+  useState(() => {
+    if (companyId) {
+      supabase.from("companies").select("*").eq("id", companyId).single().then(({ data }) => {
+        if (data) {
+          setCompanyForm({
+            name: data.name || "", license_number: data.license_number || "",
+            phone: data.phone || "", email: data.email || "",
+            address: data.address || "", city: data.city || "",
+            state: data.state || "", zip: data.zip || "",
+          });
+        }
+        setLoaded(true);
+      });
+    } else { setLoaded(true); }
+  });
+
+  const handleSaveCompany = async () => {
+    if (!companyId) { toast({ title: "No company linked", variant: "destructive" }); return; }
+    setSaving(true);
+    const { error } = await supabase.from("companies").update({
+      name: companyForm.name, license_number: companyForm.license_number,
+      phone: companyForm.phone, email: companyForm.email,
+      address: companyForm.address, city: companyForm.city,
+      state: companyForm.state, zip: companyForm.zip,
+    }).eq("id", companyId);
+    if (error) { toast({ title: "Error saving", description: error.message, variant: "destructive" }); }
+    else { toast({ title: "Company settings saved" }); }
+    setSaving(false);
+  };
+
   if (!rm.canManageUsers) return <div style={{ padding: 40, textAlign: "center", color: T.muted }}><Ic n="lock" s={32} c={T.dim}/><div style={{ marginTop: 12, fontSize: 14 }}>Settings are only accessible to Owner / Admin accounts.</div></div>;
   return (
     <div style={{ padding: "0 0 40px" }}>
@@ -349,27 +386,30 @@ export const SettingsPage = ({ role }: { role: string }) => {
           <Card style={{ maxWidth: 800 }}>
             <div style={{ fontWeight: 600, color: T.white, marginBottom: 16 }}>Company Profile</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              <Inp label="Company Name" placeholder="Your company name" required/>
-              <Inp label="State Contractor License #" placeholder="License number"/>
-              <Inp label="Phone" placeholder="(555) 000-0000"/>
-              <Inp label="Email" placeholder="office@company.com"/>
-              <Inp label="Address" placeholder="123 Main Street"/>
-              <Inp label="City, State, ZIP" placeholder="Austin, TX 78701"/>
+              <Inp label="Company Name" placeholder="Your company name" required value={companyForm.name} onChange={e => setCompanyForm(f => ({ ...f, name: e.target.value }))}/>
+              <Inp label="State Contractor License #" placeholder="License number" value={companyForm.license_number} onChange={e => setCompanyForm(f => ({ ...f, license_number: e.target.value }))}/>
+              <Inp label="Phone" placeholder="(555) 000-0000" value={companyForm.phone} onChange={e => setCompanyForm(f => ({ ...f, phone: e.target.value }))}/>
+              <Inp label="Email" placeholder="office@company.com" value={companyForm.email} onChange={e => setCompanyForm(f => ({ ...f, email: e.target.value }))}/>
+              <Inp label="Address" placeholder="123 Main Street" value={companyForm.address} onChange={e => setCompanyForm(f => ({ ...f, address: e.target.value }))}/>
+              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 10 }}>
+                <Inp label="City" placeholder="Austin" value={companyForm.city} onChange={e => setCompanyForm(f => ({ ...f, city: e.target.value }))}/>
+                <Inp label="State" placeholder="TX" value={companyForm.state} onChange={e => setCompanyForm(f => ({ ...f, state: e.target.value }))}/>
+                <Inp label="ZIP" placeholder="78701" value={companyForm.zip} onChange={e => setCompanyForm(f => ({ ...f, zip: e.target.value }))}/>
+              </div>
             </div>
             <Divider/>
-            <Btn v="primary" onClick={() => toast({ title: "Settings saved" })}>Save Company Info</Btn>
+            <Btn v="primary" onClick={handleSaveCompany} disabled={saving}>{saving ? "Saving..." : "Save Company Info"}</Btn>
           </Card>
         )}
         {tab === "job_stages" && (
           <Card style={{ maxWidth: 600 }}>
             <div style={{ fontWeight: 600, color: T.white, marginBottom: 4 }}>Job Stage Workflow</div>
-            <div style={{ fontSize: 12, color: T.muted, marginBottom: 16 }}>Configure stages and notification triggers</div>
+            <div style={{ fontSize: 12, color: T.muted, marginBottom: 16 }}>The 12-stage restoration lifecycle</div>
             {JOB_STAGES.map((s, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", background: T.surfaceHigh, borderRadius: 8, marginBottom: 8 }}>
                 <div style={{ width: 10, height: 10, borderRadius: "50%", background: s.color }}/>
                 <span style={{ fontSize: 13, flex: 1, color: T.text }}>{s.label}</span>
-                <span style={{ fontSize: 11, color: T.muted }}>Notification</span>
-                <input type="checkbox" defaultChecked={["mitigation", "invoiced", "paid"].includes(s.id)} style={{ accentColor: T.orange }}/>
+                <span style={{ fontSize: 10, color: T.dim }}>{s.icon}</span>
               </div>
             ))}
           </Card>
@@ -379,7 +419,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
             <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
               <Ic n="dollar" s={28} c={T.dim}/>
               <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Billing & Subscription</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Subscription management and billing settings will be available here once billing is set up.</div>
+              <div style={{ fontSize: 12, marginTop: 4 }}>Subscription management and billing settings will be available here.</div>
             </div>
           </Card>
         )}
@@ -388,7 +428,7 @@ export const SettingsPage = ({ role }: { role: string }) => {
             <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
               <Ic n="bell" s={28} c={T.dim}/>
               <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Notification Preferences</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Email and in-app notification settings will be configurable here once the notification system is enabled.</div>
+              <div style={{ fontSize: 12, marginTop: 4 }}>Email and in-app notification settings will be configurable here.</div>
             </div>
           </Card>
         )}
