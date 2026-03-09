@@ -66,7 +66,7 @@ interface CalendarTeamMember {
 }
 
 export const CalendarPage = ({ role }: { role: string }) => {
-  const [events, setEvents] = useState<ScheduleEvent[]>([]);
+  const [events, setEvents] = useState<ScheduleEvent[]>(INITIAL_EVENTS);
   const [view, setView] = useState<"week" | "day" | "crew">("week");
   const [baseDate, setBaseDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);

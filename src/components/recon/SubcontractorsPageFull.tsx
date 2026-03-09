@@ -36,6 +36,8 @@ export const SubcontractorsPageFull = () => {
       toast({ title: "Subcontractor added", description: form.name });
       setShowAdd(false);
       setForm({ name: "", company_name: "", trade: "General Labor", phone: "", email: "", license_number: "", notes: "" });
+      // Trigger page re-render by reloading subs — the hook auto-fetches on mount
+      window.dispatchEvent(new Event('subs-updated'));
     }
   };
 
