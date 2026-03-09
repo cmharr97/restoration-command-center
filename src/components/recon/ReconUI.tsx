@@ -106,7 +106,7 @@ export const ReconCard = ({ children, style = {}, onClick, glow = false }: {
 export const Btn = ({ children, v = "primary", sz = "md", onClick, style = {}, icon, disabled = false }: {
   children?: React.ReactNode; v?: "primary" | "secondary" | "ghost" | "danger" | "success"; sz?: "sm" | "md" | "lg"; onClick?: () => void; style?: React.CSSProperties; icon?: string; disabled?: boolean;
 }) => {
-  const base: React.CSSProperties = { display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 8, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer", border: "none", transition: "all 0.15s", letterSpacing: "0.01em", opacity: disabled ? 0.5 : 1 };
+  const base: React.CSSProperties = { display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 8, fontFamily: "'Inter',sans-serif", fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer", border: "none", transition: "all 0.15s", letterSpacing: "0.01em", opacity: disabled ? 0.5 : 1 };
   const sizes: Record<string, React.CSSProperties> = { sm: { padding: "6px 13px", fontSize: 12 }, md: { padding: "9px 18px", fontSize: 13 }, lg: { padding: "12px 24px", fontSize: 14 } };
   const vs: Record<string, React.CSSProperties> = {
     primary: { background: T.orange, color: "#fff" },
