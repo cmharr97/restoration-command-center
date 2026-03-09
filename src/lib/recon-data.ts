@@ -188,6 +188,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     ]},
   ],
   estimator: [
+    { group: "Home", items: [
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
+    ]},
     { group: "Operations", items: [
       { id: "jobs", label: "Jobs", icon: "jobs" },
     ]},
@@ -197,13 +200,13 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     ]},
     { group: "Communication", items: [
       { id: "messaging", label: "Messages", icon: "msg" },
-    ]},
-    { group: "Analytics", items: [
       { id: "calendar", label: "Calendar", icon: "cal" },
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
   ],
   office_admin: [
+    { group: "Home", items: [
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
+    ]},
     { group: "Operations", items: [
       { id: "jobs", label: "Jobs", icon: "jobs" },
       { id: "customers", label: "Customers", icon: "customer" },
@@ -215,10 +218,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     ]},
     { group: "Communication", items: [
       { id: "messaging", label: "Messages", icon: "msg" },
-    ]},
-    { group: "Analytics", items: [
       { id: "calendar", label: "Schedule", icon: "cal" },
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
   ],
   field_tech: [
