@@ -9,11 +9,21 @@ import { useToast } from "@/hooks/use-toast";
 export const SubcontractorsPageFull = () => {
   const [subs, setSubs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { jobs } = useJobs();
   const { user, companyId } = useAuth();
   const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
   const [filterTrade, setFilterTrade] = useState("all");
   const [form, setForm] = useState({ name: "", company_name: "", trade: "General Labor", phone: "", email: "", license_number: "", notes: "" });
+
+  const fetchSubs = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from("subcontractors").select("*").order("name");
+    if (!error) setSubs(data || []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { fetchSubs(); }, [fetchSubs]);
 
   const filtered = filterTrade === "all" ? subs : subs.filter((s: any) => s.trade === filterTrade);
 
