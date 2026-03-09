@@ -42,14 +42,10 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
         display: "flex", flexDirection: "column", height: "100vh", position: "sticky", top: 0, overflowY: "auto",
         transition: "transform 0.25s ease",
       }}>
-        <div style={{ padding: "18px 18px 14px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10, justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Logo size={46}/>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 15, color: T.white, letterSpacing: "-0.02em" }}>ReCon</div>
-              <div style={{ fontSize: 9, color: T.orange, fontWeight: 700, letterSpacing: "0.18em", marginTop: -2 }}>PRO</div>
-            </div>
-          </div>
+         <div style={{ padding: "12px 12px 12px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10, justifyContent: "space-between" }}>
+           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+             <Logo size={56}/>
+           </div>
           {onMobileClose && (
             <button onClick={onMobileClose} className="mobile-close-btn" style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4, display: "none" }}>
               <Ic n="x" s={20} />

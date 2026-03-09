@@ -121,7 +121,7 @@ const Onboarding = () => {
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-            <Logo size={44} />
+            <Logo size={56} />
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 4px", letterSpacing: "-0.02em" }}>Set Up Your Company</h1>
           <p style={{ color: T.muted, fontSize: 13, margin: 0 }}>Let's get your restoration business running on ReCon Pro</p>
