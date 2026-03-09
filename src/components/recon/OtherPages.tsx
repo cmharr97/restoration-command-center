@@ -365,11 +365,21 @@ export const SettingsPage = ({ role }: { role: string }) => {
         )}
         {tab === "notifications" && (
           <Card style={{ maxWidth: 600 }}>
-            <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
-              <Ic n="bell" s={28} c={T.dim}/>
-              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Notification Preferences</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Email and in-app notification settings will be configurable here.</div>
-            </div>
+            <div style={{ fontWeight: 600, color: T.white, marginBottom: 16 }}>Notification Preferences</div>
+            {[
+              { label: "Job stage changes", desc: "Get notified when a job moves to a new stage" },
+              { label: "New messages", desc: "Receive alerts for new messages in job channels" },
+              { label: "Payment received", desc: "Notifications when payments are recorded" },
+              { label: "Supplement updates", desc: "Alerts when supplement status changes" },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: i < 3 ? `1px solid ${T.border}` : "none" }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: T.text }}>{item.label}</div>
+                  <div style={{ fontSize: 11, color: T.muted, marginTop: 2 }}>{item.desc}</div>
+                </div>
+                <div style={{ fontSize: 11, color: T.dim, fontStyle: "italic" }}>In-app only</div>
+              </div>
+            ))}
           </Card>
         )}
       </div>
