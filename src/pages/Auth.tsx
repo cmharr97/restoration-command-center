@@ -136,7 +136,7 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
           <span style={{ fontSize: 13, color: T.muted }}>
             {mode === "login" ? "Don't have an account? " : "Already have an account? "}
           </span>
-          <button onClick={() => setMode(mode === "login" ? "signup" : "login")} style={{ fontSize: 13, color: T.orange, background: "none", border: "none", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans',sans-serif" }}>
+          <button onClick={() => setMode(mode === "login" ? "signup" : "login")} style={{ fontSize: 13, color: T.orange, background: "none", border: "none", cursor: "pointer", fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
             {mode === "login" ? "Sign Up" : "Sign In"}
           </button>
         </div>
