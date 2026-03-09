@@ -4,6 +4,7 @@ import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel, Divider } from "@/componen
 import { useJobs, useTeamMembers, type DbJob } from "@/hooks/useJobs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 // ── ESTIMATES PAGE ──
 export const EstimatesPage = ({ role }: { role: string }) => {
