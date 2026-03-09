@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { T, ROLES, JOB_STAGES, stageInfo, stageColor } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Divider } from "@/components/recon/ReconUI";
 import { useJobs, useActivityLogs, useClaims, usePayments, useSupplements, useSubcontractors, useDryingLogs, type DbJob } from "@/hooks/useJobs";
 import { useAuth } from "@/hooks/useAuth";
+import { DndContext, DragOverlay, useDroppable, useDraggable, PointerSensor, TouchSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
+import { useToast } from "@/hooks/use-toast";
 
 interface DashboardProps {
   role: string;
@@ -41,7 +43,7 @@ const QuickStartChecklist = ({ setActive, jobs, onNewJob }: { setActive: (id: st
           </div>
         </div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+      <div className="dashboard-checklist-grid">
         {steps.map(s => (
           <div key={s.id} onClick={() => { if (!s.done) { s.action === "new_job" && onNewJob ? onNewJob() : setActive(s.action); } }} style={{
             display: "flex", alignItems: "center", gap: 10, padding: "10px 12px",
@@ -93,7 +95,7 @@ const WelcomeDashboard = ({ onNewJob }: { onNewJob?: () => void }) => (
       </p>
       <div style={{ marginTop: 20 }}><Btn v="primary" icon="plus" onClick={onNewJob}>Create Your First Job</Btn></div>
     </div>
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+    <div className="dashboard-welcome-grid" style={{ marginBottom: 20 }}>
       {[
         { icon: "jobs", title: "Job Pipeline", desc: "Track every restoration project from lead to close with a visual stage-based workflow.", color: T.orange },
         { icon: "shield", title: "Insurance Tracking", desc: "Log claim status, carrier responses, and supplement approvals for insurance jobs.", color: T.blueBright },
@@ -154,11 +156,57 @@ const AttentionItem = ({ icon, color, title, desc, action, actionLabel }: { icon
   </div>
 );
 
-/* ─── Pipeline Column ─── */
-const PipelineColumn = ({ stage, jobs, onJobClick }: { stage: typeof JOB_STAGES[number]; jobs: DbJob[]; onJobClick: (j: DbJob) => void }) => {
-  const stageJobs = jobs.filter(j => j.stage === stage.id);
+/* ─── Draggable Job Card ─── */
+const DraggableJobCard = ({ job, stageColor: sc, onJobClick }: { job: DbJob; stageColor: string; onJobClick: (j: DbJob) => void }) => {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: job.id });
+  const style: React.CSSProperties = {
+    background: T.surfaceHigh, border: `1px solid ${isDragging ? sc : T.border}`, borderRadius: 7, padding: "8px 10px",
+    cursor: "grab", transition: isDragging ? "none" : "all 0.12s", borderLeft: `3px solid ${sc}`,
+    opacity: isDragging ? 0.4 : 1,
+    transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
+    touchAction: "none",
+  };
   return (
-    <div style={{ minWidth: 150, flex: "0 0 150px" }}>
+    <div ref={setNodeRef} style={style} {...listeners} {...attributes} onClick={(e) => { if (!isDragging) { e.stopPropagation(); onJobClick(job); } }}>
+      <div style={{ fontSize: 10, fontFamily: "monospace", color: T.orange, fontWeight: 700, marginBottom: 2 }}>{job.id}</div>
+      <div style={{ fontSize: 11, color: T.text, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{job.customer}</div>
+      {job.priority === "high" && (
+        <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
+          <Ic n="alert" s={9} c={T.redBright} />
+          <span style={{ fontSize: 9, color: T.redBright, fontWeight: 600 }}>Urgent</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ─── Drag Overlay Card (what you see while dragging) ─── */
+const DragOverlayCard = ({ job }: { job: DbJob }) => {
+  const stage = JOB_STAGES.find(s => s.id === job.stage);
+  return (
+    <div style={{
+      background: T.surfaceHigh, border: `2px solid ${T.orange}`, borderRadius: 7, padding: "8px 10px",
+      borderLeft: `3px solid ${stage?.color || T.orange}`, boxShadow: `0 8px 24px rgba(0,0,0,0.4)`,
+      width: 150, cursor: "grabbing",
+    }}>
+      <div style={{ fontSize: 10, fontFamily: "monospace", color: T.orange, fontWeight: 700, marginBottom: 2 }}>{job.id}</div>
+      <div style={{ fontSize: 11, color: T.text, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{job.customer}</div>
+    </div>
+  );
+};
+
+/* ─── Droppable Pipeline Column ─── */
+const PipelineColumn = ({ stage, jobs, onJobClick, dragOverStage }: { stage: typeof JOB_STAGES[number]; jobs: DbJob[]; onJobClick: (j: DbJob) => void; dragOverStage?: string | null }) => {
+  const stageJobs = jobs.filter(j => j.stage === stage.id);
+  const { setNodeRef, isOver } = useDroppable({ id: stage.id });
+  const isHighlighted = isOver || dragOverStage === stage.id;
+  return (
+    <div ref={setNodeRef} style={{
+      minWidth: 150, flex: "0 0 150px",
+      background: isHighlighted ? stage.color + "12" : "transparent",
+      borderRadius: 8, padding: 4, transition: "background 0.15s",
+      border: isHighlighted ? `1px dashed ${stage.color}55` : "1px dashed transparent",
+    }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "0 4px" }}>
         <div style={{ width: 7, height: 7, borderRadius: "50%", background: stage.color }} />
         <span style={{ fontSize: 10, fontWeight: 700, color: T.muted, textTransform: "uppercase", letterSpacing: "0.04em" }}>{stage.label}</span>
@@ -166,27 +214,12 @@ const PipelineColumn = ({ stage, jobs, onJobClick }: { stage: typeof JOB_STAGES[
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 4, minHeight: 60 }}>
         {stageJobs.length === 0 && (
-          <div style={{ padding: "12px 8px", borderRadius: 6, border: `1px dashed ${T.border}`, textAlign: "center" }}>
-            <span style={{ fontSize: 10, color: T.dim }}>No jobs</span>
+          <div style={{ padding: "12px 8px", borderRadius: 6, border: `1px dashed ${isHighlighted ? stage.color + "55" : T.border}`, textAlign: "center" }}>
+            <span style={{ fontSize: 10, color: isHighlighted ? stage.color : T.dim }}>{isHighlighted ? "Drop here" : "No jobs"}</span>
           </div>
         )}
         {stageJobs.slice(0, 5).map(j => (
-          <div key={j.id} onClick={() => onJobClick(j)} style={{
-            background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "8px 10px",
-            cursor: "pointer", transition: "all 0.12s", borderLeft: `3px solid ${stage.color}`,
-          }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = stage.color + "55"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.transform = "translateY(0)"; }}
-          >
-            <div style={{ fontSize: 10, fontFamily: "monospace", color: T.orange, fontWeight: 700, marginBottom: 2 }}>{j.id}</div>
-            <div style={{ fontSize: 11, color: T.text, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{j.customer}</div>
-            {j.priority === "high" && (
-              <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
-                <Ic n="alert" s={9} c={T.redBright} />
-                <span style={{ fontSize: 9, color: T.redBright, fontWeight: 600 }}>Urgent</span>
-              </div>
-            )}
-          </div>
+          <DraggableJobCard key={j.id} job={j} stageColor={stage.color} onJobClick={onJobClick} />
         ))}
         {stageJobs.length > 5 && (
           <div style={{ textAlign: "center", fontSize: 10, color: T.dim, padding: 4 }}>+{stageJobs.length - 5} more</div>
@@ -201,11 +234,38 @@ const PipelineColumn = ({ stage, jobs, onJobClick }: { stage: typeof JOB_STAGES[
    ═══════════════════════════════ */
 export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: DashboardProps) => {
   const rm = ROLES[role] || ROLES.owner;
-  const { jobs, loading } = useJobs();
+  const { jobs, loading, updateJob } = useJobs();
   const { logs: activityLogs } = useActivityLogs();
   const { payments } = usePayments();
   const { supplements } = useSupplements();
   const { logs: dryingLogs } = useDryingLogs();
+  const { toast } = useToast();
+  const [draggingJob, setDraggingJob] = useState<DbJob | null>(null);
+
+  // DnD sensors — require 8px movement to start drag (allows clicks through)
+  const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 8 } });
+  const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } });
+  const sensors = useSensors(pointerSensor, touchSensor);
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const job = jobs.find(j => j.id === event.active.id);
+    if (job) setDraggingJob(job);
+  }, [jobs]);
+
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    setDraggingJob(null);
+    const { active, over } = event;
+    if (!over) return;
+    const jobId = active.id as string;
+    const newStage = over.id as string;
+    const job = jobs.find(j => j.id === jobId);
+    if (!job || job.stage === newStage) return;
+    const stageName = JOB_STAGES.find(s => s.id === newStage)?.label || newStage;
+    const ok = await updateJob(jobId, { stage: newStage } as any);
+    if (ok) {
+      toast({ title: "Job moved", description: `${jobId} → ${stageName}` });
+    }
+  }, [jobs, updateJob, toast]);
 
   // ─── Computed metrics ───
   const activeJobs = jobs.filter(j => !["closed"].includes(j.stage));
@@ -308,10 +368,13 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
               <MetricCard label="Completed (Month)" value={closedThisMonth.length} icon="check" color={T.greenBright} onClick={() => setActive("jobs")} subtitle="Jobs closed this month" />
             </div>
 
-            {/* ═══ ZONE 2: JOB PIPELINE ═══ */}
+            {/* ═══ ZONE 2: JOB PIPELINE (Drag & Drop) ═══ */}
             <Card style={{ marginBottom: 20, padding: "16px 0" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px", marginBottom: 14 }}>
-                <div style={{ fontWeight: 700, fontSize: 14, color: T.white }}>Job Pipeline</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontWeight: 700, fontSize: 14, color: T.white }}>Job Pipeline</span>
+                  <span style={{ fontSize: 10, color: T.dim, fontWeight: 500 }}>Drag to move</span>
+                </div>
                 <Btn v="ghost" sz="sm" onClick={() => setActive("jobs")}>View All →</Btn>
               </div>
               {/* Stage progress bar */}
@@ -322,18 +385,23 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
                   return cnt > 0 ? <div key={s.id} style={{ flex: pct, background: s.color, minWidth: 3, borderRadius: 2 }} title={`${s.label}: ${cnt}`}/> : null;
                 })}
               </div>
-              {/* Horizontal scrolling pipeline */}
-              <div style={{ overflowX: "auto", padding: "0 16px", WebkitOverflowScrolling: "touch" }}>
-                <div style={{ display: "flex", gap: 10, minWidth: "max-content", paddingBottom: 4 }}>
-                  {JOB_STAGES.map(s => (
-                    <PipelineColumn key={s.id} stage={s} jobs={jobs} onJobClick={handleJobClick} />
-                  ))}
+              {/* Horizontal scrolling pipeline with DnD */}
+              <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <div style={{ overflowX: "auto", padding: "0 16px", WebkitOverflowScrolling: "touch" }}>
+                  <div style={{ display: "flex", gap: 10, minWidth: "max-content", paddingBottom: 4 }}>
+                    {JOB_STAGES.map(s => (
+                      <PipelineColumn key={s.id} stage={s} jobs={jobs} onJobClick={handleJobClick} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+                <DragOverlay>
+                  {draggingJob ? <DragOverlayCard job={draggingJob} /> : null}
+                </DragOverlay>
+              </DndContext>
             </Card>
 
             {/* ═══ ZONE 3 & 4: ATTENTION + ACTIVITY side by side ═══ */}
-            <div style={{ display: "grid", gridTemplateColumns: attentionItems.length > 0 ? "1fr 1fr" : "1fr", gap: 16, marginBottom: 20 }}>
+            <div className="dashboard-two-col" style={{ marginBottom: 20, ...(attentionItems.length === 0 ? { gridTemplateColumns: "1fr" } : {}) }}>
               {/* Attention Required */}
               {attentionItems.length > 0 && (
                 <Card>
@@ -420,7 +488,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
 
             {/* ═══ Bottom row: Revenue + Carriers (for owners) ═══ */}
             {rm.canSeeProfitMargins && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div className="dashboard-two-col">
                 <Card>
                   <div style={{ fontWeight: 700, fontSize: 14, color: T.white, marginBottom: 12 }}>Revenue Breakdown</div>
                   {[
