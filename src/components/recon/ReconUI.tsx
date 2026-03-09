@@ -55,7 +55,7 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
   </svg>
 );
 
-// ── LOGO ──
+// ── LOGO (theme-aware) ──
 export const Logo = ({ size = 80, width, height }: { size?: number; width?: number; height?: number }) => {
   const { isDark } = useTheme();
   const logoSrc = isDark ? logoDark : logoLight;
