@@ -8,39 +8,79 @@ import { useToast } from "@/hooks/use-toast";
 import type { DbJob } from "@/hooks/useJobs";
 
 const typeLabels: Record<string, string> = {
-  initial: "Initial Payment", supplement: "Supplement Payment", depreciation: "Recoverable Depreciation",
+  deposit: "Deposit", progress: "Progress Payment", supplement: "Supplement Payment",
   final: "Final Payment", deductible: "Deductible", other: "Other",
 };
+
+const PAYMENT_TYPES = [
+  { value: "deposit", label: "Deposit" },
+  { value: "progress", label: "Progress Payment" },
+  { value: "supplement", label: "Supplement Payment" },
+  { value: "final", label: "Final Payment" },
+  { value: "deductible", label: "Deductible" },
+  { value: "other", label: "Other" },
+];
+
+const SOURCES = [
+  { value: "homeowner", label: "Homeowner" },
+  { value: "carrier", label: "Insurance Carrier" },
+  { value: "mortgage_company", label: "Mortgage Company" },
+  { value: "other", label: "Other" },
+];
 
 export const JobPaymentsTab = ({ job }: { job: DbJob }) => {
   const { payments, loading } = usePayments(job.id);
   const { user, companyId } = useAuth();
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
-    amount: "", payment_type: "initial", source: "", check_number: "", date_received: new Date().toISOString().split("T")[0],
-    deductible_amount: "0", deductible_collected: false, mortgage_hold: false, mortgage_hold_amount: "0", notes: "",
-  });
+
+  const emptyForm = {
+    amount: "", payment_type: "deposit", source: "homeowner", check_number: "",
+    date_received: new Date().toISOString().split("T")[0], notes: "",
+  };
+  const [form, setForm] = useState(emptyForm);
+
+  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+    setForm(f => ({ ...f, [k]: e.target.value }));
 
   const handleSave = async () => {
     if (!user || !form.amount) return;
     setSaving(true);
-    const { error } = await supabase.from("payments").insert({
+    const payload: any = {
       job_id: job.id, amount: parseFloat(form.amount) || 0, payment_type: form.payment_type,
       source: form.source, check_number: form.check_number, date_received: form.date_received || null,
-      deductible_amount: parseFloat(form.deductible_amount) || 0, deductible_collected: form.deductible_collected,
-      mortgage_hold: form.mortgage_hold, mortgage_hold_amount: parseFloat(form.mortgage_hold_amount) || 0,
       notes: form.notes, created_by: user.id, company_id: companyId || null,
-    } as any);
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+    };
+
+    if (editingId) {
+      const { error } = await supabase.from("payments").update(payload).eq("id", editingId);
+      if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
+      else { toast({ title: "Payment updated" }); setShowForm(false); setEditingId(null); window.location.reload(); }
     } else {
-      toast({ title: "Payment recorded", description: `$${parseFloat(form.amount).toLocaleString()} saved` });
-      setShowForm(false);
-      window.location.reload();
+      const { error } = await supabase.from("payments").insert(payload);
+      if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
+      else { toast({ title: "Payment recorded", description: `$${parseFloat(form.amount).toLocaleString()} saved` }); setShowForm(false); window.location.reload(); }
     }
     setSaving(false);
+  };
+
+  const handleEdit = (p: any) => {
+    setForm({
+      amount: p.amount?.toString() || "", payment_type: p.payment_type || "deposit",
+      source: p.source || "homeowner", check_number: p.check_number || "",
+      date_received: p.date_received || "", notes: p.notes || "",
+    });
+    setEditingId(p.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this payment record?")) return;
+    const { error } = await supabase.from("payments").delete().eq("id", id);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
+    else { toast({ title: "Payment deleted" }); window.location.reload(); }
   };
 
   if (loading) return <div style={{ textAlign: "center", padding: 40, color: T.muted }}>Loading payments...</div>;
@@ -48,21 +88,15 @@ export const JobPaymentsTab = ({ job }: { job: DbJob }) => {
   const totalReceived = payments.reduce((s: number, p: any) => s + (p.amount || 0), 0);
   const contractValue = job.contract_value || 0;
   const outstanding = contractValue - totalReceived;
-  const deductiblePayment = payments.find((p: any) => p.deductible_amount > 0);
-  const mortgageHold = payments.find((p: any) => p.mortgage_hold);
-  const alerts: string[] = [];
-  if (outstanding > 0 && contractValue > 0) alerts.push(`$${outstanding.toLocaleString()} outstanding balance`);
-  if (deductiblePayment && !deductiblePayment.deductible_collected) alerts.push("Deductible not collected");
-  if (mortgageHold) alerts.push(`Mortgage hold: $${(mortgageHold.mortgage_hold_amount || 0).toLocaleString()}`);
 
   return (
     <div>
-      {/* Summary Cards */}
+      {/* Summary */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 16 }}>
         {[
           { label: "Contract Value", value: `$${contractValue.toLocaleString()}`, color: T.white, icon: "dollar" },
           { label: "Total Received", value: `$${totalReceived.toLocaleString()}`, color: T.greenBright, icon: "check" },
-          { label: "Outstanding", value: `$${Math.max(outstanding, 0).toLocaleString()}`, color: outstanding > 0 ? T.redBright : T.greenBright, icon: "alert" },
+          { label: "Unpaid Balance", value: contractValue > 0 ? `$${Math.max(outstanding, 0).toLocaleString()}` : "—", color: outstanding > 0 ? T.redBright : T.greenBright, icon: "alert" },
           { label: "Payments", value: `${payments.length}`, color: T.blueBright, icon: "inv" },
         ].map((s, i) => (
           <Card key={i}>
@@ -75,79 +109,38 @@ export const JobPaymentsTab = ({ job }: { job: DbJob }) => {
         ))}
       </div>
 
-      {/* Alerts */}
-      {alerts.length > 0 && (
-        <Card style={{ marginBottom: 16, background: T.redDim, borderColor: `${T.redBright}33` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <Ic n="alert" s={16} c={T.redBright} />
-            <span style={{ fontWeight: 700, color: T.redBright, fontSize: 13 }}>Payment Alerts</span>
-          </div>
-          {alerts.map((a, i) => (
-            <div key={i} style={{ fontSize: 12, color: T.text, padding: "4px 0", display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 4, height: 4, borderRadius: "50%", background: T.redBright, flexShrink: 0 }} />
-              {a}
-            </div>
-          ))}
-        </Card>
-      )}
-
-      {/* Deductible & Mortgage Status */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-        <Card>
-          <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 12 }}>Deductible Status</div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ fontSize: 12, color: T.muted }}>Amount</span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: T.text }}>${(deductiblePayment?.deductible_amount || 0).toLocaleString()}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 12, color: T.muted }}>Collected</span>
-            <Badge color={deductiblePayment?.deductible_collected ? "green" : "red"}>
-              {deductiblePayment?.deductible_collected ? "Yes" : "No"}
-            </Badge>
-          </div>
-        </Card>
-        <Card>
-          <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 12 }}>Mortgage Hold</div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ fontSize: 12, color: T.muted }}>Status</span>
-            <Badge color={mortgageHold ? "yellow" : "green"}>{mortgageHold ? "Active Hold" : "No Hold"}</Badge>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 12, color: T.muted }}>Amount</span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: T.text }}>${(mortgageHold?.mortgage_hold_amount || 0).toLocaleString()}</span>
-          </div>
-        </Card>
-      </div>
-
-      {/* Payment List */}
+      {/* Header + Button */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Payment History</div>
-        <Btn v="primary" sz="sm" icon="plus" onClick={() => setShowForm(!showForm)}>
+        <Btn v="primary" sz="sm" icon="plus" onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(!showForm); }}>
           {showForm ? "Cancel" : "Record Payment"}
         </Btn>
       </div>
 
-      {/* Record Payment Form */}
+      {/* Form */}
       {showForm && (
         <Card style={{ marginBottom: 16, borderColor: `${T.orange}44` }}>
-          <div style={{ fontWeight: 700, color: T.orange, fontSize: 14, marginBottom: 14 }}>Record New Payment</div>
+          <div style={{ fontWeight: 700, color: T.orange, fontSize: 14, marginBottom: 14 }}>
+            {editingId ? "Edit Payment" : "Record New Payment"}
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Inp label="Amount ($) *" type="number" placeholder="e.g. 5000" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} required />
-            <Sel label="Payment Type" options={["initial", "supplement", "depreciation", "final", "deductible", "other"]} value={form.payment_type} onChange={e => setForm(f => ({ ...f, payment_type: e.target.value }))} />
-            <Inp label="Source" placeholder="e.g. State Farm, Homeowner" value={form.source} onChange={e => setForm(f => ({ ...f, source: e.target.value }))} />
-            <Inp label="Check #" placeholder="Optional" value={form.check_number} onChange={e => setForm(f => ({ ...f, check_number: e.target.value }))} />
-            <Inp label="Date Received" type="date" value={form.date_received} onChange={e => setForm(f => ({ ...f, date_received: e.target.value }))} />
-            <Inp label="Notes" placeholder="Optional notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
+            <Inp label="Amount ($) *" type="number" placeholder="e.g. 5000" value={form.amount} onChange={set("amount")} required />
+            <Sel label="Payment Type" options={PAYMENT_TYPES} value={form.payment_type} onChange={set("payment_type")} />
+            <Sel label="Source" options={SOURCES} value={form.source} onChange={set("source")} />
+            <Inp label="Check / Reference #" placeholder="Optional" value={form.check_number} onChange={set("check_number")} />
+            <Inp label="Date Received" type="date" value={form.date_received} onChange={set("date_received")} />
+            <Inp label="Notes" placeholder="Optional notes" value={form.notes} onChange={set("notes")} />
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 14 }}>
-            <Btn v="secondary" onClick={() => setShowForm(false)}>Cancel</Btn>
+            <Btn v="secondary" onClick={() => { setShowForm(false); setEditingId(null); }}>Cancel</Btn>
             <Btn v="primary" icon="check" onClick={handleSave} disabled={saving || !form.amount}>
-              {saving ? "Saving..." : "Save Payment"}
+              {saving ? "Saving..." : editingId ? "Update Payment" : "Save Payment"}
             </Btn>
           </div>
         </Card>
       )}
 
+      {/* Payment List */}
       {payments.length === 0 ? (
         <div style={{ textAlign: "center", padding: 40, color: T.dim }}>No payments recorded yet</div>
       ) : (
@@ -155,14 +148,25 @@ export const JobPaymentsTab = ({ job }: { job: DbJob }) => {
           {payments.map((p: any) => (
             <Card key={p.id} style={{ padding: "14px 16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
+                <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 600, color: T.text, fontSize: 13, marginBottom: 2 }}>{typeLabels[p.payment_type] || p.payment_type}</div>
                   <div style={{ fontSize: 11, color: T.muted }}>
                     {p.date_received || "No date"} · {p.source || "Unknown source"}
-                    {p.check_number && ` · Check #${p.check_number}`}
+                    {p.check_number && ` · Ref #${p.check_number}`}
+                  </div>
+                  {p.notes && <div style={{ fontSize: 11, color: T.dim, marginTop: 2, fontStyle: "italic" }}>{p.notes}</div>}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: T.greenBright }}>+${(p.amount || 0).toLocaleString()}</div>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    <button onClick={() => handleEdit(p)} title="Edit" style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+                      <Ic n="edit" s={14} c={T.muted} />
+                    </button>
+                    <button onClick={() => handleDelete(p.id)} title="Delete" style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+                      <Ic n="x" s={14} c={T.redBright} />
+                    </button>
                   </div>
                 </div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: T.greenBright }}>+${(p.amount || 0).toLocaleString()}</div>
               </div>
             </Card>
           ))}

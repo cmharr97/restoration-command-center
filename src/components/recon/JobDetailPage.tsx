@@ -1,7 +1,6 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { T, ROLES, JOB_STAGES, LOSS_TYPES, stageInfo, stageColor } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic } from "@/components/recon/ReconUI";
-import { UserAvatar } from "@/components/recon/MessagingPage";
 import { useTeamMembers, useJobs, type DbJob } from "@/hooks/useJobs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -11,6 +10,7 @@ import { JobSupplementsTab } from "./job-detail/JobSupplementsTab";
 import { JobPaymentsTab } from "./job-detail/JobPaymentsTab";
 import { JobDryingTab } from "./job-detail/JobDryingTab";
 import { JobPhotosTab } from "./job-detail/JobPhotosTab";
+import { JobCommunicationTab } from "./job-detail/JobCommunicationTab";
 import { JobSubcontractorsTab } from "./job-detail/JobSubcontractorsTab";
 import { JobActivityTab } from "./job-detail/JobActivityTab";
 
@@ -31,13 +31,12 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
   const isInsurance = job.payment_type === "insurance";
   const [archiving, setArchiving] = useState(false);
 
-  // Build tabs dynamically based on job type and role
   const TAB_CONFIG = [
     { id: "overview", label: "Overview", icon: "eye" },
     ...(isInsurance ? [{ id: "claim", label: "Insurance Tracking", icon: "shield" }] : []),
     ...(isInsurance ? [{ id: "supplements", label: "Supplements", icon: "est" }] : []),
     { id: "payments", label: "Payments", icon: "dollar" },
-    { id: "drying", label: "Drying Logs", icon: "moisture" },
+    ...(isWater ? [{ id: "drying", label: "Drying Logs", icon: "moisture" }] : []),
     { id: "photos", label: "Photos & Docs", icon: "photo" },
     { id: "communication", label: "Communication", icon: "msg" },
     { id: "subcontractors", label: "Subcontractors", icon: "truck" },
@@ -52,7 +51,6 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
     return true;
   });
 
-  // Build quick info bar items based on job type
   const quickInfoItems = [
     { label: "Job Type", value: isInsurance ? "Insurance" : "Self Pay", icon: isInsurance ? "shield" : "dollar" },
     { label: "Loss Type", value: `${LOSS_TYPES.find(l => l.id === job.loss_type)?.label || job.loss_type}`, icon: "drop" },
@@ -112,7 +110,7 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
           </div>
         </div>
 
-        {/* Stage Tracker - clickable */}
+        {/* Stage Tracker */}
         <div style={{ display: "flex", gap: 2, marginBottom: 16, overflowX: "auto" }}>
           {JOB_STAGES.map((s, i) => {
             const stageIdx = JOB_STAGES.findIndex(x => x.id === job.stage);
@@ -168,160 +166,9 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
         {tab === "payments" && <JobPaymentsTab job={job} />}
         {tab === "drying" && <JobDryingTab job={job} />}
         {tab === "photos" && <JobPhotosTab job={job} />}
-        {tab === "communication" && <JobCommunicationTab job={job} role={role} members={members} />}
+        {tab === "communication" && <JobCommunicationTab job={job} />}
         {tab === "subcontractors" && <JobSubcontractorsTab job={job} />}
         {tab === "activity" && <JobActivityTab job={job} />}
-      </div>
-    </div>
-  );
-};
-
-// ── JOB COMMUNICATION TAB (kept inline) ──
-const JobCommunicationTab = ({ job, role, members }: { job: DbJob; role: string; members: any[] }) => {
-  const [lane, setLane] = useState<"internal" | "customer" | "insurance" | "subs">("internal");
-  const [msgText, setMsgText] = useState("");
-  const [showMentions, setShowMentions] = useState(false);
-  const [mentionFilter, setMentionFilter] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const currentUser = members.find((m: any) => m.role === role) || members[0] || { id: "unknown", name: "You", role, avatar: "?" };
-  const isInsurance = job.payment_type === "insurance";
-
-  const laneConfig = {
-    internal: { label: "Internal Team", color: T.orange, icon: "users", desc: "Only visible to your team" },
-    customer: { label: "Homeowner", color: T.greenBright, icon: "customer", desc: "Visible to the property owner" },
-    insurance: { label: "Adjuster / TPA", color: T.blueBright, icon: "shield", desc: "Log adjuster & carrier correspondence" },
-    subs: { label: "Subcontractors", color: T.purpleBright, icon: "truck", desc: "Communication with assigned subs" },
-  };
-
-  // Filter out insurance lane for self-pay jobs
-  const availableLanes = isInsurance
-    ? (Object.keys(laneConfig) as Array<keyof typeof laneConfig>)
-    : (Object.keys(laneConfig) as Array<keyof typeof laneConfig>).filter(l => l !== "insurance");
-
-  type CommMessage = { sender: string; senderId: string; text: string; time: string; date: string; lane: string; mentions?: string[] };
-  const [messages, setMessages] = useState<CommMessage[]>([]);
-  const filteredMessages = messages.filter(m => m.lane === lane);
-
-  const handleSend = () => {
-    if (!msgText.trim()) return;
-    const mentions = msgText.match(/@([\w\s]+?)(?=\s|$|[.,!?])/g)?.map(m => m.slice(1).trim()) || [];
-    setMessages(prev => [...prev, {
-      sender: currentUser.name, senderId: currentUser.id, text: msgText,
-      time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
-      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      lane, mentions: mentions.length > 0 ? mentions : undefined,
-    }]);
-    setMsgText("");
-    setShowMentions(false);
-  };
-
-  const handleInputChange = (val: string) => {
-    setMsgText(val);
-    const lastAt = val.lastIndexOf("@");
-    if (lastAt !== -1 && (lastAt === val.length - 1 || !val.slice(lastAt).includes(" "))) {
-      setShowMentions(true);
-      setMentionFilter(val.slice(lastAt + 1));
-    } else {
-      setShowMentions(false);
-    }
-  };
-
-  const insertMention = (name: string) => {
-    const lastAt = msgText.lastIndexOf("@");
-    setMsgText(msgText.slice(0, lastAt) + `@${name} `);
-    setShowMentions(false);
-    inputRef.current?.focus();
-  };
-
-  const lc = laneConfig[lane];
-  const ROLES_MAP = { owner: "Owner", project_manager: "PM", estimator: "Estimator", office_admin: "Admin", field_tech: "Tech", subcontractor: "Sub" } as Record<string, string>;
-
-  return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
-        <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Job Communication — {job.id}</div>
-      </div>
-
-      <div style={{ display: "flex", gap: 4, marginBottom: 14, flexWrap: "wrap" }}>
-        {availableLanes.map(l => {
-          const conf = laneConfig[l];
-          const count = messages.filter(m => m.lane === l).length;
-          const isActive = lane === l;
-          return (
-            <div key={l} onClick={() => setLane(l)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 8, cursor: "pointer", background: isActive ? `${conf.color}1a` : T.surfaceHigh, border: `1px solid ${isActive ? conf.color + "55" : T.border}`, transition: "all 0.12s" }}>
-              <Ic n={conf.icon} s={14} c={isActive ? conf.color : T.muted} />
-              <span style={{ fontSize: 12, fontWeight: isActive ? 600 : 400, color: isActive ? conf.color : T.muted }}>{conf.label}</span>
-              <span style={{ fontSize: 10, background: isActive ? conf.color + "33" : T.surfaceTop, color: isActive ? conf.color : T.dim, borderRadius: 10, padding: "1px 6px", fontWeight: 600 }}>{count}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      <div style={{ background: `${lc.color}0a`, border: `1px solid ${lc.color}22`, borderRadius: 6, padding: "6px 12px", marginBottom: 12, display: "flex", gap: 6, alignItems: "center" }}>
-        <Ic n={lc.icon} s={13} c={lc.color} />
-        <span style={{ fontSize: 11, color: lc.color }}>{lc.desc}</span>
-      </div>
-
-      <div style={{ maxHeight: 400, overflowY: "auto", marginBottom: 14 }}>
-        {filteredMessages.length === 0 ? (
-          <div style={{ textAlign: "center", padding: 40, color: T.dim }}>
-            <div style={{ fontSize: 13 }}>No {lc.label.toLowerCase()} messages yet</div>
-          </div>
-        ) : filteredMessages.map((msg, i) => {
-          const member = members.find((m: any) => m.id === msg.senderId);
-          const showDate = i === 0 || filteredMessages[i - 1].date !== msg.date;
-          return (
-            <div key={i}>
-              {showDate && (
-                <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "10px 0" }}>
-                  <div style={{ flex: 1, height: 1, background: T.border }} />
-                  <span style={{ fontSize: 10, color: T.dim }}>{msg.date}</span>
-                  <div style={{ flex: 1, height: 1, background: T.border }} />
-                </div>
-              )}
-              <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-                <UserAvatar member={member} size={28} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", gap: 6, alignItems: "baseline", marginBottom: 2 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: T.white }}>{msg.sender}</span>
-                    <span style={{ fontSize: 10, color: T.dim }}>{msg.time}</span>
-                  </div>
-                  <div style={{ fontSize: 12, color: T.text, lineHeight: 1.6 }}>{msg.text}</div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div style={{ position: "relative" }}>
-        {showMentions && (
-          <div style={{ position: "absolute", bottom: "100%", left: 0, right: 0, background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: 4, maxHeight: 160, overflowY: "auto", marginBottom: 4 }}>
-            {members.filter((m: any) => m.name.toLowerCase().includes(mentionFilter.toLowerCase())).map((m: any) => (
-              <div key={m.id} onClick={() => insertMention(m.name)} style={{ display: "flex", gap: 6, alignItems: "center", padding: "6px 8px", borderRadius: 5, cursor: "pointer" }}
-                onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = T.surfaceTop}
-                onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = "transparent"}
-              >
-                <UserAvatar member={m} size={22} />
-                <span style={{ fontSize: 12, color: T.white }}>{m.name}</span>
-                <span style={{ fontSize: 10, color: T.muted }}>{ROLES_MAP[m.role] || m.role}</span>
-              </div>
-            ))}
-          </div>
-        )}
-        <div style={{ display: "flex", gap: 8 }}>
-          <input
-            ref={inputRef} type="text"
-            placeholder={`Message ${lc.label}... (type @ to mention)`}
-            value={msgText}
-            onChange={e => handleInputChange(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); handleSend(); } }}
-            style={{ flex: 1, background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 14px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
-            onFocus={e => (e.target as HTMLInputElement).style.borderColor = lc.color}
-            onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
-          />
-          <Btn v="primary" sz="sm" icon="send" onClick={handleSend} disabled={!msgText.trim()}>Send</Btn>
-        </div>
       </div>
     </div>
   );
