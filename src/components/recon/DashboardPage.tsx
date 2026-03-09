@@ -191,7 +191,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
               <div style={{ background: T.redDim, border: `1px solid ${T.redBright}44`, borderRadius: 10, padding: "12px 16px", marginBottom: 10, display: "flex", gap: 12, alignItems: "center" }}>
                 <Ic n="alert" s={18} c={T.redBright}/>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>🚨 {urgentJobs.length} urgent job{urgentJobs.length > 1 ? "s" : ""} need attention</div>
+                  <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>{urgentJobs.length} urgent job{urgentJobs.length > 1 ? "s" : ""} need attention</div>
                   <div style={{ fontSize: 12, color: T.muted, marginTop: 2 }}>{urgentJobs.map(j => `${j.id} – ${j.customer}`).join(" · ")}</div>
                 </div>
                 <Btn v="danger" sz="sm" onClick={() => setActive("jobs")}>View</Btn>
