@@ -9,7 +9,7 @@ const iconPaths: Record<string, React.ReactNode> = {
   dash: <><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
   jobs: <><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></>,
   drop: <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>,
-  flame: <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072 2.143-.224 3.5 1 4.5-1-1-2-3-1-5 1 1 3 2.5 3 5a4 4 0 11-4.5-4z"/>,
+  flame: <><path d="M12 12c-2-2.67-4-4-4-6a4 4 0 118 0c0 2-2 3.33-4 6z"/><path d="M12 12c1.33-1.33 2-2.67 2-4a2 2 0 10-4 0c0 1.33.67 2.67 2 4z" fill="currentColor" opacity="0.3"/></>,
   users: <><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></>,
   cal: <><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></>,
   est: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></>,
