@@ -99,7 +99,7 @@ const Index = () => {
   }, [mobileMenuOpen]);
 
   return (
-    <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, color: T.text, minHeight: "100vh", display: "flex", overflow: "hidden" }}>
+    <div style={{ fontFamily: "'Inter',sans-serif", background: T.bg, color: T.text, minHeight: "100vh", display: "flex", overflow: "hidden" }}>
       {active !== "customer_portal" && (
         <ReconSidebar
           role={role} active={active} setActive={setActive} user={displayUser}
