@@ -98,7 +98,7 @@ export const JobPhotosTab = ({ job }: { job: DbJob }) => {
       company_id: companyId || null,
     } as any);
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
-    else { toast({ title: "Note added" }); setNoteTitle(""); setNoteDesc(""); setShowNoteForm(false); window.location.reload(); }
+    else { toast({ title: "Note added" }); setNoteTitle(""); setNoteDesc(""); setShowNoteForm(false); }
     setSavingNote(false);
   };
 
