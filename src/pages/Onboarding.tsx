@@ -117,7 +117,7 @@ const Onboarding = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans',sans-serif" }}>
-      <div style={{ width: 580, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "20px 40px 32px", maxHeight: "90vh", overflowY: "auto" }}>
+      <div style={{ width: 580, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px", maxHeight: "90vh", overflowY: "auto" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}>
