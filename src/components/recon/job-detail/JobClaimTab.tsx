@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { T } from "@/lib/recon-data";
-import { Badge, ReconCard as Card, Btn, Ic } from "@/components/recon/ReconUI";
+import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel } from "@/components/recon/ReconUI";
 import { useClaims } from "@/hooks/useJobs";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import type { DbJob } from "@/hooks/useJobs";
 
 const statusColors: Record<string, string> = {
@@ -9,6 +13,9 @@ const statusColors: Record<string, string> = {
 
 export const JobClaimTab = ({ job }: { job: DbJob }) => {
   const { claims, loading } = useClaims(job.id);
+  const { user, companyId } = useAuth();
+  const { toast } = useToast();
+  const [creating, setCreating] = useState(false);
   const claim = claims[0]; // primary claim
 
   if (loading) return <div style={{ textAlign: "center", padding: 40, color: T.muted }}>Loading claim tracking data...</div>;
@@ -23,6 +30,26 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
     { label: "Mortgage Co.", value: job.mortgage_company || "N/A" },
     { label: "Date of Loss", value: job.date_of_loss || "Not recorded" },
   ];
+
+  const handleStartTracking = async () => {
+    if (!user) return;
+    setCreating(true);
+    const { error } = await supabase.from("claims").insert({
+      job_id: job.id,
+      created_by: user.id,
+      company_id: companyId || null,
+      carrier_response_status: "pending",
+      supplement_status: "none",
+      outstanding_balance: job.contract_value || 0,
+    } as any);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Claim tracking started", description: `Tracking initiated for ${job.id}` });
+      window.location.reload();
+    }
+    setCreating(false);
+  };
 
   if (!claim) {
     return (
@@ -53,7 +80,9 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
           <div style={{ fontSize: 13, color: T.muted, marginBottom: 20, maxWidth: 400, margin: "0 auto 20px", lineHeight: 1.6 }}>
             Start tracking this insurance claim internally — log carrier responses, record supplement status, track denied items, and monitor payment progress. This is your team's internal tracking system.
           </div>
-          <Btn v="primary" sz="md" icon="plus">Start Claim Tracking</Btn>
+          <Btn v="primary" sz="md" icon="plus" onClick={handleStartTracking} disabled={creating}>
+            {creating ? "Starting..." : "Start Claim Tracking"}
+          </Btn>
         </Card>
       </div>
     );
@@ -93,7 +122,6 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
             <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Internal Claim Tracking</div>
             <div style={{ fontSize: 11, color: T.dim, marginTop: 2 }}>Manual tracking — update as you communicate with the carrier</div>
           </div>
-          <Btn v="secondary" sz="sm" icon="edit">Update Status</Btn>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
           {[
