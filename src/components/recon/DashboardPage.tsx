@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { T, ROLES, JOB_STAGES, stageInfo, stageColor } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Divider } from "@/components/recon/ReconUI";
 import { useJobs, useActivityLogs, useClaims, usePayments, useSupplements, useSubcontractors, useDryingLogs, type DbJob } from "@/hooks/useJobs";
 import { useAuth } from "@/hooks/useAuth";
+import { DndContext, DragOverlay, useDroppable, useDraggable, PointerSensor, TouchSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
+import { useToast } from "@/hooks/use-toast";
 
 interface DashboardProps {
   role: string;
