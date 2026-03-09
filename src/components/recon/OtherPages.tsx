@@ -15,24 +15,18 @@ export const EstimatesPage = ({ role }: { role: string }) => {
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Estimates</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Create and manage job estimates</p>
         </div>
-        <Btn v="primary" sz="sm" icon="plus">New Estimate</Btn>
       </div>
       <div style={{ padding: "0 28px" }}>
-        {jobs.length === 0 ? (
-          <Card style={{ textAlign: "center", padding: 48 }}>
-            <Ic n="est" s={40} c={T.dim}/>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No estimates yet</div>
-            <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Create a job first, then add estimates to it.</div>
-          </Card>
-        ) : (
-          <Card style={{ textAlign: "center", padding: 40 }}>
-            <Ic n="est" s={32} c={T.dim}/>
-            <div style={{ fontSize: 14, fontWeight: 600, color: T.white, marginTop: 12 }}>Estimates Module</div>
-            <div style={{ fontSize: 12, color: T.muted, marginTop: 4 }}>
-              Create estimates for your {jobs.length} job{jobs.length > 1 ? "s" : ""}. Xactimate integration coming soon — you'll need an API key.
-            </div>
-          </Card>
-        )}
+        <Card style={{ textAlign: "center", padding: 48 }}>
+          <Ic n="est" s={40} c={T.dim}/>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Estimates Module</div>
+          <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>
+            {jobs.length === 0
+              ? "Create a job first, then add estimates to it."
+              : `Xactimate integration coming soon — you'll be able to create estimates for your ${jobs.length} job${jobs.length > 1 ? "s" : ""} once connected. You'll need an API key from Xactware.`
+            }
+          </div>
+        </Card>
       </div>
     </div>
   );
