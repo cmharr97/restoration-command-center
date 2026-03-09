@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { T, TRADES } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel } from "@/components/recon/ReconUI";
-import { useSubcontractors, useJobs } from "@/hooks/useJobs";
+import { useJobs } from "@/hooks/useJobs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
 export const SubcontractorsPageFull = () => {
-  const { subs, loading } = useSubcontractors();
-  const { jobs } = useJobs();
+  const [subs, setSubs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { user, companyId } = useAuth();
   const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
