@@ -348,12 +348,12 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
               ) : (
                 activityLogs.slice(0, 8).map((log: any, i: number) => {
                   const actionIcons: Record<string, string> = {
-                    status_change: "📋", note: "📝", payment: "💰", photo: "📸", drying: "💧",
+                    status_change: "est", note: "note", payment: "dollar", photo: "photo", drying: "drop",
                   };
                   return (
                     <div key={log.id} style={{ display: "flex", gap: 12, padding: "9px 0", borderBottom: i < 7 ? `1px solid ${T.border}15` : "none" }}>
                       <div style={{ width: 60, fontSize: 10, color: T.dim, flexShrink: 0, paddingTop: 2 }}>{new Date(log.created_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</div>
-                      <span style={{ fontSize: 14, flexShrink: 0 }}>{actionIcons[log.action_type] || "📋"}</span>
+                      <div style={{ width: 22, height: 22, borderRadius: 6, background: T.surfaceHigh, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n={actionIcons[log.action_type] || "est"} s={12} c={T.muted}/></div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{log.title}</div>
                         {log.description && <div style={{ fontSize: 11, color: T.muted, marginTop: 1 }}>{log.description}</div>}

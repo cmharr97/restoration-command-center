@@ -157,7 +157,7 @@ export const Sel = ({ label, options, value, onChange, style = {} }: {
 }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
     {label && <label style={{ fontSize: 12, fontWeight: 500, color: T.muted }}>{label}</label>}
-    <select value={value || ""} onChange={onChange} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", ...style }}>
+    <select value={value || ""} onChange={onChange} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'Inter',sans-serif", outline: "none", ...style }}>
       {options.map(o => typeof o === "string" ? <option key={o}>{o}</option> : <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   </div>
