@@ -57,11 +57,11 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
 
 // ── LOGO ──
 export const Logo = ({ size = 80, width, height }: { size?: number; width?: number; height?: number }) => {
-  // The logo.png has ~30% internal padding baked in. We render it larger and use
-  // a clipping wrapper so the visible mark fills the requested dimensions.
+  const { isDark } = useTheme();
+  const logoImage = isDark ? logoDark : logoLight;
   const w = width ?? size;
   const h = height ?? size;
-  const scale = 1.55; // render image 55% larger to compensate for internal padding
+  const scale = 1.55;
   const imgW = w * scale;
   const imgH = h * scale;
   return (
