@@ -1,5 +1,6 @@
 import React from "react";
 import { T } from "@/lib/recon-data";
+import logoImage from "@/assets/logo.png";
 
 // ── ICON SVG ──
 const iconPaths: Record<string, React.ReactNode> = {
@@ -52,25 +53,10 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
   </svg>
 );
 
-// ── LOGO (theme-aware SVG matching the brand mark) ──
-export const Logo = ({ size = 52 }: { size?: number }) => {
-  // Top chevron + "ReCon" text: white in dark mode, dark in light mode
-  const swap = "var(--t-white)";
-  const orange = "#e85c0d";
-  const grayChev = "#9ca3af"; // gray top chevron accent
-  return (
-    <svg width={size} height={size} viewBox="0 0 60 60" fill="none">
-      {/* Top chevron (gray/white) */}
-      <polygon points="30,6 50,22 42,22 30,13 18,22 10,22" fill={grayChev} opacity="0.5"/>
-      {/* Middle chevron (orange) */}
-      <polygon points="30,16 52,34 43,34 30,24 17,34 8,34" fill={orange}/>
-      {/* "ReCon" text */}
-      <text x="30" y="47" textAnchor="middle" fill={swap} fontFamily="'DM Sans',sans-serif" fontWeight="800" fontSize="14" letterSpacing="-0.5">ReCon</text>
-      {/* "PRO" text */}
-      <text x="30" y="56" textAnchor="middle" fill={orange} fontFamily="'DM Sans',sans-serif" fontWeight="700" fontSize="7" letterSpacing="3">PRO</text>
-    </svg>
-  );
-};
+// ── LOGO ──
+export const Logo = ({ size = 80 }: { size?: number }) => (
+  <img src={logoImage} alt="ReCon Pro" style={{ width: size, height: size, objectFit: "contain" }} />
+);
 
 // ── BADGE ──
 const badgeColorMap: Record<string, [string, string]> = {

@@ -250,11 +250,10 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
 
       {/* ── NAVBAR ── */}
       <nav className="sticky top-0 z-50 border-b border-border backdrop-blur-xl" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo size={34} />
-            <span className="text-base font-extrabold tracking-tight" style={{ color: "var(--t-white)" }}>ReCon Pro</span>
-          </div>
+         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+           <div className="flex items-center gap-3">
+             <Logo size={48} />
+           </div>
           <div className="hidden sm:flex items-center gap-8">
             <a href="#features" className="text-xs font-semibold transition-colors hover:opacity-80" style={{ color: "var(--t-muted)" }}>Features</a>
             <a href="#demo" className="text-xs font-semibold transition-colors hover:opacity-80" style={{ color: "var(--t-muted)" }}>Demo</a>
@@ -638,10 +637,9 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
             <div className="sm:col-span-2">
-              <div className="flex items-center gap-2 mb-3">
-                <Logo size={28} />
-                <span className="text-sm font-extrabold" style={{ color: "var(--t-white)" }}>ReCon Pro</span>
-              </div>
+               <div className="flex items-center gap-2 mb-3">
+                 <Logo size={32} />
+               </div>
               <p className="text-xs leading-relaxed max-w-sm" style={{ color: "var(--t-dim)" }}>
                 The command center for restoration companies. Manage jobs, claims, drying logs, supplements, payments, and subcontractors in one platform.
               </p>
