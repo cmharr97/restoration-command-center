@@ -16,28 +16,28 @@ const FadeIn = ({ children, className = "", delay = 0, y = 30 }: { children: Rea
 
 /* ── DATA ── */
 const FEATURES_STRIP = [
-  { title: "Dashboard", desc: "Real-time operations command center" },
+  { title: "Dashboard", desc: "Operations overview at a glance" },
   { title: "Job Detail", desc: "Full job workspace with tabs" },
-  { title: "Claims", desc: "Insurance claim tracking" },
+  { title: "Insurance Tracking", desc: "Internal claim tracking" },
   { title: "Supplements", desc: "Supplement management" },
   { title: "Payments", desc: "Financial tracking" },
-  { title: "Drying Logs", desc: "Field moisture monitoring" },
-  { title: "Reports", desc: "Analytics & insights" },
+  { title: "Drying Logs", desc: "Internal moisture documentation" },
+  { title: "Communication", desc: "Job-based team messaging" },
 ];
 
-const DEMO_VIDEOS = [
-  { title: "Platform Overview", desc: "See the full ReCon Pro experience in under 3 minutes.", duration: "2:45" },
-  { title: "Job Workflow", desc: "Follow a restoration job from first call to final invoice.", duration: "4:12" },
-  { title: "Claims & Supplements", desc: "Track insurance claims and generate supplement justifications.", duration: "3:30" },
-  { title: "Drying Logs", desc: "Log moisture readings and equipment from any device.", duration: "2:15" },
-  { title: "Owner Dashboard", desc: "Your daily operations command center at a glance.", duration: "1:50" },
+const PRODUCT_PREVIEWS = [
+  { title: "Platform Overview", desc: "See the full ReCon Pro workspace — dashboard, job pipeline, and operational controls.", icon: "📊" },
+  { title: "Job Workflow", desc: "Follow a restoration job from lead intake through reconstruction and final payment.", icon: "🏗️" },
+  { title: "Insurance Tracking", desc: "Manually track carrier responses, supplement statuses, and payment milestones.", icon: "🛡️" },
+  { title: "Job Communication", desc: "Structured chat channels for internal teams, homeowners, and subcontractors.", icon: "💬" },
+  { title: "Owner Dashboard", desc: "See active jobs, outstanding payments, and team activity in one view.", icon: "📋" },
 ];
 
 const AUDIENCE = [
   { icon: "🏗️", title: "Restoration Companies", desc: "Full-service teams managing water, fire, and storm damage restoration projects end to end." },
-  { icon: "💧", title: "Mitigation Teams", desc: "Emergency response crews focused on water extraction, drying, mold prevention, and pack-outs." },
+  { icon: "💧", title: "Mitigation Teams", desc: "Emergency response crews tracking equipment placement, moisture readings, and drying progress." },
   { icon: "🔨", title: "Reconstruction Contractors", desc: "Rebuild crews managing scopes, trade coordination, and project scheduling through completion." },
-  { icon: "🛡️", title: "Insurance Restoration Specialists", desc: "Companies navigating complex carrier relationships, supplements, and claim approval workflows." },
+  { icon: "🛡️", title: "Insurance Restoration Specialists", desc: "Companies tracking carrier responses, supplements, and claim progress internally." },
   { icon: "📋", title: "Project Managers", desc: "Managers coordinating field teams, schedules, subcontractors, and documentation across jobs." },
   { icon: "📱", title: "Field Technicians", desc: "Techs logging moisture readings, equipment usage, photos, and daily drying progress on site." },
 ];
@@ -45,38 +45,50 @@ const AUDIENCE = [
 const FEATURE_STORIES = [
   {
     title: "Job Command Center",
-    desc: "Track every restoration project from lead through reconstruction in one organized workspace. See pipeline stages, priority levels, assigned teams, and real-time status updates across your entire operation.",
+    desc: "Track every restoration project from lead through reconstruction in one organized workspace. See pipeline stages, priority levels, assigned teams, and status updates across your entire operation.",
     points: ["12-stage job lifecycle", "Pipeline kanban view", "Team assignment tracking", "Priority & stage management"],
     mockup: "jobs",
   },
   {
-    title: "Insurance Claim Tracking",
-    desc: "Monitor carrier response status, supplement approvals, denied items, reinspection requests, and payment progress for every claim. Never lose track of where a claim stands.",
-    points: ["Carrier response tracking", "Denied item management", "Supplement status monitoring", "Payment milestone visibility"],
+    title: "Internal Insurance Tracking",
+    desc: "Keep track of carrier responses, supplement approvals, denied items, reinspection requests, and payment progress — all managed internally by your team. This is your company's claim tracker, not a carrier integration.",
+    points: ["Carrier response logging", "Denied item tracking", "Supplement status updates", "Payment milestone logging"],
     mockup: "claims",
   },
   {
     title: "Drying Logs & Field Documentation",
-    desc: "Technicians log moisture readings, humidity, temperature, equipment placement, and daily progress notes directly from job sites. Documentation that satisfies IICRC S500 standards.",
-    points: ["Daily moisture readings", "Equipment tracking", "GPP/RH/Temp logging", "Multi-day drying timeline"],
+    desc: "Log moisture readings, humidity, temperature, equipment placement, and daily progress notes as internal job documentation. Keep a detailed record of drying activity for your own reference and project history.",
+    points: ["Daily moisture readings", "Equipment tracking", "GPP / RH / Temp logging", "Multi-day drying timeline"],
     mockup: "drying",
   },
   {
-    title: "Supplements & AI Assistant",
-    desc: "Identify missing line items, generate F9 notes, create supplement justifications, draft adjuster emails, and produce professional claim language using the built-in AI assistant.",
-    points: ["AI-powered justifications", "Missing item detection", "Adjuster email drafts", "Scope comparison analysis"],
+    title: "Supplements & AI Writing Assistant",
+    desc: "Create and track supplement entries tied to each job. Use the built-in AI assistant to help draft F9 notes, supplement justifications, adjuster emails, and scope explanations.",
+    points: ["AI-drafted F9 notes", "Supplement justification writing", "Adjuster email drafts", "Scope explanation assistance"],
     mockup: "supplements",
   },
   {
+    title: "Job Communication Hub",
+    desc: "Each job includes structured chat channels so your team can communicate in context. Internal team chat stays private, homeowner messaging keeps customers informed, and subcontractor channels coordinate trades — all tied to the job.",
+    points: ["Internal team chat", "Homeowner messaging", "Subcontractor coordination", "Job-linked conversations"],
+    mockup: "communication",
+  },
+  {
+    title: "Homeowner Portal",
+    desc: "Give homeowners visibility into their project. They can log in, view job progress, see uploaded photos and documents, and communicate directly with the reconstruction team through their own portal.",
+    points: ["Job progress visibility", "Photo & document access", "Direct team messaging", "Project status updates"],
+    mockup: "homeowner",
+  },
+  {
     title: "Payments & Financial Tracking",
-    desc: "Track initial carrier payments, recoverable depreciation, supplement payments, deductible collection, mortgage holds, and outstanding balances for complete financial visibility.",
-    points: ["Payment milestone tracking", "Depreciation recovery", "Deductible management", "Outstanding balance alerts"],
+    desc: "Record payments from homeowners, carriers, and mortgage companies. Track payment types, check numbers, dates, and notes. See total received, outstanding balances, and contract value at a glance.",
+    points: ["Multi-source payment tracking", "Outstanding balance visibility", "Check and reference tracking", "Payment history per job"],
     mockup: "payments",
   },
   {
     title: "Subcontractor Coordination",
-    desc: "Assign trades, manage schedules, and track completion across drywall, cabinets, flooring, roofing, painting, electrical, plumbing, and every other reconstruction trade.",
-    points: ["Trade assignment", "Schedule management", "Completion tracking", "Insurance & license monitoring"],
+    desc: "Assign trades to jobs, manage schedules, and track completion across drywall, cabinets, flooring, roofing, painting, electrical, plumbing, and every other reconstruction trade.",
+    points: ["Trade assignment", "Schedule management", "Completion tracking", "Subcontractor directory"],
     mockup: "subs",
   },
 ];
@@ -84,11 +96,11 @@ const FEATURE_STORIES = [
 const WORKFLOW_STEPS = [
   { num: "01", title: "Receive Loss Call", desc: "Intake the claim and create a new lead" },
   { num: "02", title: "Create Job", desc: "Build the job record with customer and insurance details" },
-  { num: "03", title: "Run Mitigation", desc: "Deploy equipment and begin drying documentation" },
-  { num: "04", title: "Track Claims", desc: "Submit estimates and manage supplements" },
+  { num: "03", title: "Run Mitigation", desc: "Deploy equipment and document drying progress" },
+  { num: "04", title: "Track Claims", desc: "Log carrier responses and manage supplements" },
   { num: "05", title: "Coordinate Recon", desc: "Schedule trades and manage reconstruction" },
-  { num: "06", title: "Record Payments", desc: "Track carrier payments and outstanding balances" },
-  { num: "07", title: "Close Project", desc: "Final invoice, documentation, and project closeout" },
+  { num: "06", title: "Record Payments", desc: "Track payments from all sources" },
+  { num: "07", title: "Close Project", desc: "Final documentation and project closeout" },
 ];
 
 /* ── MOCKUP COMPONENTS ── */
@@ -116,14 +128,14 @@ const DashboardMockup = () => (
       </div>
       <div>
         <div className="text-xs font-bold" style={{ color: "var(--t-white)" }}>Operations Dashboard</div>
-        <div className="text-[10px]" style={{ color: "var(--t-dim)" }}>Real-time company metrics</div>
+        <div className="text-[10px]" style={{ color: "var(--t-dim)" }}>Company overview</div>
       </div>
     </div>
     <div className="grid grid-cols-4 gap-3 mb-4">
       {[
         { label: "Active Jobs", val: "24", color: "#e85c0d" },
         { label: "Revenue", val: "$482K", color: "#22c55e" },
-        { label: "Pending Claims", val: "8", color: "#f59e0b" },
+        { label: "Insurance Jobs", val: "8", color: "#f59e0b" },
         { label: "Drying Active", val: "6", color: "#3b82f6" },
       ].map(m => (
         <div key={m.label} className="rounded-lg p-3 border border-border" style={{ background: "var(--t-surface)" }}>
@@ -157,10 +169,10 @@ const JobsMockup = () => (
       <div className="text-[9px] px-2 py-1 rounded-md font-semibold" style={{ background: "#e85c0d", color: "#fff" }}>+ New Job</div>
     </div>
     {[
-      { id: "WD-2024-0847", customer: "Martinez Residence", stage: "Drying", color: "#3b82f6", amount: "$18,400" },
-      { id: "WD-2024-0851", customer: "Thompson Commercial", stage: "Mitigation", color: "#f59e0b", amount: "$34,200" },
-      { id: "FD-2024-0293", customer: "Chen Property Group", stage: "Reconstruction", color: "#22c55e", amount: "$67,500" },
-      { id: "SD-2024-0122", customer: "Williams Residence", stage: "Estimate", color: "#a78bfa", amount: "$12,800" },
+      { id: "J-0847", customer: "Martinez Residence", stage: "Drying", color: "#3b82f6", amount: "$18,400" },
+      { id: "J-0851", customer: "Thompson Commercial", stage: "Mitigation", color: "#f59e0b", amount: "$34,200" },
+      { id: "J-0293", customer: "Chen Property Group", stage: "Reconstruction", color: "#22c55e", amount: "$67,500" },
+      { id: "J-0122", customer: "Williams Residence", stage: "Estimate", color: "#a78bfa", amount: "$12,800" },
     ].map(j => (
       <div key={j.id} className="flex items-center justify-between py-2.5 border-b border-border last:border-0">
         <div className="flex items-center gap-3">
@@ -181,11 +193,12 @@ const JobsMockup = () => (
 
 const ClaimsMockup = () => (
   <div className="p-5">
-    <div className="text-xs font-bold mb-4" style={{ color: "var(--t-white)" }}>Active Claims</div>
+    <div className="text-xs font-bold mb-1" style={{ color: "var(--t-white)" }}>Insurance Job Tracking</div>
+    <div className="text-[9px] mb-4" style={{ color: "var(--t-dim)" }}>Internal tracking — managed by your team</div>
     {[
-      { claim: "CLM-2024-4821", carrier: "State Farm", status: "Supplement Pending", color: "#f59e0b", amount: "$4,200" },
-      { claim: "CLM-2024-4819", carrier: "Allstate", status: "Approved", color: "#22c55e", amount: "$18,600" },
-      { claim: "CLM-2024-4815", carrier: "USAA", status: "Under Review", color: "#3b82f6", amount: "$7,800" },
+      { claim: "CLM-4821", carrier: "State Farm", status: "Supplement Pending", color: "#f59e0b", amount: "$4,200" },
+      { claim: "CLM-4819", carrier: "Allstate", status: "Approved", color: "#22c55e", amount: "$18,600" },
+      { claim: "CLM-4815", carrier: "USAA", status: "Under Review", color: "#3b82f6", amount: "$7,800" },
     ].map(c => (
       <div key={c.claim} className="rounded-lg p-3 border border-border mb-2 last:mb-0" style={{ background: "var(--t-surface)" }}>
         <div className="flex items-center justify-between mb-1.5">
@@ -203,7 +216,8 @@ const ClaimsMockup = () => (
 
 const DryingMockup = () => (
   <div className="p-5">
-    <div className="text-xs font-bold mb-4" style={{ color: "var(--t-white)" }}>Drying Log — Day 3</div>
+    <div className="text-xs font-bold mb-1" style={{ color: "var(--t-white)" }}>Drying Log — Day 3</div>
+    <div className="text-[9px] mb-3" style={{ color: "var(--t-dim)" }}>Internal documentation</div>
     <div className="grid grid-cols-3 gap-2 mb-3">
       {[{ label: "Temp", val: "72°F", icon: "🌡️" }, { label: "RH", val: "48%", icon: "💧" }, { label: "GPP", val: "42.1", icon: "📊" }].map(r => (
         <div key={r.label} className="rounded-lg p-2.5 border border-border text-center" style={{ background: "var(--t-surface)" }}>
@@ -225,6 +239,61 @@ const DryingMockup = () => (
   </div>
 );
 
+const CommunicationMockup = () => (
+  <div className="p-5">
+    <div className="text-xs font-bold mb-1" style={{ color: "var(--t-white)" }}>Job Communication</div>
+    <div className="text-[9px] mb-3" style={{ color: "var(--t-dim)" }}>Structured channels per job</div>
+    <div className="flex gap-2 mb-3">
+      {[{ label: "Internal", color: "#e85c0d", active: true }, { label: "Homeowner", color: "#22c55e", active: false }, { label: "Subcontractor", color: "#a78bfa", active: false }].map(c => (
+        <div key={c.label} className="text-[9px] px-3 py-1.5 rounded-md font-semibold" style={{
+          background: c.active ? c.color + "1a" : "var(--t-surface-high)",
+          color: c.active ? c.color : "var(--t-dim)",
+          border: `1px solid ${c.active ? c.color + "44" : "var(--t-border)"}`,
+        }}>{c.label}</div>
+      ))}
+    </div>
+    <div className="space-y-2">
+      {[
+        { name: "Camden R.", msg: "Drying equipment placed in kitchen and hallway. Starting readings tomorrow.", time: "2:15 PM" },
+        { name: "Sarah M.", msg: "Adjuster confirmed reinspection for Thursday. Updated the claim tracker.", time: "3:42 PM" },
+      ].map(m => (
+        <div key={m.time} className="rounded-lg p-3 border border-border" style={{ background: "var(--t-surface)" }}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>{m.name}</span>
+            <span className="text-[8px]" style={{ color: "var(--t-dim)" }}>{m.time}</span>
+          </div>
+          <div className="text-[9px] leading-relaxed" style={{ color: "var(--t-muted)" }}>{m.msg}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const HomeownerMockup = () => (
+  <div className="p-5">
+    <div className="text-xs font-bold mb-1" style={{ color: "var(--t-white)" }}>Homeowner Portal</div>
+    <div className="text-[9px] mb-3" style={{ color: "var(--t-dim)" }}>Customer-facing project view</div>
+    <div className="rounded-lg p-3 border border-border mb-3" style={{ background: "var(--t-surface)" }}>
+      <div className="text-[10px] font-semibold mb-2" style={{ color: "var(--t-white)" }}>Project Status</div>
+      <div className="flex gap-1 mb-2">
+        {["Lead", "Mitigation", "Drying", "Recon"].map((s, i) => (
+          <div key={s} className="flex-1 h-1.5 rounded-full" style={{ background: i <= 2 ? "#22c55e" : "var(--t-surface-high)" }} />
+        ))}
+      </div>
+      <div className="text-[9px] font-medium" style={{ color: "#22c55e" }}>Active Drying — Day 3</div>
+    </div>
+    <div className="grid grid-cols-2 gap-2">
+      {[{ label: "Photos", count: "12", icon: "📸" }, { label: "Documents", count: "4", icon: "📄" }, { label: "Messages", count: "8", icon: "💬" }, { label: "Updates", count: "6", icon: "📋" }].map(i => (
+        <div key={i.label} className="rounded-lg p-2.5 border border-border text-center" style={{ background: "var(--t-surface)" }}>
+          <div className="text-sm mb-0.5">{i.icon}</div>
+          <div className="text-[10px] font-bold" style={{ color: "var(--t-white)" }}>{i.count}</div>
+          <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>{i.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 const getMockup = (type: string) => {
   switch (type) {
     case "jobs": return <JobsMockup />;
@@ -232,6 +301,8 @@ const getMockup = (type: string) => {
     case "drying": return <DryingMockup />;
     case "supplements": return <ClaimsMockup />;
     case "payments": return <ClaimsMockup />;
+    case "communication": return <CommunicationMockup />;
+    case "homeowner": return <HomeownerMockup />;
     case "subs": return <JobsMockup />;
     default: return <DashboardMockup />;
   }
@@ -256,7 +327,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
            </div>
           <div className="hidden sm:flex items-center gap-8">
             <a href="#features" className="text-xs font-semibold transition-colors hover:opacity-80" style={{ color: "var(--t-muted)" }}>Features</a>
-            <a href="#demo" className="text-xs font-semibold transition-colors hover:opacity-80" style={{ color: "var(--t-muted)" }}>Demo</a>
+            <a href="#previews" className="text-xs font-semibold transition-colors hover:opacity-80" style={{ color: "var(--t-muted)" }}>Preview</a>
             <a href="#workflow" className="text-xs font-semibold transition-colors hover:opacity-80" style={{ color: "var(--t-muted)" }}>How It Works</a>
           </div>
           <div className="flex items-center gap-3">
@@ -272,19 +343,17 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
 
       {/* ── HERO ── */}
       <section className="relative overflow-hidden" style={{ minHeight: "85vh" }}>
-        {/* Background effects */}
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 80% 60% at 50% -20%, rgba(232,92,13,0.08) 0%, transparent 70%)" }} />
         <div className="absolute top-20 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ background: "rgba(232,92,13,0.15)" }} />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl opacity-10" style={{ background: "rgba(59,130,246,0.15)" }} />
 
         <div className="max-w-7xl mx-auto px-6 pt-16 sm:pt-24 pb-12 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left: Copy */}
             <div>
               <FadeIn>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full text-[10px] font-bold tracking-widest uppercase" style={{ border: "1px solid rgba(232,92,13,0.25)", background: "rgba(232,92,13,0.06)", color: "#e85c0d" }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" style={{ background: "#e85c0d" }} />
-                  Restoration Management Software
+                  Restoration Operations Platform
                 </div>
               </FadeIn>
               <FadeIn delay={0.1}>
@@ -295,7 +364,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               </FadeIn>
               <FadeIn delay={0.2}>
                 <p className="text-base sm:text-lg leading-relaxed mb-8 max-w-lg" style={{ color: "var(--t-muted)" }}>
-                  Manage jobs, claims, drying logs, supplements, payments, subcontractors, and documentation in one restoration operations platform.
+                  Manage jobs, track insurance claims internally, log drying activity, coordinate subcontractors, record payments, and communicate with your team — all in one platform built for restoration professionals.
                 </p>
               </FadeIn>
               <FadeIn delay={0.3}>
@@ -310,7 +379,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               </FadeIn>
               <FadeIn delay={0.4}>
                 <div className="flex items-center gap-6 mt-10">
-                  {[{ val: "500+", label: "Jobs Managed" }, { val: "99.9%", label: "Uptime" }, { val: "24/7", label: "Support" }].map(s => (
+                  {[{ val: "12", label: "Job Stages" }, { val: "6", label: "User Roles" }, { val: "3", label: "Chat Channels" }].map(s => (
                     <div key={s.label}>
                       <div className="text-lg font-extrabold" style={{ color: "#e85c0d" }}>{s.val}</div>
                       <div className="text-[10px] font-medium" style={{ color: "var(--t-dim)" }}>{s.label}</div>
@@ -320,14 +389,12 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               </FadeIn>
             </div>
 
-            {/* Right: Product Screenshot */}
             <FadeIn delay={0.2} y={40}>
               <div className="relative">
                 <div className="absolute -inset-4 rounded-2xl blur-2xl opacity-30" style={{ background: "rgba(232,92,13,0.12)" }} />
                 <BrowserFrame className="relative">
                   <DashboardMockup />
                 </BrowserFrame>
-                {/* Floating card overlay */}
                 <motion.div
                   className="absolute -bottom-4 -left-4 sm:-left-8 rounded-xl border p-3 shadow-xl"
                   style={{ background: "var(--t-surface)", borderColor: "var(--t-border)", boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
@@ -336,8 +403,8 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: "rgba(34,197,94,0.15)" }}>✓</div>
                     <div>
-                      <div className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>Payment Received</div>
-                      <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>State Farm — $18,400</div>
+                      <div className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>Payment Recorded</div>
+                      <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>Carrier — $18,400</div>
                     </div>
                   </div>
                 </motion.div>
@@ -350,7 +417,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                     <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: "rgba(59,130,246,0.15)" }}>💧</div>
                     <div>
                       <div className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>Drying Day 3</div>
-                      <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>RH 48% — On Target</div>
+                      <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>RH 48% — Logged</div>
                     </div>
                   </div>
                 </motion.div>
@@ -369,7 +436,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                 See Every Screen
               </h2>
               <p className="text-sm max-w-lg mx-auto" style={{ color: "var(--t-muted)" }}>
-                From the dashboard to drying logs, every view is designed for restoration professionals.
+                From the dashboard to job communication, every view is designed for restoration professionals.
               </p>
             </div>
           </FadeIn>
@@ -380,7 +447,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   <div className="h-40 flex items-center justify-center" style={{ background: "var(--t-bg)" }}>
                     <div className="w-48 h-28 rounded-lg border flex items-center justify-center" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                       <div className="text-center">
-                        <div className="text-2xl mb-1">{["📊", "🏗️", "🛡️", "📋", "💰", "💧", "📈"][i]}</div>
+                        <div className="text-2xl mb-1">{["📊", "🏗️", "🛡️", "📋", "💰", "💧", "💬"][i]}</div>
                         <div className="text-[9px] font-semibold" style={{ color: "var(--t-muted)" }}>{f.title}</div>
                       </div>
                     </div>
@@ -396,36 +463,28 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
         </div>
       </section>
 
-      {/* ── DEMO VIDEOS ── */}
-      <section id="demo" className="py-20 border-t" style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }}>
+      {/* ── PRODUCT PREVIEWS (replaces broken demo videos) ── */}
+      <section id="previews" className="py-20 border-t" style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }}>
         <div className="max-w-7xl mx-auto px-6">
           <FadeIn>
             <div className="text-center mb-14">
               <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full text-[10px] font-bold tracking-widest uppercase" style={{ border: "1px solid rgba(232,92,13,0.2)", background: "rgba(232,92,13,0.05)", color: "#e85c0d" }}>
-                Product Demos
+                Product Preview
               </div>
               <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mb-3" style={{ color: "var(--t-white)" }}>
-                See ReCon Pro in Action
+                Explore the Platform
               </h2>
               <p className="text-sm max-w-lg mx-auto" style={{ color: "var(--t-muted)" }}>
-                Watch how restoration companies use ReCon Pro to manage their daily operations.
+                See how ReCon Pro organizes restoration operations into one clear workspace.
               </p>
             </div>
           </FadeIn>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {DEMO_VIDEOS.map((v, i) => (
+            {PRODUCT_PREVIEWS.map((v, i) => (
               <FadeIn key={v.title} delay={i * 0.1}>
-                <div className="rounded-xl border overflow-hidden transition-all hover:border-opacity-60 group cursor-pointer" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
+                <div className="rounded-xl border overflow-hidden transition-all hover:border-opacity-60 group" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
                   <div className="relative h-44 flex items-center justify-center" style={{ background: "linear-gradient(135deg, var(--t-surface-high), var(--t-bg))" }}>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-4xl opacity-20">{["🎬", "🏗️", "🛡️", "💧", "📊"][i]}</div>
-                    </div>
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl" style={{ background: "linear-gradient(135deg, #e85c0d, #c84009)", boxShadow: "0 8px 25px rgba(232,92,13,0.4)" }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19" /></svg>
-                    </div>
-                    <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded text-[9px] font-bold" style={{ background: "rgba(0,0,0,0.6)", color: "#fff" }}>
-                      {v.duration}
-                    </div>
+                    <div className="text-5xl opacity-40">{v.icon}</div>
                   </div>
                   <div className="p-4">
                     <div className="text-sm font-bold mb-1" style={{ color: "var(--t-white)" }}>{v.title}</div>
@@ -434,6 +493,20 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                 </div>
               </FadeIn>
             ))}
+            {/* Try Demo CTA card */}
+            <FadeIn delay={0.5}>
+              <div onClick={onDemo} className="rounded-xl border overflow-hidden transition-all hover:border-opacity-60 cursor-pointer group" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
+                <div className="relative h-44 flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(232,92,13,0.08), var(--t-bg))" }}>
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl" style={{ background: "linear-gradient(135deg, #e85c0d, #c84009)", boxShadow: "0 8px 25px rgba(232,92,13,0.4)" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19" /></svg>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="text-sm font-bold mb-1" style={{ color: "#e85c0d" }}>Try the Live Demo</div>
+                  <div className="text-[11px] leading-relaxed" style={{ color: "var(--t-dim)" }}>Explore the full platform with realistic sample data. No account required.</div>
+                </div>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
@@ -543,7 +616,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                 Your Daily Operations Command Center
               </h2>
               <p className="text-sm max-w-2xl mx-auto" style={{ color: "var(--t-muted)" }}>
-                Owners and managers see everything that matters at a glance. Active jobs, drying progress, claim status, outstanding payments, and team activity — all in one dashboard.
+                Owners and managers see everything that matters at a glance. Active jobs, drying progress, insurance tracking status, outstanding payments, and team activity — all in one dashboard.
               </p>
             </div>
           </FadeIn>
@@ -556,11 +629,11 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                     {[
                       { icon: "🔔", label: "3 jobs need attention today" },
-                      { icon: "📋", label: "2 supplements awaiting response" },
+                      { icon: "📋", label: "2 supplements awaiting update" },
                       { icon: "💰", label: "$12,400 in outstanding payments" },
                       { icon: "💧", label: "4 drying jobs in progress" },
                       { icon: "🤝", label: "6 subs scheduled this week" },
-                      { icon: "📸", label: "28 photos uploaded today" },
+                      { icon: "💬", label: "5 new team messages" },
                     ].map(a => (
                       <div key={a.label} className="flex items-center gap-2 rounded-lg p-2.5 border" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                         <span className="text-sm">{a.icon}</span>
@@ -575,7 +648,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
         </div>
       </section>
 
-      {/* ── TRUST / VALUE ── */}
+      {/* ── VALUE PROPOSITION ── */}
       <section className="py-20 border-t" style={{ borderColor: "var(--t-border)", background: "var(--t-surface)" }}>
         <div className="max-w-4xl mx-auto px-6 text-center">
           <FadeIn>
@@ -584,15 +657,15 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               <span style={{ color: "#e85c0d" }}>Your Software Shouldn't Be.</span>
             </h2>
             <p className="text-sm leading-relaxed mb-10 max-w-2xl mx-auto" style={{ color: "var(--t-muted)" }}>
-              Every restoration project involves jobs, claims, drying documentation, supplements, subcontractors, payments, communication, and compliance. Most companies juggle spreadsheets, paper forms, and disconnected tools. ReCon Pro brings it all together in one command center built specifically for restoration professionals.
+              Every restoration project involves jobs, insurance tracking, drying documentation, supplements, subcontractors, payments, and team communication. Most companies juggle spreadsheets, paper forms, and disconnected tools. ReCon Pro brings it all together in one command center built specifically for restoration professionals.
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { val: "60%", label: "Less time on admin", desc: "Automated workflows and centralized data" },
-                { val: "3x", label: "Faster supplement turnaround", desc: "AI-powered justifications and tracking" },
-                { val: "100%", label: "Claim visibility", desc: "Never lose track of a carrier response" },
+                { val: "1", label: "Unified platform", desc: "Jobs, payments, claims, and communication in one place" },
+                { val: "3", label: "Communication channels", desc: "Internal, homeowner, and subcontractor messaging per job" },
+                { val: "12", label: "Job stages", desc: "Track every project from lead to closeout" },
               ].map(s => (
                 <div key={s.val} className="rounded-xl border p-6" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
                   <div className="text-3xl font-extrabold mb-2" style={{ color: "#e85c0d" }}>{s.val}</div>
@@ -615,7 +688,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               <span style={{ color: "#e85c0d" }}>One Command Center</span>
             </h2>
             <p className="text-sm sm:text-base mb-10 max-w-xl mx-auto leading-relaxed" style={{ color: "var(--t-muted)" }}>
-              See how ReCon Pro helps restoration teams manage jobs, claims, drying, supplements, payments, and subcontractors in one place.
+              See how ReCon Pro helps restoration teams manage jobs, track claims internally, coordinate subcontractors, and record payments in one place.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button onClick={onDemo} className="w-full sm:w-auto px-8 py-3.5 text-sm font-bold rounded-xl transition-all hover:opacity-90 shadow-xl" style={{ background: "linear-gradient(135deg, #e85c0d, #c84009)", color: "#fff", boxShadow: "0 8px 30px rgba(232,92,13,0.35)" }}>
@@ -641,13 +714,13 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                  <Logo size={48} />
                </div>
               <p className="text-xs leading-relaxed max-w-sm" style={{ color: "var(--t-dim)" }}>
-                The command center for restoration companies. Manage jobs, claims, drying logs, supplements, payments, and subcontractors in one platform.
+                The command center for restoration companies. Manage jobs, track claims internally, log drying activity, coordinate subcontractors, and record payments in one platform.
               </p>
             </div>
             <div>
               <div className="text-[10px] font-bold tracking-widest uppercase mb-4" style={{ color: "var(--t-muted)" }}>Product</div>
               <div className="space-y-2.5">
-                {[{ label: "Features", href: "#features" }, { label: "Demo Videos", href: "#demo" }, { label: "How It Works", href: "#workflow" }].map(l => (
+                {[{ label: "Features", href: "#features" }, { label: "Preview", href: "#previews" }, { label: "How It Works", href: "#workflow" }].map(l => (
                   <a key={l.label} href={l.href} className="block text-xs font-medium transition-colors hover:opacity-80" style={{ color: "var(--t-dim)" }}>{l.label}</a>
                 ))}
               </div>
