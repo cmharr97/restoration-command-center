@@ -234,11 +234,38 @@ const PipelineColumn = ({ stage, jobs, onJobClick, dragOverStage }: { stage: typ
    ═══════════════════════════════ */
 export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: DashboardProps) => {
   const rm = ROLES[role] || ROLES.owner;
-  const { jobs, loading } = useJobs();
+  const { jobs, loading, updateJob } = useJobs();
   const { logs: activityLogs } = useActivityLogs();
   const { payments } = usePayments();
   const { supplements } = useSupplements();
   const { logs: dryingLogs } = useDryingLogs();
+  const { toast } = useToast();
+  const [draggingJob, setDraggingJob] = useState<DbJob | null>(null);
+
+  // DnD sensors — require 8px movement to start drag (allows clicks through)
+  const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 8 } });
+  const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } });
+  const sensors = useSensors(pointerSensor, touchSensor);
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const job = jobs.find(j => j.id === event.active.id);
+    if (job) setDraggingJob(job);
+  }, [jobs]);
+
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    setDraggingJob(null);
+    const { active, over } = event;
+    if (!over) return;
+    const jobId = active.id as string;
+    const newStage = over.id as string;
+    const job = jobs.find(j => j.id === jobId);
+    if (!job || job.stage === newStage) return;
+    const stageName = JOB_STAGES.find(s => s.id === newStage)?.label || newStage;
+    const ok = await updateJob(jobId, { stage: newStage } as any);
+    if (ok) {
+      toast({ title: "Job moved", description: `${jobId} → ${stageName}` });
+    }
+  }, [jobs, updateJob, toast]);
 
   // ─── Computed metrics ───
   const activeJobs = jobs.filter(j => !["closed"].includes(j.stage));
