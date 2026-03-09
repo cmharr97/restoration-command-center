@@ -1,8 +1,6 @@
 import React from "react";
 import { T } from "@/lib/recon-data";
-import logoLight from "@/assets/logo-light-mode.png";
-import logoDark from "@/assets/logo-dark-mode.png";
-import { useTheme } from "@/hooks/useTheme";
+import logoImage from "@/assets/logo.png";
 
 // ── ICON SVG ──
 const iconPaths: Record<string, React.ReactNode> = {
@@ -57,8 +55,7 @@ export const Ic = ({ n, s = 16, c = "currentColor" }: { n: string; s?: number; c
 
 // ── LOGO ──
 export const Logo = ({ size = 80, width, height }: { size?: number; width?: number; height?: number }) => {
-  const { isDark } = useTheme();
-  const logoImage = isDark ? logoDark : logoLight;
+  // The logo.png has ~30% internal padding baked in. We render it larger and use
   // a clipping wrapper so the visible mark fills the requested dimensions.
   const w = width ?? size;
   const h = height ?? size;
