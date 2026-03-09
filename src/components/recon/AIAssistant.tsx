@@ -196,7 +196,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = T.orange; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = T.border; }}
                 >
-                  {qa.label}
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Ic n={(qa as any).icon} s={12} c={T.muted}/> {qa.label}</span>
                 </button>
               ))}
             </div>
