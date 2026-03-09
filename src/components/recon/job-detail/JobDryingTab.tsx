@@ -84,7 +84,7 @@ export const JobDryingTab = ({ job }: { job: DbJob }) => {
           <div style={{ fontSize: 12, color: T.muted }}>{logs.length} entries · Day {logs.length} of drying</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <Btn v="secondary" sz="sm">Export PDF</Btn>
+          <Btn v="secondary" sz="sm" onClick={() => window.print()}>Print Log</Btn>
           <Btn v="primary" sz="sm" icon="plus" onClick={() => setShowForm(!showForm)}>
             {showForm ? "Cancel" : "Add Reading"}
           </Btn>

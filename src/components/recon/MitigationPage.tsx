@@ -88,7 +88,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
                       <Btn v="secondary" sz="sm" onClick={() => { setSelectedJob(job); setActive("job_detail"); }}>View Job</Btn>
-                      <Btn v="primary" sz="sm" icon="plus">Log Reading</Btn>
+                      <Btn v="primary" sz="sm" icon="plus" onClick={() => { setSelectedJob(job); setActive("job_detail"); }}>Log Reading</Btn>
                     </div>
                   </div>
 

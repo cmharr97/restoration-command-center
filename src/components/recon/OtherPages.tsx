@@ -374,12 +374,21 @@ export const SettingsPage = ({ role }: { role: string }) => {
             ))}
           </Card>
         )}
-        {!["company", "job_stages"].includes(tab) && (
+        {tab === "billing" && (
           <Card style={{ maxWidth: 600 }}>
             <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
-              <Ic n="cog" s={28} c={T.dim}/>
-              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text, textTransform: "capitalize" }}>{tab.replace("_", " ")} Settings</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Configure your {tab.replace("_", " ")} preferences</div>
+              <Ic n="dollar" s={28} c={T.dim}/>
+              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Billing & Subscription</div>
+              <div style={{ fontSize: 12, marginTop: 4 }}>Subscription management and billing settings will be available here once billing is set up.</div>
+            </div>
+          </Card>
+        )}
+        {tab === "notifications" && (
+          <Card style={{ maxWidth: 600 }}>
+            <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
+              <Ic n="bell" s={28} c={T.dim}/>
+              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Notification Preferences</div>
+              <div style={{ fontSize: 12, marginTop: 4 }}>Email and in-app notification settings will be configurable here once the notification system is enabled.</div>
             </div>
           </Card>
         )}
