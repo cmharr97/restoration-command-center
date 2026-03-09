@@ -58,7 +58,7 @@ export const JobDryingTab = ({ job }: { job: DbJob }) => {
     } as any);
 
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); }
-    else { toast({ title: "Drying log saved", description: `Day ${nextDay} recorded` }); setShowForm(false); }
+    else { toast({ title: "Drying log saved", description: `Day ${nextDay} recorded` }); setShowForm(false); fetchLogs(); }
     setSaving(false);
   };
 
