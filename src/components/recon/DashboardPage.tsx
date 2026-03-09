@@ -156,11 +156,57 @@ const AttentionItem = ({ icon, color, title, desc, action, actionLabel }: { icon
   </div>
 );
 
-/* ─── Pipeline Column ─── */
-const PipelineColumn = ({ stage, jobs, onJobClick }: { stage: typeof JOB_STAGES[number]; jobs: DbJob[]; onJobClick: (j: DbJob) => void }) => {
-  const stageJobs = jobs.filter(j => j.stage === stage.id);
+/* ─── Draggable Job Card ─── */
+const DraggableJobCard = ({ job, stageColor: sc, onJobClick }: { job: DbJob; stageColor: string; onJobClick: (j: DbJob) => void }) => {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: job.id });
+  const style: React.CSSProperties = {
+    background: T.surfaceHigh, border: `1px solid ${isDragging ? sc : T.border}`, borderRadius: 7, padding: "8px 10px",
+    cursor: "grab", transition: isDragging ? "none" : "all 0.12s", borderLeft: `3px solid ${sc}`,
+    opacity: isDragging ? 0.4 : 1,
+    transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
+    touchAction: "none",
+  };
   return (
-    <div style={{ minWidth: 150, flex: "0 0 150px" }}>
+    <div ref={setNodeRef} style={style} {...listeners} {...attributes} onClick={(e) => { if (!isDragging) { e.stopPropagation(); onJobClick(job); } }}>
+      <div style={{ fontSize: 10, fontFamily: "monospace", color: T.orange, fontWeight: 700, marginBottom: 2 }}>{job.id}</div>
+      <div style={{ fontSize: 11, color: T.text, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{job.customer}</div>
+      {job.priority === "high" && (
+        <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
+          <Ic n="alert" s={9} c={T.redBright} />
+          <span style={{ fontSize: 9, color: T.redBright, fontWeight: 600 }}>Urgent</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ─── Drag Overlay Card (what you see while dragging) ─── */
+const DragOverlayCard = ({ job }: { job: DbJob }) => {
+  const stage = JOB_STAGES.find(s => s.id === job.stage);
+  return (
+    <div style={{
+      background: T.surfaceHigh, border: `2px solid ${T.orange}`, borderRadius: 7, padding: "8px 10px",
+      borderLeft: `3px solid ${stage?.color || T.orange}`, boxShadow: `0 8px 24px rgba(0,0,0,0.4)`,
+      width: 150, cursor: "grabbing",
+    }}>
+      <div style={{ fontSize: 10, fontFamily: "monospace", color: T.orange, fontWeight: 700, marginBottom: 2 }}>{job.id}</div>
+      <div style={{ fontSize: 11, color: T.text, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{job.customer}</div>
+    </div>
+  );
+};
+
+/* ─── Droppable Pipeline Column ─── */
+const PipelineColumn = ({ stage, jobs, onJobClick, dragOverStage }: { stage: typeof JOB_STAGES[number]; jobs: DbJob[]; onJobClick: (j: DbJob) => void; dragOverStage?: string | null }) => {
+  const stageJobs = jobs.filter(j => j.stage === stage.id);
+  const { setNodeRef, isOver } = useDroppable({ id: stage.id });
+  const isHighlighted = isOver || dragOverStage === stage.id;
+  return (
+    <div ref={setNodeRef} style={{
+      minWidth: 150, flex: "0 0 150px",
+      background: isHighlighted ? stage.color + "12" : "transparent",
+      borderRadius: 8, padding: 4, transition: "background 0.15s",
+      border: isHighlighted ? `1px dashed ${stage.color}55` : "1px dashed transparent",
+    }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "0 4px" }}>
         <div style={{ width: 7, height: 7, borderRadius: "50%", background: stage.color }} />
         <span style={{ fontSize: 10, fontWeight: 700, color: T.muted, textTransform: "uppercase", letterSpacing: "0.04em" }}>{stage.label}</span>
@@ -168,27 +214,12 @@ const PipelineColumn = ({ stage, jobs, onJobClick }: { stage: typeof JOB_STAGES[
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 4, minHeight: 60 }}>
         {stageJobs.length === 0 && (
-          <div style={{ padding: "12px 8px", borderRadius: 6, border: `1px dashed ${T.border}`, textAlign: "center" }}>
-            <span style={{ fontSize: 10, color: T.dim }}>No jobs</span>
+          <div style={{ padding: "12px 8px", borderRadius: 6, border: `1px dashed ${isHighlighted ? stage.color + "55" : T.border}`, textAlign: "center" }}>
+            <span style={{ fontSize: 10, color: isHighlighted ? stage.color : T.dim }}>{isHighlighted ? "Drop here" : "No jobs"}</span>
           </div>
         )}
         {stageJobs.slice(0, 5).map(j => (
-          <div key={j.id} onClick={() => onJobClick(j)} style={{
-            background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "8px 10px",
-            cursor: "pointer", transition: "all 0.12s", borderLeft: `3px solid ${stage.color}`,
-          }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = stage.color + "55"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.transform = "translateY(0)"; }}
-          >
-            <div style={{ fontSize: 10, fontFamily: "monospace", color: T.orange, fontWeight: 700, marginBottom: 2 }}>{j.id}</div>
-            <div style={{ fontSize: 11, color: T.text, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{j.customer}</div>
-            {j.priority === "high" && (
-              <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
-                <Ic n="alert" s={9} c={T.redBright} />
-                <span style={{ fontSize: 9, color: T.redBright, fontWeight: 600 }}>Urgent</span>
-              </div>
-            )}
-          </div>
+          <DraggableJobCard key={j.id} job={j} stageColor={stage.color} onJobClick={onJobClick} />
         ))}
         {stageJobs.length > 5 && (
           <div style={{ textAlign: "center", fontSize: 10, color: T.dim, padding: 4 }}>+{stageJobs.length - 5} more</div>
