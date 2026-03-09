@@ -167,6 +167,9 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     ]},
   ],
   project_manager: [
+    { group: "Home", items: [
+      { id: "dashboard", label: "Dashboard", icon: "dash" },
+    ]},
     { group: "Operations", items: [
       { id: "jobs", label: "My Jobs", icon: "jobs" },
       { id: "customers", label: "Customers", icon: "customer" },
@@ -182,9 +185,6 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     ]},
     { group: "Communication", items: [
       { id: "messaging", label: "Messages", icon: "msg" },
-    ]},
-    { group: "Analytics", items: [
-      { id: "dashboard", label: "Dashboard", icon: "dash" },
     ]},
   ],
   estimator: [
