@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { T } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic, Inp, Sel } from "@/components/recon/ReconUI";
-import { useClaims } from "@/hooks/useJobs";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -29,27 +28,56 @@ const SUPPLEMENT_STATUSES = [
 ];
 
 export const JobClaimTab = ({ job }: { job: DbJob }) => {
-  const { claims, loading } = useClaims(job.id);
+  const [claims, setClaims] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { user, companyId } = useAuth();
   const { toast } = useToast();
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const fetchClaims = useCallback(async () => {
+    const { data, error } = await supabase.from("claims").select("*").eq("job_id", job.id).order("created_at", { ascending: false });
+    if (!error) setClaims(data || []);
+    setLoading(false);
+  }, [job.id]);
+
+  useEffect(() => { fetchClaims(); }, [fetchClaims]);
+
   const claim = claims[0];
 
   const [form, setForm] = useState({
-    carrier_response_status: claim?.carrier_response_status || "pending",
-    supplement_status: claim?.supplement_status || "none",
-    reinspection_requested: claim?.reinspection_requested || false,
-    reinspection_date: claim?.reinspection_date || "",
-    estimate_submitted_date: claim?.estimate_submitted_date || "",
-    payments_received: claim?.payments_received?.toString() || "0",
-    recoverable_depreciation: claim?.recoverable_depreciation?.toString() || "0",
-    outstanding_balance: claim?.outstanding_balance?.toString() || "0",
-    notes: claim?.notes || "",
+    carrier_response_status: "pending",
+    supplement_status: "none",
+    reinspection_requested: false,
+    reinspection_date: "",
+    estimate_submitted_date: "",
+    payments_received: "0",
+    recoverable_depreciation: "0",
+    outstanding_balance: "0",
+    notes: "",
     denied_items_text: "",
     pending_approvals_text: "",
   });
+
+  // Sync form when claim loads
+  useEffect(() => {
+    if (claim) {
+      setForm({
+        carrier_response_status: claim.carrier_response_status || "pending",
+        supplement_status: claim.supplement_status || "none",
+        reinspection_requested: claim.reinspection_requested || false,
+        reinspection_date: claim.reinspection_date || "",
+        estimate_submitted_date: claim.estimate_submitted_date || "",
+        payments_received: claim.payments_received?.toString() || "0",
+        recoverable_depreciation: claim.recoverable_depreciation?.toString() || "0",
+        outstanding_balance: claim.outstanding_balance?.toString() || "0",
+        notes: claim.notes || "",
+        denied_items_text: "",
+        pending_approvals_text: "",
+      });
+    }
+  }, [claim]);
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
@@ -78,7 +106,7 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Tracking started", description: "Internal claim tracking initiated." });
-      window.location.reload();
+      await fetchClaims();
     }
     setCreating(false);
   };
@@ -99,7 +127,6 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
       notes: form.notes,
     };
 
-    // Append new denied items / pending approvals if entered
     if (form.denied_items_text.trim()) {
       const existing = Array.isArray(claim.denied_items) ? claim.denied_items : [];
       updates.denied_items = [...existing, form.denied_items_text.trim()];
@@ -115,7 +142,7 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
     } else {
       toast({ title: "Tracking updated", description: "Claim tracking data saved." });
       setEditing(false);
-      window.location.reload();
+      await fetchClaims();
     }
     setSaving(false);
   };
@@ -128,7 +155,7 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
             <div style={{ width: 32, height: 32, borderRadius: 8, background: T.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Ic n="shield" s={16} c={T.purpleBright} />
             </div>
-            <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance & Carrier Info (from Job)</div>
+            <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance & Carrier Info</div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {insuranceInfo.map(({ label, value }) => (
@@ -161,13 +188,12 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
 
   return (
     <div>
-      {/* Insurance Info */}
       <Card style={{ marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
           <div style={{ width: 32, height: 32, borderRadius: 8, background: T.purpleDim, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Ic n="shield" s={16} c={T.purpleBright} />
           </div>
-          <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance & Carrier Info (from Job)</div>
+          <div style={{ fontWeight: 700, color: T.white, fontSize: 14 }}>Insurance & Carrier Info</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {insuranceInfo.map(({ label, value }) => (
@@ -182,35 +208,16 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
         </div>
       </Card>
 
-      {/* Internal Tracking Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <div>
           <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Internal Claim Tracking</div>
           <div style={{ fontSize: 11, color: T.dim, marginTop: 2 }}>Manually updated by your team — not connected to the carrier</div>
         </div>
-        <Btn v={editing ? "secondary" : "primary"} sz="sm" icon={editing ? "x" : "edit"} onClick={() => {
-          if (editing) { setEditing(false); } else {
-            setForm({
-              carrier_response_status: claim.carrier_response_status || "pending",
-              supplement_status: claim.supplement_status || "none",
-              reinspection_requested: claim.reinspection_requested || false,
-              reinspection_date: claim.reinspection_date || "",
-              estimate_submitted_date: claim.estimate_submitted_date || "",
-              payments_received: claim.payments_received?.toString() || "0",
-              recoverable_depreciation: claim.recoverable_depreciation?.toString() || "0",
-              outstanding_balance: claim.outstanding_balance?.toString() || "0",
-              notes: claim.notes || "",
-              denied_items_text: "",
-              pending_approvals_text: "",
-            });
-            setEditing(true);
-          }
-        }}>
+        <Btn v={editing ? "secondary" : "primary"} sz="sm" icon={editing ? "x" : "edit"} onClick={() => setEditing(!editing)}>
           {editing ? "Cancel" : "Update Tracking"}
         </Btn>
       </div>
 
-      {/* Edit Form */}
       {editing ? (
         <Card style={{ marginBottom: 16, borderColor: `${T.orange}44` }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
@@ -231,12 +238,10 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
             <Inp label="Add Denied Item" placeholder="Describe denied item..." value={form.denied_items_text} onChange={set("denied_items_text")} />
             <Inp label="Add Pending Approval" placeholder="Describe pending item..." value={form.pending_approvals_text} onChange={set("pending_approvals_text")} />
           </div>
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-              <label style={{ fontSize: 12, fontWeight: 500, color: T.muted }}>Claim Notes</label>
-              <textarea value={form.notes} onChange={set("notes")} rows={3}
-                style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical" }} />
-            </div>
+          <div style={{ marginBottom: 12, display: "flex", flexDirection: "column", gap: 5 }}>
+            <label style={{ fontSize: 12, fontWeight: 500, color: T.muted }}>Claim Notes</label>
+            <textarea value={form.notes} onChange={set("notes")} rows={3}
+              style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical" }} />
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
             <Btn v="secondary" onClick={() => setEditing(false)}>Cancel</Btn>
@@ -247,7 +252,6 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
         </Card>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          {/* Status Cards */}
           <Card style={{ gridColumn: "1 / -1" }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
               {[
@@ -264,7 +268,6 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
             </div>
           </Card>
 
-          {/* Financial */}
           <Card>
             <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Payment Tracking (Manual)</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -281,9 +284,8 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
             </div>
           </Card>
 
-          {/* Timeline */}
           <Card>
-            <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Key Dates (Logged)</div>
+            <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Key Dates</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
                 claim.estimate_submitted_date && { label: "Estimate Submitted", value: claim.estimate_submitted_date, color: T.blueBright },
@@ -300,9 +302,8 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
             </div>
           </Card>
 
-          {/* Denied Items & Pending */}
           <Card style={{ gridColumn: "1 / -1" }}>
-            <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Denied Items & Pending Approvals (Logged)</div>
+            <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 14 }}>Denied Items & Pending Approvals</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: T.redBright, marginBottom: 8 }}>Denied Items</div>
@@ -327,7 +328,6 @@ export const JobClaimTab = ({ job }: { job: DbJob }) => {
             </div>
           </Card>
 
-          {/* Notes */}
           {claim.notes && (
             <Card style={{ gridColumn: "1 / -1" }}>
               <div style={{ fontWeight: 700, color: T.white, fontSize: 14, marginBottom: 8 }}>Internal Claim Notes</div>
