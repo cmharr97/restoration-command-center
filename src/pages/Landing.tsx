@@ -283,9 +283,9 @@ const HomeownerMockup = () => (
       <div className="text-[9px] font-medium" style={{ color: "#22c55e" }}>Active Drying — Day 3</div>
     </div>
     <div className="grid grid-cols-2 gap-2">
-      {[{ label: "Photos", count: "12", icon: "📸" }, { label: "Documents", count: "4", icon: "📄" }, { label: "Messages", count: "8", icon: "💬" }, { label: "Updates", count: "6", icon: "📋" }].map(i => (
+      {[{ label: "Photos", count: "12", icon: "photo" }, { label: "Documents", count: "4", icon: "est" }, { label: "Messages", count: "8", icon: "msg" }, { label: "Updates", count: "6", icon: "note" }].map(i => (
         <div key={i.label} className="rounded-lg p-2.5 border border-border text-center" style={{ background: "var(--t-surface)" }}>
-          <div className="text-sm mb-0.5">{i.icon}</div>
+          <div className="flex items-center justify-center mb-0.5"><Ic n={i.icon} s={14} c="var(--t-muted)"/></div>
           <div className="text-[10px] font-bold" style={{ color: "var(--t-white)" }}>{i.count}</div>
           <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>{i.label}</div>
         </div>
