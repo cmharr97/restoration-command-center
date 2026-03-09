@@ -19,11 +19,11 @@ export const EstimatesPage = ({ role }: { role: string }) => {
       <div style={{ padding: "0 28px" }}>
         <Card style={{ textAlign: "center", padding: 48 }}>
           <Ic n="est" s={40} c={T.dim}/>
-          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Estimates Module</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Estimates</div>
           <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>
             {jobs.length === 0
               ? "Create a job first, then add estimates to it."
-              : `Xactimate integration coming soon — you'll be able to create estimates for your ${jobs.length} job${jobs.length > 1 ? "s" : ""} once connected. You'll need an API key from Xactware.`
+              : `Manage estimates for your ${jobs.length} job${jobs.length > 1 ? "s" : ""}. Estimates are created and tracked within each job's detail page.`
             }
           </div>
         </Card>
