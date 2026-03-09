@@ -42,14 +42,12 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
         display: "flex", flexDirection: "column", height: "100vh", position: "sticky", top: 0, overflowY: "auto",
         transition: "transform 0.25s ease",
       }}>
-         <div style={{ padding: "4px 10px", minHeight: 78, borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, height: 72, overflow: "hidden" }}>
-             <div style={{ marginTop: -22, marginBottom: -18, display: "flex", alignItems: "center", justifyContent: "center" }}>
-               <Logo size={170}/>
-             </div>
+         <div style={{ height: 118, padding: "8px 12px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" }}>
+             <Logo size={150}/>
            </div>
            {onMobileClose && (
-             <button onClick={onMobileClose} className="mobile-close-btn" style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4, display: "none" }}>
+             <button onClick={onMobileClose} className="mobile-close-btn" style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4, display: "none" }}>
                <Ic n="x" s={20} />
              </button>
            )}
