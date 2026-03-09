@@ -178,7 +178,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
         {messages.length === 0 && (
           <div style={{ padding: "12px 0" }}>
             <div style={{ textAlign: "center", marginBottom: 16 }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>🤖</div>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 8px" }}><Ic n="edit" s={20} c={T.orange}/></div>
               <div style={{ fontWeight: 700, color: T.text, fontSize: 15, marginBottom: 4 }}>ReCon AI Writer</div>
               <div style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>
                 F9 notes, supplements, adjuster emails, scope docs
