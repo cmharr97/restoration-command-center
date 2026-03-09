@@ -116,11 +116,11 @@ const Onboarding = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans',sans-serif" }}>
-      <div style={{ width: 580, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px", maxHeight: "90vh", overflowY: "auto" }}>
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: 48, fontFamily: "'DM Sans',sans-serif" }}>
+      <div style={{ width: 580, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "24px 40px 36px", maxHeight: "90vh", overflowY: "auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 16 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 2 }}>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 0 }}>
             <Logo size={240} />
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 4px", letterSpacing: "-0.02em" }}>Set Up Your Company</h1>
@@ -128,7 +128,7 @@ const Onboarding = () => {
         </div>
 
         {/* Progress */}
-        <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
+        <div style={{ display: "flex", gap: 4, marginBottom: 24 }}>
           {STEPS.map((s, i) => (
             <div key={i} style={{ flex: 1, textAlign: "center" }}>
               <div style={{ height: 4, borderRadius: 2, marginBottom: 6, background: i <= step ? T.orange : T.surfaceHigh, transition: "background 0.3s" }} />
