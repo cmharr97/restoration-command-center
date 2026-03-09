@@ -2,7 +2,9 @@ import { useState, useRef } from "react";
 import { T, ROLES, JOB_STAGES, LOSS_TYPES, stageInfo, stageColor } from "@/lib/recon-data";
 import { Badge, ReconCard as Card, Btn, Ic } from "@/components/recon/ReconUI";
 import { UserAvatar } from "@/components/recon/MessagingPage";
-import { useTeamMembers, type DbJob } from "@/hooks/useJobs";
+import { useTeamMembers, useJobs, type DbJob } from "@/hooks/useJobs";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { JobOverviewTab } from "./job-detail/JobOverviewTab";
 import { JobClaimTab } from "./job-detail/JobClaimTab";
 import { JobSupplementsTab } from "./job-detail/JobSupplementsTab";
@@ -20,11 +22,14 @@ interface JobDetailProps {
 
 export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
   const [tab, setTab] = useState("overview");
-  const rm = ROLES[role];
+  const rm = ROLES[role] || ROLES.owner;
   const stage = stageInfo(job.stage);
   const { members } = useTeamMembers();
+  const { updateJob, deleteJob } = useJobs();
+  const { toast } = useToast();
   const isWater = job.loss_type === "water";
   const isInsurance = job.payment_type === "insurance";
+  const [archiving, setArchiving] = useState(false);
 
   // Build tabs dynamically based on job type and role
   const TAB_CONFIG = [
@@ -61,6 +66,24 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
     ...(rm.canViewInvoices && job.contract_value ? [{ label: "Contract", value: `$${job.contract_value.toLocaleString()}`, icon: "dollar" }] : []),
   ];
 
+  const handleArchive = async () => {
+    if (!confirm(`Archive job ${job.id}? This will move it to Closed stage.`)) return;
+    setArchiving(true);
+    const ok = await updateJob(job.id, { stage: "closed" });
+    if (ok) {
+      toast({ title: "Job archived", description: `${job.id} moved to Closed` });
+      setActive("jobs");
+    }
+    setArchiving(false);
+  };
+
+  const handleStageChange = async (stageId: string) => {
+    const ok = await updateJob(job.id, { stage: stageId });
+    if (ok) {
+      toast({ title: "Stage updated", description: `${job.id} → ${stageInfo(stageId).label}` });
+    }
+  };
+
   return (
     <div style={{ padding: "0 0 40px" }}>
       {/* Header */}
@@ -81,19 +104,25 @@ export const JobDetailPage = ({ job, role, setActive }: JobDetailProps) => {
           </div>
           <div style={{ display: "flex", gap: 8, flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
             <Badge color={stageColor[job.stage] || "gray"} dot>{stage.label}</Badge>
-            {rm.canDeleteJobs && <Btn v="danger" sz="sm">Archive</Btn>}
-            <Btn v="primary" sz="sm" icon="edit">Edit Job</Btn>
+            {rm.canDeleteJobs && (
+              <Btn v="danger" sz="sm" onClick={handleArchive} disabled={archiving}>
+                {archiving ? "..." : "Archive"}
+              </Btn>
+            )}
           </div>
         </div>
 
-        {/* Stage Tracker */}
+        {/* Stage Tracker - clickable */}
         <div style={{ display: "flex", gap: 2, marginBottom: 16, overflowX: "auto" }}>
           {JOB_STAGES.map((s, i) => {
             const stageIdx = JOB_STAGES.findIndex(x => x.id === job.stage);
             const isPast = i < stageIdx;
             const isCurrent = i === stageIdx;
             return (
-              <div key={s.id} style={{ flex: 1, minWidth: 60, textAlign: "center" }}>
+              <div key={s.id} onClick={() => handleStageChange(s.id)}
+                style={{ flex: 1, minWidth: 60, textAlign: "center", cursor: "pointer" }}
+                title={`Set stage to ${s.label}`}
+              >
                 <div style={{ height: 4, borderRadius: 2, background: isPast || isCurrent ? s.color : T.surfaceTop, marginBottom: 4, transition: "background 0.3s" }} />
                 <div style={{ fontSize: 9, color: isCurrent ? s.color : isPast ? T.muted : T.dim, fontWeight: isCurrent ? 700 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.label}</div>
               </div>
@@ -211,10 +240,6 @@ const JobCommunicationTab = ({ job, role, members }: { job: DbJob; role: string;
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
         <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Job Communication — {job.id}</div>
-        <div style={{ display: "flex", gap: 6 }}>
-          <Btn v="secondary" sz="sm" icon="note">Templates</Btn>
-          <Btn v="secondary" sz="sm" icon="upload">Export Log</Btn>
-        </div>
       </div>
 
       <div style={{ display: "flex", gap: 4, marginBottom: 14, flexWrap: "wrap" }}>

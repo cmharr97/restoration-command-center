@@ -15,24 +15,18 @@ export const EstimatesPage = ({ role }: { role: string }) => {
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Estimates</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Create and manage job estimates</p>
         </div>
-        <Btn v="primary" sz="sm" icon="plus">New Estimate</Btn>
       </div>
       <div style={{ padding: "0 28px" }}>
-        {jobs.length === 0 ? (
-          <Card style={{ textAlign: "center", padding: 48 }}>
-            <Ic n="est" s={40} c={T.dim}/>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No estimates yet</div>
-            <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Create a job first, then add estimates to it.</div>
-          </Card>
-        ) : (
-          <Card style={{ textAlign: "center", padding: 40 }}>
-            <Ic n="est" s={32} c={T.dim}/>
-            <div style={{ fontSize: 14, fontWeight: 600, color: T.white, marginTop: 12 }}>Estimates Module</div>
-            <div style={{ fontSize: 12, color: T.muted, marginTop: 4 }}>
-              Create estimates for your {jobs.length} job{jobs.length > 1 ? "s" : ""}. Xactimate integration coming soon — you'll need an API key.
-            </div>
-          </Card>
-        )}
+        <Card style={{ textAlign: "center", padding: 48 }}>
+          <Ic n="est" s={40} c={T.dim}/>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Estimates Module</div>
+          <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>
+            {jobs.length === 0
+              ? "Create a job first, then add estimates to it."
+              : `Xactimate integration coming soon — you'll be able to create estimates for your ${jobs.length} job${jobs.length > 1 ? "s" : ""} once connected. You'll need an API key from Xactware.`
+            }
+          </div>
+        </Card>
       </div>
     </div>
   );
@@ -41,8 +35,7 @@ export const EstimatesPage = ({ role }: { role: string }) => {
 // ── INVOICES PAGE ──
 export const InvoicesPage = ({ role }: { role: string }) => {
   const rm = ROLES[role];
-  const { jobs } = useJobs();
-  if (!rm.canViewInvoices) return <div style={{ padding: 40, textAlign: "center", color: T.muted }}><Ic n="lock" s={32} c={T.dim}/><div style={{ marginTop: 12 }}>Invoices are only accessible to authorized roles.</div></div>;
+  if (!rm?.canViewInvoices) return <div style={{ padding: 40, textAlign: "center", color: T.muted }}><Ic n="lock" s={32} c={T.dim}/><div style={{ marginTop: 12 }}>Invoices are only accessible to authorized roles.</div></div>;
   return (
     <div style={{ padding: "0 0 40px" }}>
       <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
@@ -50,13 +43,12 @@ export const InvoicesPage = ({ role }: { role: string }) => {
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Invoices</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Billing and payment tracking</p>
         </div>
-        <Btn v="primary" sz="sm" icon="plus">Create Invoice</Btn>
       </div>
       <div style={{ padding: "0 28px" }}>
         <Card style={{ textAlign: "center", padding: 48 }}>
           <Ic n="inv" s={40} c={T.dim}/>
-          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No invoices yet</div>
-          <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Invoices will appear here when you create them from completed jobs. QuickBooks integration coming soon.</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Invoices Module</div>
+          <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Invoices will appear here when you create them from completed jobs. QuickBooks integration coming soon — you'll need an API key.</div>
         </Card>
       </div>
     </div>
@@ -121,18 +113,17 @@ export const TeamPage = ({ role: userRole }: { role: string }) => {
 // ── EQUIPMENT PAGE ──
 export const EquipmentPage = () => (
   <div style={{ padding: "0 0 40px" }}>
-    <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+    <div style={{ padding: "24px 28px 0", marginBottom: 18 }}>
       <div>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Equipment</h1>
         <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Track drying equipment across all job sites</p>
       </div>
-      <Btn v="primary" sz="sm" icon="plus">Add Equipment</Btn>
     </div>
     <div style={{ padding: "0 28px" }}>
       <Card style={{ textAlign: "center", padding: 48 }}>
         <Ic n="tool" s={40} c={T.dim}/>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No equipment tracked yet</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Add your dehumidifiers, air movers, and moisture meters to track them across job sites.</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Equipment Tracking</div>
+        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Equipment tracking for dehumidifiers, air movers, and moisture meters is coming soon. For now, log equipment placement in your drying log entries.</div>
       </Card>
     </div>
   </div>
@@ -254,18 +245,17 @@ export const CustomersPage = () => {
 // ── REFERRALS PAGE ──
 export const ReferralsPage = () => (
   <div style={{ padding: "0 0 40px" }}>
-    <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+    <div style={{ padding: "24px 28px 0", marginBottom: 18 }}>
       <div>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Referrals & CRM</h1>
         <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Track lead sources and referral partners</p>
       </div>
-      <Btn v="primary" sz="sm" icon="plus">Add Partner</Btn>
     </div>
     <div style={{ padding: "0 28px" }}>
       <Card style={{ textAlign: "center", padding: 48 }}>
         <Ic n="handshake" s={40} c={T.dim}/>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No referral partners yet</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Add your plumbers, insurance agents, and property managers to track referral sources.</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Referral Tracking</div>
+        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Referral partner management for plumbers, insurance agents, and property managers is coming soon.</div>
       </Card>
     </div>
   </div>

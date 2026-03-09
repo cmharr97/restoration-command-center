@@ -41,12 +41,12 @@ interface JobsPageProps {
   role: string;
   setSelectedJob: (job: DbJob) => void;
   setActive: (id: string) => void;
+  onNewJob?: () => void;
 }
 
-export const JobsPage = ({ role, setSelectedJob, setActive }: JobsPageProps) => {
+export const JobsPage = ({ role, setSelectedJob, setActive, onNewJob }: JobsPageProps) => {
   const [stageFilter, setStageFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const rm = ROLES[role];
   const { jobs, loading } = useJobs();
 
   const filtered = jobs.filter(j => {
@@ -95,7 +95,7 @@ export const JobsPage = ({ role, setSelectedJob, setActive }: JobsPageProps) => 
                 Create your first restoration job to start tracking the full lifecycle — from initial lead through drying, reconstruction, and final payment.
               </div>
               <div style={{ marginTop: 20 }}>
-                <Btn v="primary" icon="plus" onClick={() => {}}>Create First Job</Btn>
+                <Btn v="primary" icon="plus" onClick={onNewJob}>Create First Job</Btn>
               </div>
             </div>
           ) : filtered.length === 0 ? (

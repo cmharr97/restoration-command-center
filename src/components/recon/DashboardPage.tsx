@@ -7,14 +7,15 @@ interface DashboardProps {
   role: string;
   setActive: (id: string) => void;
   setSelectedJob: (job: DbJob) => void;
+  onNewJob?: () => void;
 }
 
 // Quick Start checklist for new owners
-const QuickStartChecklist = ({ setActive, jobs }: { setActive: (id: string) => void; jobs: DbJob[] }) => {
+const QuickStartChecklist = ({ setActive, jobs, onNewJob }: { setActive: (id: string) => void; jobs: DbJob[]; onNewJob?: () => void }) => {
   const { profile } = useAuth();
   const steps = [
     { id: "company", label: "Set up company profile", desc: "Configure your company details and branding", done: !!profile?.company_id, action: "settings", icon: "cog" },
-    { id: "first_job", label: "Create your first job", desc: "Add a restoration job to start tracking", done: jobs.length > 0, action: "jobs", icon: "jobs" },
+    { id: "first_job", label: "Create your first job", desc: "Add a restoration job to start tracking", done: jobs.length > 0, action: "new_job", icon: "jobs" },
     { id: "team", label: "Invite your team", desc: "Add project managers, techs, and office staff", done: false, action: "team", icon: "users" },
     { id: "subs", label: "Add subcontractors", desc: "Register your trade partners for job assignments", done: false, action: "subcontractors", icon: "truck" },
     { id: "claim", label: "Track a claim", desc: "Add insurance info to a job to start tracking claims", done: jobs.some(j => j.carrier && j.claim_no), action: "claims", icon: "shield" },
@@ -42,7 +43,7 @@ const QuickStartChecklist = ({ setActive, jobs }: { setActive: (id: string) => v
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
         {steps.map(s => (
-          <div key={s.id} onClick={() => !s.done && setActive(s.action)} style={{
+          <div key={s.id} onClick={() => { if (!s.done) { s.action === "new_job" && onNewJob ? onNewJob() : setActive(s.action); } }} style={{
             display: "flex", alignItems: "center", gap: 10, padding: "10px 12px",
             background: s.done ? T.greenDim : T.surfaceHigh, borderRadius: 8,
             border: `1px solid ${s.done ? T.greenBright + "33" : T.border}`,
@@ -70,7 +71,6 @@ const QuickStartChecklist = ({ setActive, jobs }: { setActive: (id: string) => v
 
 // Demo workspace banner
 const DemoBanner = () => {
-  const { profile } = useAuth();
   const { jobs } = useJobs();
   const isDemo = jobs.some(j => j.id?.startsWith("DEMO-"));
   if (!isDemo) return null;
@@ -90,7 +90,7 @@ const DemoBanner = () => {
 };
 
 // Empty dashboard welcome
-const WelcomeDashboard = ({ setActive }: { setActive: (id: string) => void }) => (
+const WelcomeDashboard = ({ onNewJob }: { onNewJob?: () => void }) => (
   <div>
     {/* Hero */}
     <div style={{
@@ -104,7 +104,7 @@ const WelcomeDashboard = ({ setActive }: { setActive: (id: string) => void }) =>
         The all-in-one command center for restoration companies. Manage jobs, insurance claims, drying logs, supplements, payments, and subcontractors — all in one place.
       </p>
       <div style={{ marginTop: 20 }}>
-        <Btn v="primary" icon="plus" onClick={() => setActive("jobs")}>Create Your First Job</Btn>
+        <Btn v="primary" icon="plus" onClick={onNewJob}>Create Your First Job</Btn>
       </div>
     </div>
 
@@ -112,7 +112,7 @@ const WelcomeDashboard = ({ setActive }: { setActive: (id: string) => void }) =>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
       {[
         { icon: "jobs", title: "Job Pipeline", desc: "Track every restoration project from lead to close with a visual stage-based workflow.", color: T.orange },
-        { icon: "shield", title: "Insurance Claims", desc: "Monitor claim status, carrier responses, and supplement approvals across all active jobs.", color: T.blueBright },
+        { icon: "shield", title: "Insurance Tracking", desc: "Log claim status, carrier responses, and supplement approvals for insurance jobs.", color: T.blueBright },
         { icon: "moisture", title: "Drying Logs", desc: "IICRC S500 compliant moisture readings. Track GPP, room-by-room status, and equipment.", color: T.tealBright },
         { icon: "est", title: "Supplements", desc: "Compare contractor vs. carrier estimates. Identify missing items and pricing gaps.", color: T.purpleBright },
         { icon: "dollar", title: "Payment Tracking", desc: "Track insurance payments, deductibles, mortgage holds, and recoverable depreciation.", color: T.greenBright },
@@ -130,25 +130,22 @@ const WelcomeDashboard = ({ setActive }: { setActive: (id: string) => void }) =>
   </div>
 );
 
-export const DashboardPage = ({ role, setActive, setSelectedJob }: DashboardProps) => {
-  const rm = ROLES[role];
+export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: DashboardProps) => {
+  const rm = ROLES[role] || ROLES.owner;
   const { jobs, loading } = useJobs();
   const { logs: activityLogs } = useActivityLogs();
-  const { claims } = useClaims();
   const { payments } = usePayments();
   const { supplements } = useSupplements();
 
   const activeJobs = jobs.filter(j => !["closed"].includes(j.stage));
   const urgentJobs = jobs.filter(j => j.priority === "high");
-  const awaitingCarrier = jobs.filter(j => ["estimate_submitted", "carrier_approval"].includes(j.stage));
+  const awaitingCarrier = jobs.filter(j => j.payment_type === "insurance" && ["estimate_submitted", "carrier_approval"].includes(j.stage));
   const dryingJobs = jobs.filter(j => ["drying", "mitigation"].includes(j.stage));
   const reconJobs = jobs.filter(j => ["recon_scheduled", "reconstruction"].includes(j.stage));
   const supplementPending = supplements.filter((s: any) => ["submitted", "under_review"].includes(s.status));
-  const punchListJobs = jobs.filter(j => j.stage === "punch_list");
   const totalRevenue = jobs.reduce((a, b) => a + (b.contract_value || 0), 0);
   const totalPaid = payments.reduce((a: number, p: any) => a + (p.amount || 0), 0);
   const outstanding = totalRevenue - totalPaid;
-  const pendingClaims = claims.filter((c: any) => c.carrier_response_status === "pending").length;
 
   const today = new Date();
   const dateStr = today.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
@@ -170,7 +167,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob }: DashboardProp
           </div>
           {jobs.length > 0 && (
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Btn v="primary" sz="sm" icon="plus" onClick={() => setActive("jobs")}>New Job</Btn>
+              <Btn v="primary" sz="sm" icon="plus" onClick={onNewJob}>New Job</Btn>
             </div>
           )}
         </div>
@@ -182,13 +179,13 @@ export const DashboardPage = ({ role, setActive, setSelectedJob }: DashboardProp
         {/* If no jobs, show welcome */}
         {jobs.length === 0 ? (
           <>
-            {role === "owner" && <QuickStartChecklist setActive={setActive} jobs={jobs} />}
-            <WelcomeDashboard setActive={setActive} />
+            {role === "owner" && <QuickStartChecklist setActive={setActive} jobs={jobs} onNewJob={onNewJob} />}
+            <WelcomeDashboard onNewJob={onNewJob} />
           </>
         ) : (
           <>
             {/* Quick Start for owners with few completed steps */}
-            {role === "owner" && <QuickStartChecklist setActive={setActive} jobs={jobs} />}
+            {role === "owner" && <QuickStartChecklist setActive={setActive} jobs={jobs} onNewJob={onNewJob} />}
 
             {/* Operational Alerts */}
             {urgentJobs.length > 0 && (
@@ -217,9 +214,9 @@ export const DashboardPage = ({ role, setActive, setSelectedJob }: DashboardProp
               <div style={{ background: T.yellowDim, border: `1px solid ${T.yellowBright}44`, borderRadius: 10, padding: "12px 16px", marginBottom: 10, display: "flex", gap: 12, alignItems: "center" }}>
                 <Ic n="clock" s={18} c={T.yellowBright}/>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>{awaitingCarrier.length} job{awaitingCarrier.length > 1 ? "s" : ""} awaiting carrier response</div>
+                  <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>{awaitingCarrier.length} insurance job{awaitingCarrier.length > 1 ? "s" : ""} awaiting carrier response</div>
                 </div>
-                <Btn v="secondary" sz="sm" onClick={() => setActive("claims")}>View Claims</Btn>
+                <Btn v="secondary" sz="sm" onClick={() => setActive("claims")}>View Insurance Jobs</Btn>
               </div>
             )}
 
@@ -321,7 +318,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob }: DashboardProp
                   <Card>
                     <div style={{ fontWeight: 700, fontSize: 14, color: T.white, marginBottom: 10 }}>Top Carriers</div>
                     {(() => {
-                      const carriers = jobs.filter(j => j.carrier?.trim()).reduce((acc, j) => {
+                      const carriers = jobs.filter(j => j.carrier?.trim() && j.payment_type === "insurance").reduce((acc, j) => {
                         const c = j.carrier || "Unknown";
                         acc[c] = (acc[c] || 0) + 1;
                         return acc;
@@ -344,7 +341,6 @@ export const DashboardPage = ({ role, setActive, setSelectedJob }: DashboardProp
             <Card>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <div style={{ fontWeight: 700, fontSize: 14, color: T.white }}>Recent Activity</div>
-                {activityLogs.length > 5 && <Btn v="ghost" sz="sm">View All →</Btn>}
               </div>
               {activityLogs.length === 0 ? (
                 <div style={{ textAlign: "center", padding: 24, color: T.dim, fontSize: 12 }}>
