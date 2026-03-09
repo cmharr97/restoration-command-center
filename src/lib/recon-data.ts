@@ -234,7 +234,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
 };
 
 // ── HELPERS ──
-export const stageInfo = (id: string) => JOB_STAGES.find(s => s.id === id) || { label: id, color: T.muted, icon: "⬜" };
+export const stageInfo = (id: string) => JOB_STAGES.find(s => s.id === id) || { label: id, color: T.muted, icon: "est" };
 
 export const stageColor: Record<string, string> = {
   lead: "gray", inspection: "yellow", mitigation: "orange",
