@@ -65,7 +65,7 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans',sans-serif" }}>
-      <div style={{ width: 460, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px", position: "relative" }}>
+      <div style={{ width: 460, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "22px 40px 32px", position: "relative" }}>
         {onBack && (
           <button onClick={onBack} style={{ position: "absolute", top: 16, left: 16, background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
             ← Back
