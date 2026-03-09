@@ -158,7 +158,7 @@ export const NAV: Record<string, { group: string; items: { id: string; label: st
     ]},
     { group: "Growth", items: [
       { id: "customers", label: "Customers", icon: "customer" },
-      { id: "referrals", label: "Referrals / CRM", icon: "handshake" },
+      { id: "referrals", label: "Lead Pipeline", icon: "chart" },
       { id: "reports", label: "Reports", icon: "chart" },
     ]},
     { group: "System", items: [
