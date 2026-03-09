@@ -98,7 +98,7 @@ export const MessagingPage = ({ role }: { role: string }) => {
       lastTime: "",
       unread: 0,
       jobId: j.id,
-      icon: j.loss_type === "water" ? "💧" : j.loss_type === "fire" ? "🔥" : j.loss_type === "mold" ? "🦠" : "📋",
+      icon: undefined,
     })),
   ];
 
