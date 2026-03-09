@@ -221,7 +221,7 @@ const DryingMockup = () => (
     <div className="grid grid-cols-3 gap-2 mb-3">
       {[{ label: "Temp", val: "72°F", icon: "flame" }, { label: "RH", val: "48%", icon: "drop" }, { label: "GPP", val: "42.1", icon: "chart" }].map(r => (
         <div key={r.label} className="rounded-lg p-2.5 border border-border text-center" style={{ background: "var(--t-surface)" }}>
-          <div className="text-base mb-1">{r.icon}</div>
+          <div className="flex items-center justify-center mb-1"><Ic n={r.icon} s={16} c="var(--t-muted)"/></div>
           <div className="text-sm font-extrabold" style={{ color: "var(--t-white)" }}>{r.val}</div>
           <div className="text-[9px]" style={{ color: "var(--t-dim)" }}>{r.label}</div>
         </div>
