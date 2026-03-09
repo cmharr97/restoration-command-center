@@ -130,7 +130,7 @@ export const Inp = ({ label, placeholder, type = "text", value, onChange, style 
   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
     {label && <label style={{ fontSize: 12, fontWeight: 500, color: T.muted }}>{label}{required && <span style={{ color: T.orange }}> *</span>}</label>}
     <input type={type} placeholder={placeholder} value={value || ""} onChange={onChange}
-      style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", ...style }}
+      style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'Inter',sans-serif", outline: "none", ...style }}
       onFocus={e => (e.target as HTMLInputElement).style.borderColor = T.orange}
       onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
     />
