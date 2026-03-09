@@ -106,7 +106,7 @@ export const ReconCard = ({ children, style = {}, onClick, glow = false }: {
 export const Btn = ({ children, v = "primary", sz = "md", onClick, style = {}, icon, disabled = false }: {
   children?: React.ReactNode; v?: "primary" | "secondary" | "ghost" | "danger" | "success"; sz?: "sm" | "md" | "lg"; onClick?: () => void; style?: React.CSSProperties; icon?: string; disabled?: boolean;
 }) => {
-  const base: React.CSSProperties = { display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 8, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer", border: "none", transition: "all 0.15s", letterSpacing: "0.01em", opacity: disabled ? 0.5 : 1 };
+  const base: React.CSSProperties = { display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 8, fontFamily: "'Inter',sans-serif", fontWeight: 600, cursor: disabled ? "not-allowed" : "pointer", border: "none", transition: "all 0.15s", letterSpacing: "0.01em", opacity: disabled ? 0.5 : 1 };
   const sizes: Record<string, React.CSSProperties> = { sm: { padding: "6px 13px", fontSize: 12 }, md: { padding: "9px 18px", fontSize: 13 }, lg: { padding: "12px 24px", fontSize: 14 } };
   const vs: Record<string, React.CSSProperties> = {
     primary: { background: T.orange, color: "#fff" },
@@ -130,7 +130,7 @@ export const Inp = ({ label, placeholder, type = "text", value, onChange, style 
   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
     {label && <label style={{ fontSize: 12, fontWeight: 500, color: T.muted }}>{label}{required && <span style={{ color: T.orange }}> *</span>}</label>}
     <input type={type} placeholder={placeholder} value={value || ""} onChange={onChange}
-      style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", ...style }}
+      style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'Inter',sans-serif", outline: "none", ...style }}
       onFocus={e => (e.target as HTMLInputElement).style.borderColor = T.orange}
       onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
     />
@@ -144,7 +144,7 @@ export const Input = ({ placeholder, type = "text", value, onChange, icon, style
   <div style={{ position: "relative" }}>
     {icon && <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}><Ic n={icon} s={14} c={T.muted} /></div>}
     <input type={type} placeholder={placeholder} value={value || ""} onChange={onChange}
-      style={{ width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: icon ? "10px 12px 10px 36px" : "10px 12px", color: T.text, fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", ...style }}
+      style={{ width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: icon ? "10px 12px 10px 36px" : "10px 12px", color: T.text, fontSize: 14, fontFamily: "'Inter',sans-serif", outline: "none", ...style }}
       onFocus={e => (e.target as HTMLInputElement).style.borderColor = T.orange}
       onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
     />
@@ -157,7 +157,7 @@ export const Sel = ({ label, options, value, onChange, style = {} }: {
 }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
     {label && <label style={{ fontSize: 12, fontWeight: 500, color: T.muted }}>{label}</label>}
-    <select value={value || ""} onChange={onChange} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", ...style }}>
+    <select value={value || ""} onChange={onChange} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "9px 12px", color: T.text, fontSize: 13, fontFamily: "'Inter',sans-serif", outline: "none", ...style }}>
       {options.map(o => typeof o === "string" ? <option key={o}>{o}</option> : <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   </div>

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Logo } from "@/components/recon/ReconUI";
-
+import { Logo, Ic } from "@/components/recon/ReconUI";
+import { T } from "@/lib/recon-data";
 /* ── ANIMATION HELPERS ── */
 const FadeIn = ({ children, className = "", delay = 0, y = 30 }: { children: React.ReactNode; className?: string; delay?: number; y?: number }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -26,20 +26,20 @@ const FEATURES_STRIP = [
 ];
 
 const PRODUCT_PREVIEWS = [
-  { title: "Platform Overview", desc: "See the full ReCon Pro workspace — dashboard, job pipeline, and operational controls.", icon: "📊" },
-  { title: "Job Workflow", desc: "Follow a restoration job from lead intake through reconstruction and final payment.", icon: "🏗️" },
-  { title: "Insurance Tracking", desc: "Manually track carrier responses, supplement statuses, and payment milestones.", icon: "🛡️" },
-  { title: "Job Communication", desc: "Structured chat channels for internal teams, homeowners, and subcontractors.", icon: "💬" },
-  { title: "Owner Dashboard", desc: "See active jobs, outstanding payments, and team activity in one view.", icon: "📋" },
+  { title: "Platform Overview", desc: "See the full ReCon Pro workspace — dashboard, job pipeline, and operational controls.", icon: "dash" },
+  { title: "Job Workflow", desc: "Follow a restoration job from lead intake through reconstruction and final payment.", icon: "jobs" },
+  { title: "Insurance Tracking", desc: "Manually track carrier responses, supplement statuses, and payment milestones.", icon: "shield" },
+  { title: "Job Communication", desc: "Structured chat channels for internal teams, homeowners, and subcontractors.", icon: "msg" },
+  { title: "Owner Dashboard", desc: "See active jobs, outstanding payments, and team activity in one view.", icon: "chart" },
 ];
 
 const AUDIENCE = [
-  { icon: "🏗️", title: "Restoration Companies", desc: "Full-service teams managing water, fire, and storm damage restoration projects end to end." },
-  { icon: "💧", title: "Mitigation Teams", desc: "Emergency response crews tracking equipment placement, moisture readings, and drying progress." },
-  { icon: "🔨", title: "Reconstruction Contractors", desc: "Rebuild crews managing scopes, trade coordination, and project scheduling through completion." },
-  { icon: "🛡️", title: "Insurance Restoration Specialists", desc: "Companies tracking carrier responses, supplements, and claim progress internally." },
-  { icon: "📋", title: "Project Managers", desc: "Managers coordinating field teams, schedules, subcontractors, and documentation across jobs." },
-  { icon: "📱", title: "Field Technicians", desc: "Techs logging moisture readings, equipment usage, photos, and daily drying progress on site." },
+  { icon: "tool", title: "Restoration Companies", desc: "Full-service teams managing water, fire, and storm damage restoration projects end to end." },
+  { icon: "drop", title: "Mitigation Teams", desc: "Emergency response crews tracking equipment placement, moisture readings, and drying progress." },
+  { icon: "jobs", title: "Reconstruction Contractors", desc: "Rebuild crews managing scopes, trade coordination, and project scheduling through completion." },
+  { icon: "shield", title: "Insurance Restoration Specialists", desc: "Companies tracking carrier responses, supplements, and claim progress internally." },
+  { icon: "est", title: "Project Managers", desc: "Managers coordinating field teams, schedules, subcontractors, and documentation across jobs." },
+  { icon: "moisture", title: "Field Technicians", desc: "Techs logging moisture readings, equipment usage, photos, and daily drying progress on site." },
 ];
 
 const FEATURE_STORIES = [
@@ -124,7 +124,7 @@ const DashboardMockup = () => (
   <div className="p-5">
     <div className="flex items-center gap-3 mb-5">
       <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--t-orange-dim)" }}>
-        <span className="text-xs">📊</span>
+        <Ic n="dash" s={16} c="#e85c0d"/>
       </div>
       <div>
         <div className="text-xs font-bold" style={{ color: "var(--t-white)" }}>Operations Dashboard</div>
@@ -219,9 +219,9 @@ const DryingMockup = () => (
     <div className="text-xs font-bold mb-1" style={{ color: "var(--t-white)" }}>Drying Log — Day 3</div>
     <div className="text-[9px] mb-3" style={{ color: "var(--t-dim)" }}>Internal documentation</div>
     <div className="grid grid-cols-3 gap-2 mb-3">
-      {[{ label: "Temp", val: "72°F", icon: "🌡️" }, { label: "RH", val: "48%", icon: "💧" }, { label: "GPP", val: "42.1", icon: "📊" }].map(r => (
+      {[{ label: "Temp", val: "72°F", icon: "flame" }, { label: "RH", val: "48%", icon: "drop" }, { label: "GPP", val: "42.1", icon: "chart" }].map(r => (
         <div key={r.label} className="rounded-lg p-2.5 border border-border text-center" style={{ background: "var(--t-surface)" }}>
-          <div className="text-base mb-1">{r.icon}</div>
+          <div className="flex items-center justify-center mb-1"><Ic n={r.icon} s={16} c="var(--t-muted)"/></div>
           <div className="text-sm font-extrabold" style={{ color: "var(--t-white)" }}>{r.val}</div>
           <div className="text-[9px]" style={{ color: "var(--t-dim)" }}>{r.label}</div>
         </div>
@@ -283,9 +283,9 @@ const HomeownerMockup = () => (
       <div className="text-[9px] font-medium" style={{ color: "#22c55e" }}>Active Drying — Day 3</div>
     </div>
     <div className="grid grid-cols-2 gap-2">
-      {[{ label: "Photos", count: "12", icon: "📸" }, { label: "Documents", count: "4", icon: "📄" }, { label: "Messages", count: "8", icon: "💬" }, { label: "Updates", count: "6", icon: "📋" }].map(i => (
+      {[{ label: "Photos", count: "12", icon: "photo" }, { label: "Documents", count: "4", icon: "est" }, { label: "Messages", count: "8", icon: "msg" }, { label: "Updates", count: "6", icon: "note" }].map(i => (
         <div key={i.label} className="rounded-lg p-2.5 border border-border text-center" style={{ background: "var(--t-surface)" }}>
-          <div className="text-sm mb-0.5">{i.icon}</div>
+          <div className="flex items-center justify-center mb-0.5"><Ic n={i.icon} s={14} c="var(--t-muted)"/></div>
           <div className="text-[10px] font-bold" style={{ color: "var(--t-white)" }}>{i.count}</div>
           <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>{i.label}</div>
         </div>
@@ -401,7 +401,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1, duration: 0.6 }}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: "rgba(34,197,94,0.15)" }}>✓</div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "rgba(34,197,94,0.15)" }}><Ic n="check" s={10} c="#22c55e"/></div>
                     <div>
                       <div className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>Payment Recorded</div>
                       <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>Carrier — $18,400</div>
@@ -414,7 +414,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 0.6 }}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px]" style={{ background: "rgba(59,130,246,0.15)" }}>💧</div>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "rgba(59,130,246,0.15)" }}><Ic n="drop" s={10} c="#3b82f6"/></div>
                     <div>
                       <div className="text-[10px] font-semibold" style={{ color: "var(--t-white)" }}>Drying Day 3</div>
                       <div className="text-[8px]" style={{ color: "var(--t-dim)" }}>RH 48% — Logged</div>
@@ -447,7 +447,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                   <div className="h-40 flex items-center justify-center" style={{ background: "var(--t-bg)" }}>
                     <div className="w-48 h-28 rounded-lg border flex items-center justify-center" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
                       <div className="text-center">
-                        <div className="text-2xl mb-1">{["📊", "🏗️", "🛡️", "📋", "💰", "💧", "💬"][i]}</div>
+                        <div className="flex items-center justify-center mb-1"><Ic n={["dash", "jobs", "shield", "est", "dollar", "drop", "msg"][i]} s={20} c={T.muted}/></div>
                         <div className="text-[9px] font-semibold" style={{ color: "var(--t-muted)" }}>{f.title}</div>
                       </div>
                     </div>
@@ -484,7 +484,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
               <FadeIn key={v.title} delay={i * 0.1}>
                 <div className="rounded-xl border overflow-hidden transition-all hover:border-opacity-60 group" style={{ background: "var(--t-bg)", borderColor: "var(--t-border)" }}>
                   <div className="relative h-44 flex items-center justify-center" style={{ background: "linear-gradient(135deg, var(--t-surface-high), var(--t-bg))" }}>
-                    <div className="text-5xl opacity-40">{v.icon}</div>
+                    <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ background: T.orangeDim }}><Ic n={v.icon} s={24} c={T.orange}/></div>
                   </div>
                   <div className="p-4">
                     <div className="text-sm font-bold mb-1" style={{ color: "var(--t-white)" }}>{v.title}</div>
@@ -528,7 +528,7 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
             {AUDIENCE.map((a, i) => (
               <FadeIn key={a.title} delay={i * 0.08}>
                 <div className="rounded-xl border p-6 transition-all hover:border-opacity-60" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                  <div className="text-3xl mb-4">{a.icon}</div>
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ background: T.orangeDim }}><Ic n={a.icon} s={20} c={T.orange}/></div>
                   <div className="text-base font-bold mb-2" style={{ color: "var(--t-white)" }}>{a.title}</div>
                   <div className="text-xs leading-relaxed" style={{ color: "var(--t-muted)" }}>{a.desc}</div>
                 </div>
@@ -628,15 +628,15 @@ const Landing = ({ onSignIn, onDemo, onCreateAccount }: LandingProps) => {
                 <div className="px-5 pb-5">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                     {[
-                      { icon: "🔔", label: "3 jobs need attention today" },
-                      { icon: "📋", label: "2 supplements awaiting update" },
-                      { icon: "💰", label: "$12,400 in outstanding payments" },
-                      { icon: "💧", label: "4 drying jobs in progress" },
-                      { icon: "🤝", label: "6 subs scheduled this week" },
-                      { icon: "💬", label: "5 new team messages" },
+                      { icon: "bell", label: "3 jobs need attention today" },
+                      { icon: "est", label: "2 supplements awaiting update" },
+                      { icon: "dollar", label: "$12,400 in outstanding payments" },
+                      { icon: "drop", label: "4 drying jobs in progress" },
+                      { icon: "truck", label: "6 subs scheduled this week" },
+                      { icon: "msg", label: "5 new team messages" },
                     ].map(a => (
                       <div key={a.label} className="flex items-center gap-2 rounded-lg p-2.5 border" style={{ background: "var(--t-surface)", borderColor: "var(--t-border)" }}>
-                        <span className="text-sm">{a.icon}</span>
+                        <div className="w-5 h-5 rounded flex items-center justify-center" style={{ background: T.surfaceHigh }}><Ic n={a.icon} s={10} c={T.muted}/></div>
                         <span className="text-[9px] font-medium" style={{ color: "var(--t-muted)" }}>{a.label}</span>
                       </div>
                     ))}

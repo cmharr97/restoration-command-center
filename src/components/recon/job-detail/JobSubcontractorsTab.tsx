@@ -201,8 +201,8 @@ export const JobSubcontractorsTab = ({ job }: { job: DbJob }) => {
                       {sub?.company_name && ` · ${sub.company_name}`}
                     </div>
                     <div style={{ display: "flex", gap: 16, fontSize: 11, color: T.dim }}>
-                      {sub?.phone && <span>📞 {sub.phone}</span>}
-                      {sub?.email && <span>✉️ {sub.email}</span>}
+                      {sub?.phone && <span style={{ display: "flex", alignItems: "center", gap: 3 }}><Ic n="contact" s={10} c={T.dim}/> {sub.phone}</span>}
+                      {sub?.email && <span style={{ display: "flex", alignItems: "center", gap: 3 }}><Ic n="send" s={10} c={T.dim}/> {sub.email}</span>}
                     </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>

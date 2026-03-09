@@ -81,7 +81,7 @@ const DemoBanner = ({ jobs }: { jobs: DbJob[] }) => {
       borderRadius: 8, padding: "8px 16px", marginBottom: 16,
       display: "flex", alignItems: "center", gap: 10,
     }}>
-      <span style={{ fontSize: 14 }}>🎯</span>
+      <span style={{ fontSize: 14 }}><Ic n="star" s={14} c={T.orange}/></span>
       <span style={{ fontSize: 12, color: T.orange, fontWeight: 600 }}>Demo Workspace</span>
       <span style={{ fontSize: 11, color: T.muted }}>You're viewing sample data. Create real jobs anytime — demo data won't interfere.</span>
     </div>
@@ -97,7 +97,7 @@ const WelcomeDashboard = ({ onNewJob }: { onNewJob?: () => void }) => (
       border: `1px solid ${T.orange}22`, borderRadius: 14,
       padding: "36px 32px", textAlign: "center", marginBottom: 24,
     }}>
-      <div style={{ fontSize: 32, marginBottom: 12 }}>🏗️</div>
+      <div style={{ width: 48, height: 48, borderRadius: 12, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}><Ic n="jobs" s={24} c={T.orange}/></div>
       <h2 style={{ fontSize: 22, fontWeight: 800, color: T.white, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Welcome to ReCon Pro</h2>
       <p style={{ fontSize: 14, color: T.muted, margin: "0 0 6px", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
         The all-in-one command center for restoration companies. Manage jobs, insurance claims, drying logs, supplements, payments, and subcontractors — all in one place.
@@ -191,7 +191,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
               <div style={{ background: T.redDim, border: `1px solid ${T.redBright}44`, borderRadius: 10, padding: "12px 16px", marginBottom: 10, display: "flex", gap: 12, alignItems: "center" }}>
                 <Ic n="alert" s={18} c={T.redBright}/>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>🚨 {urgentJobs.length} urgent job{urgentJobs.length > 1 ? "s" : ""} need attention</div>
+                  <div style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>{urgentJobs.length} urgent job{urgentJobs.length > 1 ? "s" : ""} need attention</div>
                   <div style={{ fontSize: 12, color: T.muted, marginTop: 2 }}>{urgentJobs.map(j => `${j.id} – ${j.customer}`).join(" · ")}</div>
                 </div>
                 <Btn v="danger" sz="sm" onClick={() => setActive("jobs")}>View</Btn>
@@ -348,12 +348,12 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
               ) : (
                 activityLogs.slice(0, 8).map((log: any, i: number) => {
                   const actionIcons: Record<string, string> = {
-                    status_change: "📋", note: "📝", payment: "💰", photo: "📸", drying: "💧",
+                    status_change: "est", note: "note", payment: "dollar", photo: "photo", drying: "drop",
                   };
                   return (
                     <div key={log.id} style={{ display: "flex", gap: 12, padding: "9px 0", borderBottom: i < 7 ? `1px solid ${T.border}15` : "none" }}>
                       <div style={{ width: 60, fontSize: 10, color: T.dim, flexShrink: 0, paddingTop: 2 }}>{new Date(log.created_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</div>
-                      <span style={{ fontSize: 14, flexShrink: 0 }}>{actionIcons[log.action_type] || "📋"}</span>
+                      <div style={{ width: 22, height: 22, borderRadius: 6, background: T.surfaceHigh, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n={actionIcons[log.action_type] || "est"} s={12} c={T.muted}/></div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 12, color: T.text, fontWeight: 500 }}>{log.title}</div>
                         {log.description && <div style={{ fontSize: 11, color: T.muted, marginTop: 1 }}>{log.description}</div>}

@@ -20,7 +20,7 @@ const AppRoutes = () => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--t-bg)", color: "#e85c0d", fontFamily: "'DM Sans',sans-serif", fontSize: 16, fontWeight: 600 }}>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--t-bg)", color: "#e85c0d", fontFamily: "'Inter',sans-serif", fontSize: 16, fontWeight: 600 }}>
         Loading ReCon Pro...
       </div>
     );

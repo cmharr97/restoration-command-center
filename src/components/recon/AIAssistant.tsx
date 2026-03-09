@@ -9,14 +9,14 @@ type Msg = { role: "user" | "assistant"; content: string };
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
 
 const QUICK_ACTIONS = [
-  { label: "📋 Summarize Jobs", action: "summarize", prompt: "Summarize all active jobs and their current status" },
-  { label: "✉️ Adjuster Email", action: "draft_email", prompt: "Draft a professional email to an insurance adjuster requesting supplement approval" },
-  { label: "📝 F9 Notes", action: "f9_notes", prompt: "Help me write F9 notes for an Xactimate estimate. I'll provide the room and scope details." },
-  { label: "💰 Supplement Justification", action: "supplement", prompt: "Help me build a supplement justification for denied or missing line items" },
-  { label: "📄 Scope Notes", action: "scope_notes", prompt: "Help me write scope explanation notes for this restoration project" },
-  { label: "🔄 Change Order", action: "change_order", prompt: "Draft a change order explanation for additional discovered damage" },
-  { label: "📊 Daily Update", action: "daily_update", prompt: "Help me write today's daily field update report" },
-  { label: "⚖️ Carrier Rebuttal", action: "rebuttal", prompt: "Help me write a rebuttal to a carrier denial" },
+  { label: "Summarize Jobs", action: "summarize", prompt: "Summarize all active jobs and their current status", icon: "est" },
+  { label: "Adjuster Email", action: "draft_email", prompt: "Draft a professional email to an insurance adjuster requesting supplement approval", icon: "send" },
+  { label: "F9 Notes", action: "f9_notes", prompt: "Help me write F9 notes for an Xactimate estimate. I'll provide the room and scope details.", icon: "note" },
+  { label: "Supplement Justification", action: "supplement", prompt: "Help me build a supplement justification for denied or missing line items", icon: "dollar" },
+  { label: "Scope Notes", action: "scope_notes", prompt: "Help me write scope explanation notes for this restoration project", icon: "est" },
+  { label: "Change Order", action: "change_order", prompt: "Draft a change order explanation for additional discovered damage", icon: "edit" },
+  { label: "Daily Update", action: "daily_update", prompt: "Help me write today's daily field update report", icon: "chart" },
+  { label: "Carrier Rebuttal", action: "rebuttal", prompt: "Help me write a rebuttal to a carrier denial", icon: "shield" },
 ];
 
 export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobContext?: DbJob }) => {
@@ -122,7 +122,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
       {/* Header */}
       <div style={{ padding: "14px 18px", borderBottom: `1px solid ${T.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${T.orange}, #c84009)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🤖</div>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${T.orange}, #c84009)`, display: "flex", alignItems: "center", justifyContent: "center" }}><Ic n="edit" s={16} c="#fff"/></div>
           <div>
             <div style={{ fontWeight: 700, color: T.text, fontSize: 14 }}>ReCon AI Writer</div>
             <div style={{ fontSize: 10, color: T.greenBright }}>● Restoration Writing Assistant</div>
@@ -145,7 +145,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
         <Ic n="jobs" s={12} c={T.muted} />
         <span style={{ color: T.dim }}>Context:</span>
         <button onClick={() => setShowJobPicker(!showJobPicker)}
-          style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 6, padding: "3px 10px", color: selectedJob ? T.orange : T.muted, cursor: "pointer", fontSize: 12, fontFamily: "'DM Sans',sans-serif" }}>
+          style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 6, padding: "3px 10px", color: selectedJob ? T.orange : T.muted, cursor: "pointer", fontSize: 12, fontFamily: "'Inter',sans-serif" }}>
           {selectedJob ? `${selectedJob.id} - ${selectedJob.customer}` : "All Active Jobs"}
         </button>
         {selectedJob && (
@@ -178,7 +178,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
         {messages.length === 0 && (
           <div style={{ padding: "12px 0" }}>
             <div style={{ textAlign: "center", marginBottom: 16 }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>🤖</div>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: T.orangeDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 8px" }}><Ic n="edit" s={20} c={T.orange}/></div>
               <div style={{ fontWeight: 700, color: T.text, fontSize: 15, marginBottom: 4 }}>ReCon AI Writer</div>
               <div style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>
                 F9 notes, supplements, adjuster emails, scope docs
@@ -190,13 +190,13 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
                   style={{
                     background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8,
                     padding: "10px 12px", color: T.text, fontSize: 11, cursor: "pointer",
-                    textAlign: "left", fontFamily: "'DM Sans',sans-serif", transition: "all 0.12s",
+                    textAlign: "left", fontFamily: "'Inter',sans-serif", transition: "all 0.12s",
                     lineHeight: 1.4,
                   }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = T.orange; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = T.border; }}
                 >
-                  {qa.label}
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Ic n={(qa as any).icon} s={12} c={T.muted}/> {qa.label}</span>
                 </button>
               ))}
             </div>

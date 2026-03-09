@@ -101,8 +101,8 @@ export const SubcontractorsPageFull = () => {
                     <Badge color={tradeColors[sub.trade] || "gray"} small>{sub.trade}</Badge>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                    {sub.phone && <div style={{ fontSize: 12, color: T.text }}>📞 {sub.phone}</div>}
-                    {sub.email && <div style={{ fontSize: 12, color: T.text }}>✉️ {sub.email}</div>}
+                    {sub.phone && <div style={{ fontSize: 12, color: T.text, display: "flex", alignItems: "center", gap: 5 }}><Ic n="contact" s={12} c={T.muted}/> {sub.phone}</div>}
+                    {sub.email && <div style={{ fontSize: 12, color: T.text, display: "flex", alignItems: "center", gap: 5 }}><Ic n="send" s={12} c={T.muted}/> {sub.email}</div>}
                     {sub.license_number && <div style={{ fontSize: 11, color: T.muted }}>License: {sub.license_number}</div>}
                   </div>
                   <div style={{ marginTop: 10 }}>

@@ -130,7 +130,7 @@ export const TopBar = ({ pageTitle, role, onNewJob, onRoleChange, onSignOut, onM
           <Ic n="bell" s={17} c={T.muted}/>
         </div>
         {onSignOut && (
-          <button onClick={onSignOut} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>
+          <button onClick={onSignOut} style={{ background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 7, padding: "5px 10px", color: T.muted, fontSize: 11, fontFamily: "'Inter',sans-serif", cursor: "pointer" }}>
             <span className="hide-mobile">Sign Out</span>
             <span className="show-mobile" style={{ display: "none" }}>↪</span>
           </button>

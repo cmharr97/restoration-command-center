@@ -35,16 +35,16 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
             </div>
             <div style={{ fontSize: 18, fontWeight: 700, color: T.white }}>Moisture Monitoring</div>
             <div style={{ fontSize: 13, color: T.muted, marginTop: 8, maxWidth: 440, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
-              Track daily moisture readings, GPP levels, equipment placement, and room-by-room drying progress for water damage jobs. Compliant with IICRC S500 documentation standards.
+              Track daily moisture readings, GPP levels, equipment placement, and room-by-room drying progress for water damage jobs. Internal documentation and field reference logs.
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginTop: 20, maxWidth: 420, margin: "20px auto 0" }}>
               {[
-                { icon: "💧", label: "Room Readings", desc: "Track by material" },
-                { icon: "📊", label: "GPP / Temp / RH", desc: "Atmospheric data" },
-                { icon: "🔧", label: "Equipment Log", desc: "Dehus, air movers" },
+                { icon: "drop", label: "Room Readings", desc: "Track by material" },
+                { icon: "chart", label: "GPP / Temp / RH", desc: "Atmospheric data" },
+                { icon: "tool", label: "Equipment Log", desc: "Dehus, air movers" },
               ].map(p => (
                 <div key={p.label} style={{ background: T.surfaceHigh, borderRadius: 8, padding: "12px 10px", textAlign: "center" }}>
-                  <div style={{ fontSize: 20, marginBottom: 6 }}>{p.icon}</div>
+                  <div style={{ width: 32, height: 32, borderRadius: 8, background: T.blueDim, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 6px" }}><Ic n={p.icon} s={16} c={T.blueBright}/></div>
                   <div style={{ fontSize: 11, fontWeight: 600, color: T.white }}>{p.label}</div>
                   <div style={{ fontSize: 10, color: T.dim }}>{p.desc}</div>
                 </div>

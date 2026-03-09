@@ -236,22 +236,22 @@ export const IntegrationsPage = () => (
       </Card>
       {[
         { cat: "Estimating", items: [
-          { name: "Xactimate", desc: "Industry-standard property claims estimating. Requires Xactware API access.", emoji: "📊" },
-          { name: "Symbility / CoreLogic", desc: "Cloud-based claims management platform.", emoji: "☁️" },
+          { name: "Xactimate", desc: "Industry-standard property claims estimating. Requires Xactware API access.", icon: "chart" },
+          { name: "Symbility / CoreLogic", desc: "Cloud-based claims management platform.", icon: "plug" },
         ]},
         { cat: "Accounting", items: [
-          { name: "QuickBooks Online", desc: "Sync invoices, payments, and expenses. Requires Intuit developer credentials.", emoji: "💼" },
+          { name: "QuickBooks Online", desc: "Sync invoices, payments, and expenses. Requires Intuit developer credentials.", icon: "inv" },
         ]},
         { cat: "Field Documentation", items: [
-          { name: "CompanyCam", desc: "Photo documentation by job site. Requires CompanyCam API key.", emoji: "📷" },
-          { name: "Encircle", desc: "Field documentation and contents inventory.", emoji: "📐" },
+          { name: "CompanyCam", desc: "Photo documentation by job site. Requires CompanyCam API key.", icon: "photo" },
+          { name: "Encircle", desc: "Field documentation and contents inventory.", icon: "est" },
         ]},
         { cat: "Documents & Signatures", items: [
-          { name: "DocuSign", desc: "E-signature for AOBs and work authorizations.", emoji: "✍️" },
+          { name: "DocuSign", desc: "E-signature for AOBs and work authorizations.", icon: "edit" },
         ]},
         { cat: "Communication", items: [
-          { name: "Twilio", desc: "Automated SMS updates to customers. Requires Twilio account.", emoji: "📱" },
-          { name: "Slack", desc: "Internal team notifications and alerts.", emoji: "💬" },
+          { name: "Twilio", desc: "Automated SMS updates to customers. Requires Twilio account.", icon: "contact" },
+          { name: "Slack", desc: "Internal team notifications and alerts.", icon: "msg" },
         ]},
       ].map((group, gi) => (
         <div key={gi} style={{ marginBottom: 24 }}>
@@ -260,7 +260,7 @@ export const IntegrationsPage = () => (
             {group.items.map((int, i) => (
               <Card key={i}>
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <div style={{ fontSize: 26, width: 44, height: 44, background: T.surfaceHigh, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{int.emoji}</div>
+                  <div style={{ width: 44, height: 44, background: T.surfaceHigh, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n={int.icon} s={20} c={T.muted}/></div>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
                       <div style={{ fontWeight: 700, color: T.white, fontSize: 13 }}>{int.name}</div>

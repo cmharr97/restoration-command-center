@@ -98,7 +98,7 @@ export const MessagingPage = ({ role }: { role: string }) => {
       lastTime: "",
       unread: 0,
       jobId: j.id,
-      icon: j.loss_type === "water" ? "💧" : j.loss_type === "fire" ? "🔥" : j.loss_type === "mold" ? "🦠" : "📋",
+      icon: undefined,
     })),
   ];
 
@@ -292,8 +292,8 @@ export const MessagingPage = ({ role }: { role: string }) => {
                 {ch.type === "dm" && dmMember ? (
                   <UserAvatar member={dmMember} size={36}/>
                 ) : (
-                  <div style={{ width: 36, height: 36, borderRadius: ch.type === "group" ? 10 : "50%", background: ch.type === "job" ? T.orangeDim : T.surfaceTop, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0, border: `1px solid ${ch.type === "job" ? T.orange + "44" : T.border}` }}>
-                    {ch.icon || "💬"}
+                  <div style={{ width: 36, height: 36, borderRadius: ch.type === "group" ? 10 : "50%", background: ch.type === "job" ? T.orangeDim : T.surfaceTop, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: `1px solid ${ch.type === "job" ? T.orange + "44" : T.border}` }}>
+                    <Ic n={ch.type === "job" ? "jobs" : "msg"} s={14} c={ch.type === "job" ? T.orange : T.muted}/>
                   </div>
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>

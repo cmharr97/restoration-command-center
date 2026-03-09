@@ -58,16 +58,16 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
     padding: "11px 14px",
     color: T.text,
     fontSize: 14,
-    fontFamily: "'DM Sans',sans-serif",
+    fontFamily: "'Inter',sans-serif",
     outline: "none",
     boxSizing: "border-box",
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans',sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter',sans-serif" }}>
       <div style={{ width: 460, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: "36px 40px", position: "relative" }}>
         {onBack && (
-          <button onClick={onBack} style={{ position: "absolute", top: 16, left: 16, background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+          <button onClick={onBack} style={{ position: "absolute", top: 16, left: 16, background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 13, fontFamily: "'Inter',sans-serif", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
             ← Back
           </button>
         )}
@@ -124,7 +124,7 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
           <button type="submit" disabled={loading} style={{
             width: "100%", padding: "12px 0", borderRadius: 8, border: "none",
             background: `linear-gradient(135deg, ${T.orange}, #c84009)`,
-            color: "#fff", fontSize: 14, fontWeight: 700, fontFamily: "'DM Sans',sans-serif",
+            color: "#fff", fontSize: 14, fontWeight: 700, fontFamily: "'Inter',sans-serif",
             cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1,
             marginTop: 4, boxShadow: `0 4px 16px ${T.orangeGlow}`,
           }}>
@@ -136,7 +136,7 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
           <span style={{ fontSize: 13, color: T.muted }}>
             {mode === "login" ? "Don't have an account? " : "Already have an account? "}
           </span>
-          <button onClick={() => setMode(mode === "login" ? "signup" : "login")} style={{ fontSize: 13, color: T.orange, background: "none", border: "none", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans',sans-serif" }}>
+          <button onClick={() => setMode(mode === "login" ? "signup" : "login")} style={{ fontSize: 13, color: T.orange, background: "none", border: "none", cursor: "pointer", fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
             {mode === "login" ? "Sign Up" : "Sign In"}
           </button>
         </div>
