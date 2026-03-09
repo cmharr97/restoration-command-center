@@ -260,7 +260,7 @@ export const IntegrationsPage = () => (
             {group.items.map((int, i) => (
               <Card key={i}>
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <div style={{ fontSize: 26, width: 44, height: 44, background: T.surfaceHigh, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{int.emoji}</div>
+                  <div style={{ width: 44, height: 44, background: T.surfaceHigh, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ic n={int.icon} s={20} c={T.muted}/></div>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
                       <div style={{ fontWeight: 700, color: T.white, fontSize: 13 }}>{int.name}</div>
