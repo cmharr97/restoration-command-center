@@ -35,7 +35,7 @@ export const JobSubcontractorsTab = ({ job }: { job: DbJob }) => {
           <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Subcontractor Assignments</div>
           <div style={{ fontSize: 12, color: T.muted }}>{assignments.length} trades assigned</div>
         </div>
-        <Btn v="primary" sz="sm" icon="plus">Assign Trade</Btn>
+        {/* Trade assignment coming soon — manage subs from the Subcontractors page */}
       </div>
 
       {assignments.length === 0 ? (

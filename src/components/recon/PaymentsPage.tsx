@@ -23,7 +23,7 @@ export const PaymentsPage = ({ role }: { role: string }) => {
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Payments</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Track insurance payments, deductibles, and mortgage holds</p>
         </div>
-        {hasPaymentData && <Btn v="primary" sz="sm" icon="plus">Record Payment</Btn>}
+        {/* Payment recording is done within individual jobs */}
       </div>
       <div style={{ padding: "0 28px" }}>
         {!hasPaymentData ? (

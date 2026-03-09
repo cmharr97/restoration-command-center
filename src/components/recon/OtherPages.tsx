@@ -67,7 +67,7 @@ export const TeamPage = ({ role: userRole }: { role: string }) => {
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Team & Users</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Role-based access control — {members.length} user{members.length !== 1 ? "s" : ""}</p>
         </div>
-        {ROLES[userRole]?.canManageUsers && <Btn v="primary" sz="sm" icon="plus">Invite User</Btn>}
+        {/* Team invites coming soon — users sign up and join via company code */}
       </div>
       <div style={{ padding: "0 28px" }}>
         {loading ? (
@@ -316,7 +316,7 @@ export const IntegrationsPage = () => (
                       <Badge color="gray" small>Not Connected</Badge>
                     </div>
                     <div style={{ fontSize: 11, color: T.muted, lineHeight: 1.5, marginBottom: 10 }}>{int.desc}</div>
-                    <Btn v="secondary" sz="sm">Connect (Requires API Key)</Btn>
+                    <span style={{ fontSize: 11, color: T.dim, fontStyle: "italic" }}>Requires API key — coming soon</span>
                   </div>
                 </div>
               </Card>
@@ -374,12 +374,21 @@ export const SettingsPage = ({ role }: { role: string }) => {
             ))}
           </Card>
         )}
-        {!["company", "job_stages"].includes(tab) && (
+        {tab === "billing" && (
           <Card style={{ maxWidth: 600 }}>
             <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
-              <Ic n="cog" s={28} c={T.dim}/>
-              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text, textTransform: "capitalize" }}>{tab.replace("_", " ")} Settings</div>
-              <div style={{ fontSize: 12, marginTop: 4 }}>Configure your {tab.replace("_", " ")} preferences</div>
+              <Ic n="dollar" s={28} c={T.dim}/>
+              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Billing & Subscription</div>
+              <div style={{ fontSize: 12, marginTop: 4 }}>Subscription management and billing settings will be available here once billing is set up.</div>
+            </div>
+          </Card>
+        )}
+        {tab === "notifications" && (
+          <Card style={{ maxWidth: 600 }}>
+            <div style={{ textAlign: "center", padding: 32, color: T.muted }}>
+              <Ic n="bell" s={28} c={T.dim}/>
+              <div style={{ marginTop: 10, fontSize: 13, fontWeight: 500, color: T.text }}>Notification Preferences</div>
+              <div style={{ fontSize: 12, marginTop: 4 }}>Email and in-app notification settings will be configurable here once the notification system is enabled.</div>
             </div>
           </Card>
         )}

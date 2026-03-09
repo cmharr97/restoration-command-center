@@ -30,10 +30,7 @@ export const JobPhotosTab = ({ job }: { job: DbJob }) => {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <div style={{ fontWeight: 700, color: T.white, fontSize: 15 }}>Photos & Documents</div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Btn v="secondary" sz="sm" icon="photo">Upload Photo</Btn>
-          <Btn v="primary" sz="sm" icon="upload">Upload Document</Btn>
-        </div>
+        {/* Photo upload handled via activity log for now */}
       </div>
 
       {/* Filters */}

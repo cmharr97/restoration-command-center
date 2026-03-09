@@ -70,8 +70,7 @@ const QuickStartChecklist = ({ setActive, jobs, onNewJob }: { setActive: (id: st
 };
 
 // Demo workspace banner
-const DemoBanner = () => {
-  const { jobs } = useJobs();
+const DemoBanner = ({ jobs }: { jobs: DbJob[] }) => {
   const isDemo = jobs.some(j => j.id?.startsWith("DEMO-"));
   if (!isDemo) return null;
 
@@ -174,7 +173,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
       </div>
 
       <div style={{ padding: "0 28px" }}>
-        <DemoBanner />
+        <DemoBanner jobs={jobs} />
 
         {/* If no jobs, show welcome */}
         {jobs.length === 0 ? (

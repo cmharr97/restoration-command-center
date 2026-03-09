@@ -25,7 +25,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
           <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Drying Logs</h1>
           <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>IICRC S500 compliant moisture tracking</p>
         </div>
-        {waterJobs.length > 0 && <Btn v="primary" sz="sm" icon="plus">Add Reading</Btn>}
+        {waterJobs.length > 0 && <Btn v="primary" sz="sm" icon="plus" onClick={() => { if (waterJobs[0]) { setSelectedJob(waterJobs[0]); setActive("job_detail"); } }}>Add Reading</Btn>}
       </div>
       <div style={{ padding: "0 28px" }}>
         {waterJobs.length === 0 ? (
@@ -88,7 +88,7 @@ export const MitigationPage = ({ role, setSelectedJob, setActive }: MitigationPr
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
                       <Btn v="secondary" sz="sm" onClick={() => { setSelectedJob(job); setActive("job_detail"); }}>View Job</Btn>
-                      <Btn v="primary" sz="sm" icon="plus">Log Reading</Btn>
+                      <Btn v="primary" sz="sm" icon="plus" onClick={() => { setSelectedJob(job); setActive("job_detail"); }}>Log Reading</Btn>
                     </div>
                   </div>
 
