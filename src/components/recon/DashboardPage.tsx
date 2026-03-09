@@ -488,7 +488,7 @@ export const DashboardPage = ({ role, setActive, setSelectedJob, onNewJob }: Das
 
             {/* ═══ Bottom row: Revenue + Carriers (for owners) ═══ */}
             {rm.canSeeProfitMargins && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div className="dashboard-two-col">
                 <Card>
                   <div style={{ fontWeight: 700, fontSize: 14, color: T.white, marginBottom: 12 }}>Revenue Breakdown</div>
                   {[
