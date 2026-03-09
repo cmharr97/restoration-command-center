@@ -95,7 +95,7 @@ const WelcomeDashboard = ({ onNewJob }: { onNewJob?: () => void }) => (
       </p>
       <div style={{ marginTop: 20 }}><Btn v="primary" icon="plus" onClick={onNewJob}>Create Your First Job</Btn></div>
     </div>
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+    <div className="dashboard-welcome-grid" style={{ marginBottom: 20 }}>
       {[
         { icon: "jobs", title: "Job Pipeline", desc: "Track every restoration project from lead to close with a visual stage-based workflow.", color: T.orange },
         { icon: "shield", title: "Insurance Tracking", desc: "Log claim status, carrier responses, and supplement approvals for insurance jobs.", color: T.blueBright },
