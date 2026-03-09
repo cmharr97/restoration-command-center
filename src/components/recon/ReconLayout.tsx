@@ -42,19 +42,21 @@ export const ReconSidebar = ({ role, active, setActive, user, mobileOpen, onMobi
         display: "flex", flexDirection: "column", height: "100vh", position: "sticky", top: 0, overflowY: "auto",
         transition: "transform 0.25s ease",
       }}>
-         <div style={{ padding: "8px 12px", borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-           <div style={{ display: "flex", alignItems: "center" }}>
-             <Logo size={130}/>
+         <div style={{ padding: "4px 10px", minHeight: 78, borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, height: 72, overflow: "hidden" }}>
+             <div style={{ marginTop: -22, marginBottom: -18, display: "flex", alignItems: "center", justifyContent: "center" }}>
+               <Logo size={170}/>
+             </div>
            </div>
-          {onMobileClose && (
-            <button onClick={onMobileClose} className="mobile-close-btn" style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4, display: "none" }}>
-              <Ic n="x" s={20} />
-            </button>
-          )}
-        </div>
+           {onMobileClose && (
+             <button onClick={onMobileClose} className="mobile-close-btn" style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4, display: "none" }}>
+               <Ic n="x" s={20} />
+             </button>
+           )}
+         </div>
 
-        <div style={{ margin: "10px 12px 4px", background: T.orangeDim, border: `1px solid ${T.orange}44`, borderRadius: 8, padding: "7px 10px", display: "flex", alignItems: "center", gap: 7 }}>
-          <Ic n="lock" s={12} c={T.orange}/>
+         <div style={{ margin: "6px 12px 4px", background: T.orangeDim, border: `1px solid ${T.orange}44`, borderRadius: 8, padding: "7px 10px", display: "flex", alignItems: "center", gap: 7 }}>
+           <Ic n="lock" s={12} c={T.orange}/>
           <div>
             <div style={{ fontSize: 10, color: T.orange, fontWeight: 700, letterSpacing: "0.05em" }}>{roleInfo?.label}</div>
             <div style={{ fontSize: 10, color: T.muted, marginTop: 1 }}>{user.name}</div>
