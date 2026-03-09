@@ -11,7 +11,8 @@ const ROOMS = ["Kitchen", "Living Room", "Bedroom 1", "Bedroom 2", "Bathroom", "
 const MATERIALS = ["Drywall", "Subfloor (OSB)", "Subfloor (Plywood)", "Hardwood", "Carpet", "Concrete", "Baseboard", "Cabinet Toe Kick", "Insulation", "Framing"];
 
 export const JobDryingTab = ({ job }: { job: DbJob }) => {
-  const { logs, loading } = useDryingLogs(job.id);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { user, profile } = useAuth();
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
