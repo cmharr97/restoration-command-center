@@ -17,14 +17,17 @@ import { CustomersPage } from "@/components/recon/CustomersPage";
 import { LeadsPage } from "@/components/recon/LeadsPage";
 import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
 import { AIAssistant } from "@/components/recon/AIAssistant";
+import { GlobalSearch } from "@/components/recon/GlobalSearch";
+import { Breadcrumbs } from "@/components/recon/Breadcrumbs";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import type { DbJob } from "@/hooks/useJobs";
+
 const Index = () => {
   const { profile, signOut } = useAuth();
   const [role] = useState(profile?.role || "owner");
-  const [active, setActive] = useState("dashboard");
+  const [active, setActive] = useState("jobs");
   const [selectedJob, setSelectedJob] = useState<DbJob | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
   const [showAI, setShowAI] = useState(false);
@@ -34,7 +37,7 @@ const Index = () => {
   useEffect(() => {
     const roleNav = NAV[role] || NAV.owner;
     const allPages = roleNav.flatMap(g => g.items.map(i => i.id));
-    if (!allPages.includes(active) && active !== "job_detail") { setActive(allPages[0] || "dashboard"); }
+    if (!allPages.includes(active) && active !== "job_detail") { setActive(allPages[0] || "jobs"); }
   }, [role]);
 
   useEffect(() => {
@@ -62,7 +65,7 @@ const Index = () => {
     equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Lead Pipeline",
     reports: "Reports & Analytics", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs",
     job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages",
-    automations: "Automations", customer_portal: "Customer Portal",
+    automations: "Automations", customer_portal: "Homeowner Portal",
     claims: "Insurance Jobs", supplements: "Supplements", payments: "Payments",
   };
 
@@ -90,6 +93,7 @@ const Index = () => {
     supplements: <SupplementsPage role={role}/>,
     payments: <PaymentsPage role={role}/>,
   };
+
   useEffect(() => {
     const sidebar = document.querySelector('.recon-sidebar');
     if (sidebar) {
@@ -116,6 +120,17 @@ const Index = () => {
             onRoleChange={() => {}}
             onSignOut={signOut}
             onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+            breadcrumbs={
+              <Breadcrumbs
+                active={active}
+                selectedJob={selectedJob}
+                pageTitles={pageTitles}
+                setActive={setActive}
+              />
+            }
+            searchBar={
+              <GlobalSearch setActive={setActive} setSelectedJob={setSelectedJob} />
+            }
           />
         )}
         {pages[active] || <div style={{ padding: 40, color: T.muted }}>Page not available</div>}
@@ -124,15 +139,15 @@ const Index = () => {
 
       {!showAI && (
         <button onClick={() => setShowAI(true)} style={{
-          position: "fixed", right: 20, bottom: 20, width: 56, height: 56,
+          position: "fixed", right: 20, bottom: 20, width: 48, height: 48,
           borderRadius: "50%", background: `linear-gradient(135deg, ${T.orange}, #c84009)`,
           border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: `0 8px 30px ${T.orangeGlow}`, zIndex: 999, fontSize: 24, transition: "transform 0.2s",
+          boxShadow: `0 8px 30px ${T.orangeGlow}`, zIndex: 999, transition: "transform 0.2s",
         }}
           onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)"}
           onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)"}
         >
-          🤖
+          <Ic n="msg" s={20} c="#fff" />
         </button>
       )}
       {showAI && <AIAssistant onClose={() => setShowAI(false)} />}
