@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Logo } from "@/components/recon/ReconUI";
-
+import { Logo, Ic } from "@/components/recon/ReconUI";
+import { T } from "@/lib/recon-data";
 /* ── ANIMATION HELPERS ── */
 const FadeIn = ({ children, className = "", delay = 0, y = 30 }: { children: React.ReactNode; className?: string; delay?: number; y?: number }) => {
   const ref = useRef<HTMLDivElement>(null);
