@@ -70,8 +70,7 @@ const QuickStartChecklist = ({ setActive, jobs, onNewJob }: { setActive: (id: st
 };
 
 // Demo workspace banner
-const DemoBanner = () => {
-  const { jobs } = useJobs();
+const DemoBanner = ({ jobs }: { jobs: DbJob[] }) => {
   const isDemo = jobs.some(j => j.id?.startsWith("DEMO-"));
   if (!isDemo) return null;
 
