@@ -58,7 +58,7 @@ const Auth = ({ initialMode = "login", onBack }: { initialMode?: "login" | "sign
     padding: "11px 14px",
     color: T.text,
     fontSize: 14,
-    fontFamily: "'DM Sans',sans-serif",
+    fontFamily: "'Inter',sans-serif",
     outline: "none",
     boxSizing: "border-box",
   };
