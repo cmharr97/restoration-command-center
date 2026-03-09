@@ -113,18 +113,17 @@ export const TeamPage = ({ role: userRole }: { role: string }) => {
 // ── EQUIPMENT PAGE ──
 export const EquipmentPage = () => (
   <div style={{ padding: "0 0 40px" }}>
-    <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+    <div style={{ padding: "24px 28px 0", marginBottom: 18 }}>
       <div>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: T.white, margin: 0 }}>Equipment</h1>
         <p style={{ margin: "3px 0 0", color: T.muted, fontSize: 13 }}>Track drying equipment across all job sites</p>
       </div>
-      <Btn v="primary" sz="sm" icon="plus">Add Equipment</Btn>
     </div>
     <div style={{ padding: "0 28px" }}>
       <Card style={{ textAlign: "center", padding: 48 }}>
         <Ic n="tool" s={40} c={T.dim}/>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>No equipment tracked yet</div>
-        <div style={{ fontSize: 13, color: T.muted, marginTop: 6 }}>Add your dehumidifiers, air movers, and moisture meters to track them across job sites.</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: T.white, marginTop: 16 }}>Equipment Tracking</div>
+        <div style={{ fontSize: 13, color: T.muted, marginTop: 6, maxWidth: 440, margin: "6px auto 0", lineHeight: 1.6 }}>Equipment tracking for dehumidifiers, air movers, and moisture meters is coming soon. For now, log equipment placement in your drying log entries.</div>
       </Card>
     </div>
   </div>
