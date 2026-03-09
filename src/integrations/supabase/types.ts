@@ -295,6 +295,60 @@ export type Database = {
           },
         ]
       }
+      job_messages: {
+        Row: {
+          attachments: Json | null
+          channel_type: string
+          company_id: string | null
+          created_at: string
+          id: string
+          job_id: string
+          message_text: string
+          sender_avatar: string | null
+          sender_id: string
+          sender_name: string
+        }
+        Insert: {
+          attachments?: Json | null
+          channel_type: string
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          message_text: string
+          sender_avatar?: string | null
+          sender_id: string
+          sender_name: string
+        }
+        Update: {
+          attachments?: Json | null
+          channel_type?: string
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          message_text?: string
+          sender_avatar?: string | null
+          sender_id?: string
+          sender_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_messages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_messages_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_photos: {
         Row: {
           caption: string | null
@@ -462,39 +516,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      messages: {
-        Row: {
-          attachments: Json | null
-          channel_id: string
-          created_at: string
-          id: string
-          mentions: string[] | null
-          sender_id: string
-          sender_name: string
-          text: string
-        }
-        Insert: {
-          attachments?: Json | null
-          channel_id: string
-          created_at?: string
-          id?: string
-          mentions?: string[] | null
-          sender_id: string
-          sender_name: string
-          text: string
-        }
-        Update: {
-          attachments?: Json | null
-          channel_id?: string
-          created_at?: string
-          id?: string
-          mentions?: string[] | null
-          sender_id?: string
-          sender_name?: string
-          text?: string
-        }
-        Relationships: []
       }
       payments: {
         Row: {
