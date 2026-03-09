@@ -190,7 +190,7 @@ export const AIAssistant = ({ onClose, jobContext }: { onClose: () => void; jobC
                   style={{
                     background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8,
                     padding: "10px 12px", color: T.text, fontSize: 11, cursor: "pointer",
-                    textAlign: "left", fontFamily: "'DM Sans',sans-serif", transition: "all 0.12s",
+                    textAlign: "left", fontFamily: "'Inter',sans-serif", transition: "all 0.12s",
                     lineHeight: 1.4,
                   }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = T.orange; }}
