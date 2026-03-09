@@ -59,7 +59,7 @@ const Index = () => {
   const pageTitles: Record<string, string> = {
     dashboard: "Dashboard", jobs: "Jobs", customers: "Customers", mitigation: "Drying Logs",
     estimates: "Estimates", invoices: "Invoices", calendar: "Schedule", team: "Team & Users",
-    equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Referrals / CRM",
+    equipment: "Equipment", subcontractors: "Subcontractors", referrals: "Lead Pipeline",
     reports: "Reports & Analytics", integrations: "Integrations", settings: "Settings", my_jobs: "My Jobs",
     job_detail: `Job ${selectedJob?.id || ""}`, messaging: "Messages",
     automations: "Automations", customer_portal: "Customer Portal",
@@ -70,7 +70,7 @@ const Index = () => {
     dashboard: <DashboardPage role={role} setActive={setActive} setSelectedJob={setSelectedJob} onNewJob={() => setShowNewJob(true)}/>,
     jobs: <JobsPage role={role} setSelectedJob={setSelectedJob} setActive={setActive} onNewJob={() => setShowNewJob(true)}/>,
     job_detail: selectedJob ? <JobDetailPage job={selectedJob as any} role={role} setActive={setActive}/> : <div style={{ padding: 40, color: T.muted }}>Select a job first</div>,
-    customers: <CustomersPage/>,
+    customers: <CustomersPage setActive={setActive} />,
     mitigation: <MitigationPage role={role} setSelectedJob={setSelectedJob} setActive={setActive}/>,
     estimates: <EstimatesPage role={role}/>,
     invoices: <InvoicesPage role={role}/>,
@@ -78,8 +78,8 @@ const Index = () => {
     team: <TeamPage role={role}/>,
     equipment: <EquipmentPage/>,
     subcontractors: <SubcontractorsPage/>,
-    referrals: <ReferralsPage/>,
-    reports: <ReportsPage role={role}/>,
+    referrals: <LeadsPage setActive={setActive} />,
+    reports: <ReportsPage />,
     integrations: <IntegrationsPage/>,
     settings: <SettingsPage role={role}/>,
     my_jobs: <MyJobsPage role={role} setSelectedJob={setSelectedJob as any} setActive={setActive}/>,
@@ -90,7 +90,6 @@ const Index = () => {
     supplements: <SupplementsPage role={role}/>,
     payments: <PaymentsPage role={role}/>,
   };
-
   useEffect(() => {
     const sidebar = document.querySelector('.recon-sidebar');
     if (sidebar) {

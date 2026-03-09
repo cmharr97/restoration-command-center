@@ -137,6 +137,20 @@ export const Inp = ({ label, placeholder, type = "text", value, onChange, style 
   </div>
 );
 
+// ── INPUT (alias) ──
+export const Input = ({ placeholder, type = "text", value, onChange, icon, style = {} }: {
+  placeholder?: string; type?: string; value?: string; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; icon?: string; style?: React.CSSProperties;
+}) => (
+  <div style={{ position: "relative" }}>
+    {icon && <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}><Ic n={icon} s={14} c={T.muted} /></div>}
+    <input type={type} placeholder={placeholder} value={value || ""} onChange={onChange}
+      style={{ width: "100%", background: T.surfaceHigh, border: `1px solid ${T.border}`, borderRadius: 8, padding: icon ? "10px 12px 10px 36px" : "10px 12px", color: T.text, fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", ...style }}
+      onFocus={e => (e.target as HTMLInputElement).style.borderColor = T.orange}
+      onBlur={e => (e.target as HTMLInputElement).style.borderColor = T.border}
+    />
+  </div>
+);
+
 // ── SELECT ──
 export const Sel = ({ label, options, value, onChange, style = {} }: {
   label?: string; options: (string | { value: string; label: string })[]; value?: string; onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void; style?: React.CSSProperties;
@@ -155,5 +169,19 @@ export const Divider = ({ label }: { label?: string }) => (
     <div style={{ flex: 1, height: 1, background: T.border }}/>
     {label && <span style={{ fontSize: 11, color: T.dim, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>}
     <div style={{ flex: 1, height: 1, background: T.border }}/>
+  </div>
+);
+
+// ── MODAL ──
+export const Modal = ({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) => (
+  <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+    <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }} />
+    <div style={{ position: "relative", background: T.surface, borderRadius: 16, border: `1px solid ${T.border}`, maxWidth: 600, width: "100%", maxHeight: "90vh", overflow: "auto", padding: 24, boxShadow: `0 25px 50px -12px rgba(0,0,0,0.5)` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: T.text, margin: 0 }}>{title}</h2>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4 }}><Ic n="x" s={20} /></button>
+      </div>
+      {children}
+    </div>
   </div>
 );
