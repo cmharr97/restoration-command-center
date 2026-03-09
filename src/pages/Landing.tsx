@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Logo, Ic } from "@/components/recon/ReconUI";
 import { T } from "@/lib/recon-data";
+import { Flame } from "lucide-react";
 
 /* ── ANIMATION ── */
 const FadeIn = ({ children, className = "", delay = 0, y = 30 }: { children: React.ReactNode; className?: string; delay?: number; y?: number }) => {
