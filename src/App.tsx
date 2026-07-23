@@ -11,6 +11,9 @@ import Auth from "./pages/Auth";
 import Landing from "./pages/Landing";
 import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
+import DemoSignIn from "@/components/recon/DemoSignIn";
+import { DemoBadge } from "@/components/recon/DemoBadge";
+import { IS_DEMO_MODE } from "@/lib/demo";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +30,11 @@ const AppRoutes = () => {
   }
 
   if (!user) {
+    // In Demo Preview Mode, show a dedicated role-based demo sign-in screen
+    // instead of the live Supabase auth flow.
+    if (IS_DEMO_MODE) {
+      return <DemoSignIn />;
+    }
     if (authMode === "landing") {
       return (
         <Landing
@@ -62,6 +70,7 @@ const App = () => (
           <BrowserRouter>
             <AppRoutes />
           </BrowserRouter>
+          {IS_DEMO_MODE && <DemoBadge />}
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>

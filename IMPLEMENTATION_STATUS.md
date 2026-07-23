@@ -15,6 +15,58 @@ gating is preserved.
 
 ---
 
+## Demo Preview Mode (explore Phase 1 without Supabase)
+
+You can now preview and fully explore Phase 1 **without a Supabase account or any
+secrets**. When the live Supabase credentials (`VITE_SUPABASE_URL` and
+`VITE_SUPABASE_PUBLISHABLE_KEY`) are missing, the app automatically starts in a safe,
+local **Demo Mode** backed by realistic in-memory sample data. When the credentials are
+present, the app behaves exactly as before — real authentication and live data.
+
+### How it works
+- **Auto-detection:** `src/lib/demo/isDemoMode.ts` sets `IS_DEMO_MODE = true` when either
+  Supabase env var is blank/unset.
+- **Safe mock client:** `src/lib/demo/demoClient.ts` is a drop-in stand-in for the Supabase
+  client that implements the `from().select()/insert()/update()/delete()` query builder,
+  `auth`, `storage`, and realtime `channel` against an in-memory store. It never opens a
+  network connection and **never writes to a live Supabase project** — all "writes" mutate
+  local memory only.
+- **Client selection:** `src/integrations/supabase/client.ts` returns the demo client in
+  Demo Mode, and the real `createClient(...)` otherwise. No hook, page, or component was
+  changed — they all keep importing `supabase` as usual.
+- **Fixtures:** All sample data (jobs, profiles/roles, notifications, claims, drying logs,
+  payments, photos, scheduling, subcontractors, customers, leads, messages, activity)
+  lives in `src/lib/demo/fixtures.ts`.
+- **Demo sign-in:** `src/components/recon/DemoSignIn.tsx` offers one-click sign-in as
+  **Owner, Project Manager, Estimator, Office Admin, Field Technician, or Subcontractor**.
+- **Visible badge:** `src/components/recon/DemoBadge.tsx` shows a persistent **“DEMO MODE”**
+  badge (bottom-left) whenever Demo Mode is active.
+
+### Preview in GitHub Codespaces (no secrets required)
+1. On this PR branch, click **Code → Codespaces → Create codespace on branch**.
+2. Wait for `postCreateCommand` (`npm install --legacy-peer-deps`) to finish. The dev
+   server then starts automatically and the **ReCon (Demo Preview)** port (5173) opens in
+   a preview tab.
+3. On the **Demo Preview** screen, pick a role to enter. Explore the sidebar/command
+   palette (**Ctrl/Cmd+K**), theme toggle, Job File tabs, responsive layout, and bubble UI.
+4. Use the account/sign-out control to return to the role picker and try another role.
+
+### Preview locally
+```bash
+npm install --legacy-peer-deps
+npm run dev            # open http://localhost:5173 (or the printed port)
+```
+Leave `.env` unset (copy `.env.example` only if you want live mode) — Demo Mode activates
+automatically.
+
+### Switching to live mode
+Copy `.env.example` to `.env` and set your real `VITE_SUPABASE_URL` and
+`VITE_SUPABASE_PUBLISHABLE_KEY` (and `VITE_SUPABASE_PROJECT_ID`). The app then uses live
+authentication and data with no code changes. RLS, auth security, env var names, and
+production behavior are unchanged.
+
+---
+
 ## Completed work
 
 ### 1. Reusable bubble design system + tokens
