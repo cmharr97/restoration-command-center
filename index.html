@@ -25,6 +25,18 @@
 
   <body>
     <div id="root"></div>
+    <script>
+      // Apply saved theme before render to avoid a flash. Light is the default.
+      (function () {
+        try {
+          var saved = localStorage.getItem("recon-theme");
+          var theme = saved === "dark" || saved === "light" ? saved : "light";
+          document.documentElement.classList.add(theme);
+        } catch (e) {
+          document.documentElement.classList.add("light");
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
