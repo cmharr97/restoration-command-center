@@ -32,6 +32,20 @@ export const T = {
   teal: "#0d9488",
   tealBright: "#2dd4bf",
   tealDim: "var(--t-teal-dim)",
+  // ── ReCon Spatial Bubble System ──
+  cyan: "var(--t-cyan)",
+  cyanBright: "var(--t-cyan-bright)",
+  cyanDim: "var(--t-cyan-dim)",
+  cyanGlow: "var(--t-cyan-glow)",
+  bubbleSurface: "var(--bubble-surface)",
+  bubbleSurfaceSolid: "var(--bubble-surface-solid)",
+  bubbleBorder: "var(--bubble-border)",
+  bubbleRadius: "var(--bubble-radius)",
+  bubbleRadiusLg: "var(--bubble-radius-lg)",
+  bubbleRadiusSm: "var(--bubble-radius-sm)",
+  bubbleShadow: "var(--bubble-shadow)",
+  bubbleShadowSm: "var(--bubble-shadow-sm)",
+  bubbleShadowLg: "var(--bubble-shadow-lg)",
 };
 
 // ── ROLE DEFINITIONS ──
