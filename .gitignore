@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local environment files (Demo Mode runs without them)
+.env
+.env.local
+.env.*.local

@@ -8,12 +8,13 @@ interface ThemeContextType {
   isDark: boolean;
 }
 
-const ThemeContext = createContext<ThemeContextType>({ theme: "dark", toggleTheme: () => {}, isDark: true });
+const ThemeContext = createContext<ThemeContextType>({ theme: "light", toggleTheme: () => {}, isDark: false });
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem("recon-theme");
-    return (saved === "light" || saved === "dark") ? saved : "dark";
+    // Light mode is the polished default; dark mode preserved and remembered.
+    return (saved === "light" || saved === "dark") ? saved : "light";
   });
 
   useEffect(() => {

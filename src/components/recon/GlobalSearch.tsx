@@ -84,13 +84,9 @@ export const GlobalSearch = ({ setActive, setSelectedJob }: GlobalSearchProps) =
     setQuery("");
   };
 
-  // Keyboard shortcut
+  // Keyboard shortcut (Escape closes; Ctrl/Cmd+K is owned by the command palette)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setOpen(true);
-      }
       if (e.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", handler);
@@ -123,11 +119,6 @@ export const GlobalSearch = ({ setActive, setSelectedJob }: GlobalSearchProps) =
         ) : (
           <span style={{ fontSize: 12, color: T.dim, flex: 1 }}>Search...</span>
         )}
-        <kbd style={{
-          fontSize: 10, color: T.dim, background: T.surface,
-          border: `1px solid ${T.border}`, borderRadius: 4,
-          padding: "1px 5px", fontFamily: "inherit",
-        }}>⌘K</kbd>
       </div>
 
       {open && results.length > 0 && (

@@ -1,0 +1,32 @@
+{
+  "name": "ReCon Spatial Command Center",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": {
+      "label": "ReCon (Demo Preview)",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "postCreateCommand": "npm install --legacy-peer-deps",
+  "postAttachCommand": {
+    "start-dev-server": "nohup npm run dev -- --host 0.0.0.0 --port 5173 > /tmp/recon-vite.log 2>&1 &"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
+      ],
+      "settings": {
+        "editor.formatOnSave": false,
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+      }
+    }
+  },
+  "remoteUser": "node"
+}

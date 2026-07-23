@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { T, NAV } from "@/lib/recon-data";
-import { ReconSidebar, TopBar } from "@/components/recon/ReconLayout";
+import { ReconSidebar, TopBar, MobileBottomNav } from "@/components/recon/ReconLayout";
 import { DashboardPage } from "@/components/recon/DashboardPage";
 import { JobsPage } from "@/components/recon/JobsPage";
 import { JobDetailPage } from "@/components/recon/JobDetailPage";
@@ -18,10 +18,12 @@ import { LeadsPage } from "@/components/recon/LeadsPage";
 import { EstimatesPage, InvoicesPage, TeamPage, EquipmentPage, MyJobsPage, IntegrationsPage, SettingsPage, NewJobModal, SubcontractorsPage } from "@/components/recon/OtherPages";
 import { AIAssistant } from "@/components/recon/AIAssistant";
 import { GlobalSearch } from "@/components/recon/GlobalSearch";
+import { CommandPalette } from "@/components/recon/CommandPalette";
 import { Breadcrumbs } from "@/components/recon/Breadcrumbs";
 import { Ic } from "@/components/recon/ReconUI";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { ROLES } from "@/lib/recon-data";
 import type { DbJob } from "@/hooks/useJobs";
 
 const Index = () => {
@@ -32,7 +34,23 @@ const Index = () => {
   const [showNewJob, setShowNewJob] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [navCollapsed, setNavCollapsed] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const { toast } = useToast();
+
+  const canCreateJob = ROLES[role]?.canViewAllJobs !== false;
+
+  // Global command palette shortcut (Ctrl/Cmd+K)
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((o) => !o);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
 
   useEffect(() => {
     const roleNav = NAV[role] || NAV.owner;
@@ -107,19 +125,24 @@ const Index = () => {
       {active !== "customer_portal" && (
         <ReconSidebar
           role={role} active={active} setActive={setActive} user={displayUser}
+          collapsed={navCollapsed}
+          onToggleCollapse={() => setNavCollapsed(c => !c)}
           mobileOpen={mobileMenuOpen}
           onMobileClose={() => setMobileMenuOpen(false)}
         />
       )}
-      <div style={{ flex: 1, overflowY: active === "messaging" ? "hidden" : "auto", height: "100vh", minWidth: 0 }}>
+      <div style={{ flex: 1, overflowY: active === "messaging" ? "hidden" : "auto", height: "100vh", minWidth: 0, paddingBottom: active !== "customer_portal" ? 8 : 0 }}>
         {active !== "customer_portal" && (
           <TopBar
             pageTitle={pageTitles[active] || active}
             role={role}
+            user={displayUser}
             onNewJob={() => setShowNewJob(true)}
-            onRoleChange={() => {}}
             onSignOut={signOut}
             onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onOpenPalette={() => setPaletteOpen(true)}
+            onSelectJob={(job) => { setSelectedJob(job); setActive("job_detail"); }}
+            setActive={setActive}
             breadcrumbs={
               <Breadcrumbs
                 active={active}
@@ -137,8 +160,27 @@ const Index = () => {
       </div>
       {showNewJob && <NewJobModal onClose={() => setShowNewJob(false)}/>}
 
+      {active !== "customer_portal" && (
+        <MobileBottomNav
+          role={role}
+          active={active}
+          setActive={setActive}
+          onOpenPalette={() => setPaletteOpen(true)}
+        />
+      )}
+
+      <CommandPalette
+        open={paletteOpen}
+        setOpen={setPaletteOpen}
+        role={role}
+        setActive={setActive}
+        setSelectedJob={setSelectedJob}
+        onNewJob={() => setShowNewJob(true)}
+        canCreateJob={canCreateJob}
+      />
+
       {!showAI && (
-        <button onClick={() => setShowAI(true)} style={{
+        <button onClick={() => setShowAI(true)} aria-label="Open ReCon AI assistant" style={{
           position: "fixed", right: 20, bottom: 20, width: 48, height: 48,
           borderRadius: "50%", background: `linear-gradient(135deg, ${T.orange}, #c84009)`,
           border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
