@@ -99,6 +99,25 @@
     --t-red-dim: rgba(239,68,68,0.12);
     --t-purple-dim: rgba(167,139,250,0.12);
     --t-teal-dim: rgba(45,212,191,0.12);
+
+    /* ── ReCon Spatial Bubble System (dark) ── */
+    --t-cyan: #00b8d9;
+    --t-cyan-bright: #22d3ee;
+    --t-cyan-dim: rgba(0,184,217,0.16);
+    --t-cyan-glow: rgba(0,184,217,0.30);
+    --bubble-surface: rgba(30,32,38,0.82);
+    --bubble-surface-solid: #1a1c20;
+    --bubble-border: rgba(255,255,255,0.08);
+    --bubble-blur: 14px;
+    --bubble-radius: 16px;
+    --bubble-radius-lg: 22px;
+    --bubble-radius-sm: 11px;
+    --bubble-shadow: 0 8px 28px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.4);
+    --bubble-shadow-sm: 0 4px 14px rgba(0,0,0,0.4);
+    --bubble-shadow-lg: 0 18px 48px rgba(0,0,0,0.55);
+    --bubble-ring: 0 0 0 3px rgba(232,92,13,0.35);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .light {
@@ -192,6 +211,25 @@
     --t-red-dim: rgba(239,68,68,0.10);
     --t-purple-dim: rgba(167,139,250,0.10);
     --t-teal-dim: rgba(45,212,191,0.10);
+
+    /* ── ReCon Spatial Bubble System (light — polished default) ── */
+    --t-cyan: #00b8d9;
+    --t-cyan-bright: #0891b2;
+    --t-cyan-dim: rgba(0,184,217,0.12);
+    --t-cyan-glow: rgba(0,184,217,0.20);
+    --bubble-surface: rgba(255,255,255,0.78);
+    --bubble-surface-solid: #ffffff;
+    --bubble-border: rgba(20,24,33,0.08);
+    --bubble-blur: 16px;
+    --bubble-radius: 16px;
+    --bubble-radius-lg: 22px;
+    --bubble-radius-sm: 11px;
+    --bubble-shadow: 0 8px 28px rgba(24,32,52,0.10), 0 1px 2px rgba(24,32,52,0.06);
+    --bubble-shadow-sm: 0 4px 14px rgba(24,32,52,0.08);
+    --bubble-shadow-lg: 0 18px 48px rgba(24,32,52,0.16);
+    --bubble-ring: 0 0 0 3px rgba(232,92,13,0.28);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -260,5 +298,113 @@
   }
   .show-mobile {
     display: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   ReCon Spatial Bubble System — shared classes
+   ───────────────────────────────────────────── */
+.recon-bubble {
+  background: var(--bubble-surface);
+  -webkit-backdrop-filter: saturate(140%) blur(var(--bubble-blur));
+  backdrop-filter: saturate(140%) blur(var(--bubble-blur));
+  border: 1px solid var(--bubble-border);
+  border-radius: var(--bubble-radius);
+  box-shadow: var(--bubble-shadow);
+}
+
+.recon-orb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--bubble-border);
+  background: var(--bubble-surface-solid);
+  color: var(--t-muted);
+  cursor: pointer;
+  transition: transform 0.2s var(--spring), box-shadow 0.2s var(--ease-soft),
+    background 0.15s var(--ease-soft), color 0.15s var(--ease-soft);
+}
+.recon-orb:hover {
+  color: var(--t-text);
+  box-shadow: var(--bubble-shadow-sm);
+  transform: translateY(-1px);
+}
+.recon-orb:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.recon-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  border: 1px solid var(--bubble-border);
+  background: var(--bubble-surface);
+  -webkit-backdrop-filter: saturate(140%) blur(var(--bubble-blur));
+  backdrop-filter: saturate(140%) blur(var(--bubble-blur));
+  box-shadow: var(--bubble-shadow-sm);
+}
+
+/* Live / AI pulse (cyan) */
+.recon-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--t-cyan);
+  box-shadow: 0 0 0 0 var(--t-cyan-glow);
+  animation: recon-pulse 2s infinite;
+}
+@keyframes recon-pulse {
+  0% { box-shadow: 0 0 0 0 var(--t-cyan-glow); }
+  70% { box-shadow: 0 0 0 7px rgba(0,184,217,0); }
+  100% { box-shadow: 0 0 0 0 rgba(0,184,217,0); }
+}
+
+/* Accessible visible focus for all interactive bubble elements */
+.recon-focusable:focus-visible,
+.recon-orb:focus-visible,
+.recon-capsule:focus-visible,
+button.recon-tab:focus-visible {
+  outline: none;
+  box-shadow: var(--bubble-ring);
+}
+
+/* Floating desktop nav */
+.recon-floating-nav {
+  transition: width 0.28s var(--spring);
+}
+
+/* Mobile bottom navigation */
+.recon-bottom-nav {
+  display: none;
+}
+@media (max-width: 768px) {
+  .recon-bottom-nav {
+    display: flex;
+  }
+  .recon-desktop-only {
+    display: none !important;
+  }
+}
+@media (min-width: 769px) {
+  .recon-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .recon-live-dot {
+    animation: none;
+    box-shadow: 0 0 0 3px var(--t-cyan-glow);
   }
 }
